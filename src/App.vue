@@ -5,7 +5,7 @@ import NavigationMenu from './components/NavigationMenu.vue'
 
 <template>
   <header class="header">
-    <img src="../impact_logo.png" alt="Logo" class="header__logo" />
+    <img src="./assets/impact_logo.png" alt="Logo" class="header__logo" />
     <img
       src="https://yt3.googleusercontent.com/ytc/AGIKgqPhYXrYUfEsq1MuFToT2kq9urkpa4VgACegL9_lCQ=s900-c-k-c0x00ffffff-no-rj"
       alt="Avatar"
