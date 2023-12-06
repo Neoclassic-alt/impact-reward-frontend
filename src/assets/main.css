@@ -1,1 +1,37 @@
 @import './base.css';
+
+.main {
+  margin-left: 100px;
+  margin-right: 100px;
+  margin-top: 30px;
+}
+
+.link {
+  color: #40A5EE;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.page-header {
+  margin-bottom: 30px;
+}
+
+.block-info {
+  border: 1px solid var(--brand-main-color);
+  padding: 25px 30px;
+  margin-bottom: 30px;
+}
+
+.block-info__title_1 {
+  font-size: 1.5em;
+  margin-bottom: 25px;
+  font-weight: 500;
+}
+
+.block-info__item:not(:last-child) {
+  margin-bottom: 12px;
+}
+
+.block-info__prop {
+  font-weight: 500;
+}

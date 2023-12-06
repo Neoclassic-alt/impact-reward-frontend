@@ -6,13 +6,17 @@ import NavigationMenu from './components/NavigationMenu.vue'
 <template>
   <header class="header">
     <img src="../impact_logo.png" alt="Logo" class="header__logo" />
-    <img src="https://yt3.googleusercontent.com/ytc/AGIKgqPhYXrYUfEsq1MuFToT2kq9urkpa4VgACegL9_lCQ=s900-c-k-c0x00ffffff-no-rj" alt="Avatar" class="header__avatar">
+    <img
+      src="https://yt3.googleusercontent.com/ytc/AGIKgqPhYXrYUfEsq1MuFToT2kq9urkpa4VgACegL9_lCQ=s900-c-k-c0x00ffffff-no-rj"
+      alt="Avatar"
+      class="header__avatar"
+    />
   </header>
   <div class="main-wrapper">
     <NavigationMenu />
     <RouterView />
   </div>
-  <footer class="footer"> Plain text </footer>
+  <footer class="footer">Plain text</footer>
 </template>
 
 <style scoped>
@@ -36,7 +40,7 @@ import NavigationMenu from './components/NavigationMenu.vue'
   min-height: calc(100vh - 120px);
 }
 .footer {
-  background: #F0F0F0;
+  background: #f0f0f0;
   padding: 10px 60px;
 }
 </style>

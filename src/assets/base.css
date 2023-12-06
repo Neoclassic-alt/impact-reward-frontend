@@ -1,11 +1,10 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
-  --brand-main-color: #67D2E9;
-  --light-gray: #FDFDFD;
+  --brand-main-color: #67d2e9;
+  --light-gray: #fdfdfd;
 }
 
 body {
-
   font-family:
     Montserrat,
     Inter,
@@ -27,3 +26,19 @@ body {
   margin: 0;
   padding: 0;
 }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
