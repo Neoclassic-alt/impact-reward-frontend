@@ -4,7 +4,7 @@ import NavigationMenu from './components/NavigationMenu.vue'
 </script>
 
 <template>
-  <header class="header">
+  <header class="header" id="header">
     <img src="./assets/impact_logo.png" alt="Logo" class="header__logo" />
   </header>
   <div class="main-wrapper">

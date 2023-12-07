@@ -1,33 +1,66 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { useMenuStore } from '@/stores/pages';
+import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router';
+import type { menuStates } from '@/types/pages';
+import { capitalizeFirstLetter } from '@/functions'
+import { onMounted } from 'vue';
 
-type menuStates = 'generalInfo' | 'bonusShop' | 'stats' | 'rating'
-const activeElement = ref<menuStates>('generalInfo')
+const store = useMenuStore()
+const { activeItem } = storeToRefs(store) // деконструкция параметра с storeToRefs()
+const { changeItem } = store // действия деконструируются без функций
+const router = useRouter()
+
+function GoToPageFromMenu(newItem: menuStates) {
+  changeItem(newItem);
+  // роуты называется точно так же, как menuStates, за исключением первой буквы
+  router.push({name: capitalizeFirstLetter(newItem)})
+}
+
+// сделаем меню непрокручиваемым после шапки
+onMounted(() => {
+  const header = document.getElementById("header")! as HTMLDivElement
+  const nav = document.querySelector(".nav")! as HTMLDivElement
+  const footer = document.querySelector(".footer")! as HTMLDivElement
+  document.addEventListener("scroll", () => {
+    if (window.scrollY > header.offsetHeight) {
+      nav.style.top = window.scrollY - header.offsetHeight + 'px'
+      if (document.documentElement.scrollHeight - document.documentElement.clientHeight - window.scrollY < footer.offsetHeight) {
+        nav.style.height = document.documentElement.clientHeight - footer.offsetHeight + 'px'
+      } else {
+        nav.style.height = document.documentElement.clientHeight + 'px'
+      }
+    } else {
+      nav.style.top = '0'
+    }
+  })
+})
+
 </script>
 
 <template>
   <nav class="nav">
-    <h2 class="nav__header">Меню</h2>
-    <menu class="list-to-menu" style="flex: 1">
-      <li class="nav__item" :class="{ active: activeElement === 'generalInfo' }">
-        <img src="../assets/icons/settings.svg" /><span class="nav__text">Общая информация</span>
-      </li>
-      <li class="nav__item" :class="{ active: activeElement === 'bonusShop' }">
-        <img src="../assets/icons/shop.svg" /> <span class="nav__text">Магазин бонусов</span>
-      </li>
-      <li class="nav__item" :class="{ active: activeElement === 'stats' }">
-        <img src="../assets/icons/stats.svg" /> <span class="nav__text">Статистика</span>
-      </li>
-      <li class="nav__item" :class="{ active: activeElement === 'rating' }">
-        <img src="../assets/icons/cup_with_star.svg" /> <span class="nav__text">Рейтинг</span>
-      </li>
-    </menu>
-    <ul class="list-to-menu">
-      <li class="nav__item">
-        <img src="../assets/icons/logout.svg" />
-        <span class="nav__text" style="color: var(--danger-color)">Выйти</span>
-      </li>
-    </ul>
+      <h2 class="nav__header">Меню</h2>
+      <menu class="list-to-menu" style="flex: 1">
+        <li class="nav__item" :class="{ active: activeItem === 'generalInfo' }" @click="GoToPageFromMenu('generalInfo')">
+          <img src="../assets/icons/settings.svg" /><span class="nav__text">Общая информация</span>
+        </li>
+        <li class="nav__item" :class="{ active: activeItem === 'bonusShop' }" @click="GoToPageFromMenu('bonusShop')">
+          <img src="../assets/icons/shop.svg" /> <span class="nav__text">Магазин бонусов</span>
+        </li>
+        <li class="nav__item in_development" :class="{ active: activeItem === 'stats' }">
+          <img src="../assets/icons/stats.svg" /> <span class="nav__text">Статистика</span> <span class="soon-label">скоро</span>
+        </li>
+        <li class="nav__item in_development" :class="{ active: activeItem === 'rating' }">
+          <img src="../assets/icons/cup_with_star.svg" /> <span class="nav__text">Рейтинг</span> <span class="soon-label">скоро</span>
+        </li>
+      </menu>
+      <ul class="list-to-menu">
+        <li class="nav__item">
+          <img src="../assets/icons/logout.svg" />
+          <span class="nav__text" style="color: var(--danger-color)">Выйти</span>
+        </li>
+      </ul>
   </nav>
 </template>
 
@@ -38,6 +71,7 @@ const activeElement = ref<menuStates>('generalInfo')
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative; /* Для реализации прокрутки */
 }
 
 .nav__header {
@@ -50,6 +84,7 @@ const activeElement = ref<menuStates>('generalInfo')
   padding: 12px 20px;
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
 .nav__text {
@@ -65,5 +100,20 @@ const activeElement = ref<menuStates>('generalInfo')
 
 .active img {
   filter: invert(1);
+}
+
+.in_development > *:not(:last-child) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.soon-label {
+  display: inline-block;
+  padding: 0px 6px 2px 6px;
+  color: #ffffff;
+  background-color: rgb(15, 13, 111);
+  border-radius: 12px;
+  font-size: 12px;
+  margin-left: 10px;
 }
 </style>
