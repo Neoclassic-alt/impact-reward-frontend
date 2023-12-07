@@ -8,7 +8,7 @@ const activeElement = ref<menuStates>('generalInfo')
 <template>
   <nav class="nav">
     <h2 class="nav__header">Меню</h2>
-    <ul class="nav__menu">
+    <menu class="list-to-menu" style="flex: 1">
       <li class="nav__item" :class="{ active: activeElement === 'generalInfo' }">
         <img src="../assets/icons/settings.svg" /><span class="nav__text">Общая информация</span>
       </li>
@@ -21,6 +21,12 @@ const activeElement = ref<menuStates>('generalInfo')
       <li class="nav__item" :class="{ active: activeElement === 'rating' }">
         <img src="../assets/icons/cup_with_star.svg" /> <span class="nav__text">Рейтинг</span>
       </li>
+    </menu>
+    <ul class="list-to-menu">
+      <li class="nav__item">
+        <img src="../assets/icons/logout.svg" />
+        <span class="nav__text" style="color: var(--danger-color)">Выйти</span>
+      </li>
     </ul>
   </nav>
 </template>
@@ -29,16 +35,15 @@ const activeElement = ref<menuStates>('generalInfo')
 .nav {
   max-width: fit-content;
   background: var(--light-gray);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .nav__header {
   margin-left: 20px;
   margin-top: 30px;
   margin-bottom: 30px;
-}
-.nav__menu {
-  list-style-type: none;
-  padding-inline-start: 0;
 }
 
 .nav__item {

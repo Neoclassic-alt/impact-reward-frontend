@@ -2,6 +2,7 @@
 :root {
   --brand-main-color: #67d2e9;
   --light-gray: #fdfdfd;
+  --danger-color: #f24e1e;
 }
 
 body {
@@ -42,3 +43,7 @@ p {
   margin-block-end: 0;
 }
 
+.list-to-menu {
+  list-style-type: none;
+  padding-inline-start: 0;
+}

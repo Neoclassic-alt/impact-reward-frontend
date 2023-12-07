@@ -4,10 +4,11 @@
   margin-left: 100px;
   margin-right: 100px;
   margin-top: 30px;
+  width: 100%;
 }
 
 .link {
-  color: #40A5EE;
+  color: #40a5ee;
   font-weight: 600;
   text-decoration: none;
 }

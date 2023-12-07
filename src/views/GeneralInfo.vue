@@ -1,26 +1,27 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const communityLink = ref("abcsjffe")
+const communityLink = ref('nobordersplz')
+const ticker = ref('STAR')
 </script>
 
 <template>
   <main class="main">
-    <h2 class="page-header">Сообщество “{{ 'Lorem ipsum' }}”</h2>
-    
+    <h2 class="page-header">Сообщество “{{ 'Маркетинг без границ' }}”</h2>
+
     <section class="block-info">
       <p class="block-info__title_1">Telegram-канал</p>
       <p class="block-info__item">
-        <span class="block-info__prop" style="margin-right: 62px;">Адрес</span>
-        <a :href="'http://t.me/' + communityLink" class="link">@{{communityLink}}</a>
+        <span class="block-info__prop" style="margin-right: 39px">Импакт-аккаунт</span>
+        <span>{{ 'nobordersplz' }}</span>
       </p>
       <p class="block-info__item">
-        <span class="block-info__prop" style="margin-right: 39px;">Владелец</span>
-        <span>{{'Ivan Ivanov'}}</span>
+        <span class="block-info__prop" style="margin-right: 109px">Адрес</span>
+        <a :href="'http://t.me/' + communityLink" class="link">{{ communityLink }}</a>
       </p>
       <div class="block-info__item">
         <span class="block-info__prop">Описание</span>
-        <p>Lorem ipsum dolor sit amet consectetur. In massa eget facilisi amet vitae duis ornare ac. Non turpis pellentesque molestie bibendum in viverra mi mauris. Semper massa hac pellentesque elementum</p>
+        <p>Консультации и полезные материалы от гуру международного маркетинга Татьяны Петровой</p>
       </div>
     </section>
     <div class="blocks-group">
@@ -28,30 +29,30 @@ const communityLink = ref("abcsjffe")
         <p class="block-info__title_1">Монетный двор</p>
         <p class="block-info__item block-info__item_justify">
           <span class="block-info__prop">Монетные прессы</span>
-          <span>{{101}}</span>
+          <span>{{ 20 }}</span>
         </p>
         <p class="block-info__item block-info__item_justify">
           <span class="block-info__prop">Монета</span>
-          <span>{{'abcsjffe'}}</span>
+          <span>{{ 'Звезда маркетинга' }}</span>
         </p>
         <p class="block-info__item block-info__item_justify">
           <span class="block-info__prop">Тикер</span>
-          <span>{{"TEST"}}</span>
+          <span>{{ ticker }}</span>
         </p>
       </section>
       <section class="block-info">
         <p class="block-info__title_1">Касса</p>
         <p class="block-info__item block-info__item_justify">
-          <span class="block-info__prop">Осталось монет</span>
-          <span>{{ 300 }}</span>
+          <span class="block-info__prop">Осталось наград</span>
+          <span>{{ 25 }}</span>
         </p>
         <p class="block-info__item block-info__item_justify">
           <span class="block-info__prop">Размер награды</span>
-          <span>{{ 15 }}</span>
+          <span>{{ 15 }} {{ ticker }}</span>
         </p>
         <p class="block-info__item block-info__item_justify">
           <span class="block-info__prop">Темп пополнения</span>
-          <span>{{ "2,3 мон в час" }}</span>
+          <span>{{ 2.4 }} награды в час</span>
         </p>
       </section>
     </div>
@@ -71,5 +72,4 @@ const communityLink = ref("abcsjffe")
   display: flex;
   justify-content: space-between;
 }
-
 </style>
