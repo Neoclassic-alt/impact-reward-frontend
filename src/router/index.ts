@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import GeneralInfo from '../views/GeneralInfo.vue'
-import type { menuStates } from '@/types/pages'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,12 +7,18 @@ const router = createRouter({
     {
       path: '/',
       name: 'GeneralInfo',
-      component: GeneralInfo
+      component: GeneralInfo,
     },
     {
       path: '/bonus-shop',
-      name: 'BonusShop',
-      component: () => import('../views/BonusShop.vue')
+      component: () => import('../views/BonusShop.vue'),
+      children: [
+        {
+          path: '',
+          name: 'BonusShop',
+          component: () => import('../views/bonuses/CommunityBonuses.vue'),
+        }
+      ]
     }
   ]
 })

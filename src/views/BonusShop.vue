@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { RouterView } from 'vue-router'
 
 type BonusShopTabs = 'community' | 'gold'
 
@@ -15,6 +16,7 @@ const currentTab = ref<BonusShopTabs>('community')
       </li>
       <li class="bonus-shop__tab" :class="{ active: currentTab === 'gold' }">Золотые бонусы</li>
     </menu>
+    <RouterView />
   </main>
 </template>
 

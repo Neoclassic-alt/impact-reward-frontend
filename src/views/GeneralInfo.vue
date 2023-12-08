@@ -10,7 +10,7 @@ const ticker = ref('STAR')
     <h2 class="page-header">Сообщество “{{ 'Маркетинг без границ' }}”</h2>
 
     <section class="block-info">
-      <p class="block-info__title_1">Telegram-канал</p>
+      <p class="block-info__title_1">Профиль</p>
       <p class="block-info__item">
         <span class="block-info__prop" style="margin-right: 39px">Импакт-аккаунт</span>
         <span>{{ 'nobordersplz' }}</span>
@@ -20,8 +20,8 @@ const ticker = ref('STAR')
         <a :href="'http://t.me/' + communityLink" class="link">{{ communityLink }}</a>
       </p>
       <div class="block-info__item">
-        <span class="block-info__prop">Описание</span>
-        <p>Консультации и полезные материалы от гуру международного маркетинга Татьяны Петровой</p>
+        <span class="block-info__prop" style="margin-right: 82px">Описание</span>
+        <span>Консультации и полезные материалы от гуру международного маркетинга Татьяны Петровой</span>
       </div>
     </section>
     <div class="blocks-group">
@@ -66,6 +66,10 @@ const ticker = ref('STAR')
 
 .block-info {
   flex: 1;
+}
+
+.block-info__prop {
+  display: inline-block;
 }
 
 .block-info__item_justify {

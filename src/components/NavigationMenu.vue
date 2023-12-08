@@ -39,11 +39,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <nav class="nav">
-      <h2 class="nav__header">Меню</h2>
-      <menu class="list-to-menu" style="flex: 1">
+  <nav class="nav" ref="nav">
+      <h2 class="nav__header"></h2>
+      <menu class="list-to-menu">
         <li class="nav__item" :class="{ active: activeItem === 'generalInfo' }" @click="GoToPageFromMenu('generalInfo')">
-          <img src="../assets/icons/settings.svg" /><span class="nav__text">Общая информация</span>
+          <img src="../assets/icons/settings.svg" /><span class="nav__text">Информация</span>
         </li>
         <li class="nav__item" :class="{ active: activeItem === 'bonusShop' }" @click="GoToPageFromMenu('bonusShop')">
           <img src="../assets/icons/shop.svg" /> <span class="nav__text">Магазин бонусов</span>
@@ -68,7 +68,6 @@ onMounted(() => {
 .nav {
   max-width: fit-content;
   background: var(--light-gray);
-  display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative; /* Для реализации прокрутки */
