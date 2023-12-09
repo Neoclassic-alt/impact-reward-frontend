@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useMenuStore } from '@/stores/pages';
+import { useMenuStore } from '@/stores/pages'
 import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router';
-import type { menuStates } from '@/types/pages';
+import { useRouter } from 'vue-router'
+import type { menuStates } from '@/types/pages'
 import { capitalizeFirstLetter } from '@/functions'
-import { onMounted } from 'vue';
+import { onMounted } from 'vue'
 
 const store = useMenuStore()
 const { activeItem } = storeToRefs(store) // деконструкция параметра с storeToRefs()
@@ -12,20 +12,25 @@ const { changeItem } = store // действия деконструируютс�
 const router = useRouter()
 
 function GoToPageFromMenu(newItem: menuStates) {
-  changeItem(newItem);
+  changeItem(newItem)
   // роуты называется точно так же, как menuStates, за исключением первой буквы
-  router.push({name: capitalizeFirstLetter(newItem)})
+  router.push({ name: capitalizeFirstLetter(newItem) })
 }
 
 // сделаем меню непрокручиваемым после шапки
 onMounted(() => {
-  const header = document.getElementById("header")! as HTMLDivElement
-  const nav = document.querySelector(".nav")! as HTMLDivElement
-  const footer = document.querySelector(".footer")! as HTMLDivElement
-  document.addEventListener("scroll", () => {
+  const header = document.getElementById('header')! as HTMLDivElement
+  const nav = document.querySelector('.nav')! as HTMLDivElement
+  const footer = document.querySelector('.footer')! as HTMLDivElement
+  document.addEventListener('scroll', () => {
     if (window.scrollY > header.offsetHeight) {
       nav.style.top = window.scrollY - header.offsetHeight + 'px'
-      if (document.documentElement.scrollHeight - document.documentElement.clientHeight - window.scrollY < footer.offsetHeight) {
+      if (
+        document.documentElement.scrollHeight -
+          document.documentElement.clientHeight -
+          window.scrollY <
+        footer.offsetHeight
+      ) {
         nav.style.height = document.documentElement.clientHeight - footer.offsetHeight + 'px'
       } else {
         nav.style.height = document.documentElement.clientHeight + 'px'
@@ -35,32 +40,41 @@ onMounted(() => {
     }
   })
 })
-
 </script>
 
 <template>
   <nav class="nav" ref="nav">
-      <h2 class="nav__header"></h2>
-      <menu class="list-to-menu">
-        <li class="nav__item" :class="{ active: activeItem === 'generalInfo' }" @click="GoToPageFromMenu('generalInfo')">
-          <img src="../assets/icons/settings.svg" /><span class="nav__text">Информация</span>
-        </li>
-        <li class="nav__item" :class="{ active: activeItem === 'bonusShop' }" @click="GoToPageFromMenu('bonusShop')">
-          <img src="../assets/icons/shop.svg" /> <span class="nav__text">Магазин бонусов</span>
-        </li>
-        <li class="nav__item in_development" :class="{ active: activeItem === 'stats' }">
-          <img src="../assets/icons/stats.svg" /> <span class="nav__text">Статистика</span> <span class="soon-label">скоро</span>
-        </li>
-        <li class="nav__item in_development" :class="{ active: activeItem === 'rating' }">
-          <img src="../assets/icons/cup_with_star.svg" /> <span class="nav__text">Рейтинг</span> <span class="soon-label">скоро</span>
-        </li>
-      </menu>
-      <ul class="list-to-menu">
-        <li class="nav__item">
-          <img src="../assets/icons/logout.svg" />
-          <span class="nav__text" style="color: var(--danger-color)">Выйти</span>
-        </li>
-      </ul>
+    <h2 class="nav__header"></h2>
+    <menu class="list-to-menu">
+      <li
+        class="nav__item"
+        :class="{ active: activeItem === 'generalInfo' }"
+        @click="GoToPageFromMenu('generalInfo')"
+      >
+        <img src="../assets/icons/info.svg" /><span class="nav__text">Информация</span>
+      </li>
+      <li
+        class="nav__item"
+        :class="{ active: activeItem === 'bonusShop' }"
+        @click="GoToPageFromMenu('bonusShop')"
+      >
+        <img src="../assets/icons/shop.svg" /> <span class="nav__text">Магазин бонусов</span>
+      </li>
+      <li class="nav__item in_development" :class="{ active: activeItem === 'stats' }">
+        <img src="../assets/icons/stats.svg" /> <span class="nav__text">Статистика</span>
+        <span class="soon-label">скоро</span>
+      </li>
+      <li class="nav__item in_development" :class="{ active: activeItem === 'rating' }">
+        <img src="../assets/icons/cup_with_star.svg" /> <span class="nav__text">Рейтинг</span>
+        <span class="soon-label">скоро</span>
+      </li>
+    </menu>
+    <ul class="list-to-menu">
+      <li class="nav__item">
+        <img src="../assets/icons/logout.svg" />
+        <span class="nav__text" style="color: var(--danger-color)">Выйти</span>
+      </li>
+    </ul>
   </nav>
 </template>
 

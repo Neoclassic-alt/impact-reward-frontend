@@ -21,7 +21,10 @@ const ticker = ref('STAR')
       </p>
       <div class="block-info__item">
         <span class="block-info__prop" style="margin-right: 82px">Описание</span>
-        <span>Консультации и полезные материалы от гуру международного маркетинга Татьяны Петровой</span>
+        <span
+          >Консультации и полезные материалы от гуру международного маркетинга Татьяны
+          Петровой</span
+        >
       </div>
     </section>
     <div class="blocks-group">

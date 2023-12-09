@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { RouterView, useRoute, useRouter } from 'vue-router'
 import NavigationMenu from './components/NavigationMenu.vue'
-import { onMounted } from 'vue';
-import { useMenuStore } from './stores/pages';
+import { onMounted } from 'vue'
+import { useMenuStore } from './stores/pages'
 
 const route = useRoute()
 const router = useRouter()

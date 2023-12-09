@@ -40,4 +40,5 @@
 
 .block-info__prop {
   font-weight: 500;
+  display: inline-block;
 }

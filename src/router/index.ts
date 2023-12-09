@@ -17,10 +17,10 @@ const router = createRouter({
           path: '',
           name: 'BonusShop',
           component: () => import('../views/bonuses/CommunityBonuses.vue'),
-        }
-      ]
-    }
-  ]
+        },
+      ],
+    },
+  ],
 })
 
 export default router
