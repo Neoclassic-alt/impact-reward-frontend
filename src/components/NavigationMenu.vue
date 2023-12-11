@@ -97,7 +97,15 @@ onMounted(() => {
   padding: 12px 20px;
   display: flex;
   align-items: center;
+}
+
+.nav__item:not(.in_development) {
   cursor: pointer;
+}
+
+.nav__item:not(.in_development, .active):hover {
+  background-color: var(--light-hover);
+  transition: background-color 0.1s linear;
 }
 
 .nav__text {
@@ -113,20 +121,5 @@ onMounted(() => {
 
 .active img {
   filter: invert(1);
-}
-
-.in_development > *:not(:last-child) {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.soon-label {
-  display: inline-block;
-  padding: 0px 6px 2px 6px;
-  color: #ffffff;
-  background-color: rgb(15, 13, 111);
-  border-radius: 12px;
-  font-size: 12px;
-  margin-left: 10px;
 }
 </style>

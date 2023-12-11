@@ -47,32 +47,47 @@ const bonusesFullShown: Set<string | number> = reactive(new Set())
   <div class="bonus__add" v-if="bonusAvaliableCosts.size">
     <p>Добавить группу бонусов:</p>
     <menu class="bonus-add__button-group list-to-menu">
-      <li class="bonus-add__button" v-for="cost in bonusAvaliableCosts" :key="cost">{{ cost }}</li>
+      <li class="bonus-add__button button" v-for="cost in bonusAvaliableCosts" :key="cost">{{ cost }}</li>
     </menu>
   </div>
   <div class="bonus-group">
     <div class="bonus" v-for="bonus in bonuses" :key="bonus.id">
       <p class="bonus__title">{{ bonus.title }}</p>
-      <p class="bonus__description">{{ bonus.description }}</p>
-      <a
+      <p class="bonus__description">
+        {{ bonus.description }}
+        <a
         href="#"
         class="link"
         @click.prevent="bonusesFullShown.add(bonus.id)"
         v-if="!bonusesFullShown.has(bonus.id)"
         >Полное описание</a
       >
+      </p>
       <template v-if="bonusesFullShown.has(bonus.id)">
         <div class="block-info__item">
-          <span class="block-info__prop" style="margin-right: 25px">Инструкция</span>
+          <span class="block-info__prop">Тип:&nbsp;</span>
+          <span>{{ bonus.type === 'link' ? 'Ссылка' : ''}}{{ bonus.type === 'promocode' ? 'Промокод' : ''}}</span>
+        </div>
+        <div class="block-info__item">
+          <span class="block-info__prop">Инструкция:&nbsp;</span>
           <span>{{ bonus.instruction }}</span>
         </div>
         <div class="block-info__item">
-          <span class="block-info__prop">Осталось бонусов&nbsp;</span>
+          <span class="block-info__prop">Осталось бонусов:&nbsp;</span>
           <span>{{ 22 }}</span>
         </div>
+        <a
+          href="#"
+          class="link"
+          @click.prevent="bonusesFullShown.delete(bonus.id)"
+          v-if="bonusesFullShown.has(bonus.id)"
+          style="margin-bottom: 16px;"
+          >Свернуть</a
+        >
       </template>
-      <div class="bonus__actions-buttons">
-        <!-- TODO -->
+      <div>
+        <a href="#" class="button action-button add-button" style="border-color: var(--success-color); margin-right: 16px;">Добавить</a>
+        <a href="#" class="button action-button delete-button" style="border-color: var(--danger-color)">Удалить</a>
       </div>
     </div>
   </div>
@@ -92,8 +107,6 @@ const bonusesFullShown: Set<string | number> = reactive(new Set())
 
 .bonus-add__button {
   border: 1px var(--brand-main-color) solid;
-  border-radius: 10px;
-  padding: 12px 20px;
   margin-left: 20px;
   cursor: pointer;
 }
@@ -123,5 +136,26 @@ const bonusesFullShown: Set<string | number> = reactive(new Set())
 
 .bonus:nth-child(2n + 1) {
   margin-right: 26px;
+}
+
+.action-button {
+  font-size: 0.9em;
+  padding: 10px 16px;
+  color: #000000;
+}
+
+.delete-button:hover {
+  background-color: rgb(242, 78, 30, 0.15);
+  transition: background-color 0.1s linear;
+}
+
+.add-button:hover {
+  background-color: rgb(58, 214, 64, 0.15);
+  transition: background-color 0.1s linear;
+}
+
+.bonus-add__button:hover {
+  background-color: rgb(103, 210, 233, 0.15);
+  transition: background-color 0.1s linear;
 }
 </style>

@@ -1,8 +1,10 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
-  --brand-main-color: #67d2e9;
+  --brand-main-color: rgb(103, 210, 233);
   --light-gray: #fdfdfd;
-  --danger-color: #f24e1e;
+  --danger-color: rgb(242, 78, 30);
+  --success-color: rgb(58, 214, 64);
+  --light-hover: #ededed;
 }
 
 body {
