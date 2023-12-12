@@ -7,7 +7,7 @@
 
 .main-margins {
   max-width: 1200px;
-  margin: 0 auto;
+  /*margin: 0 auto;*/
   width: 100%;
   margin-top: 30px;
 }
@@ -72,4 +72,57 @@
   margin-left: 10px;
   font-weight: 400;
   cursor: not-allowed;
+}
+
+.modal {
+  background-color: rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 9997;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--light-gray);
+  width: 500px;
+  /*height: 300px;*/
+  padding: 25px;
+  border-radius: 10px;
+}
+
+.form {
+  width: 100%;
+}
+
+.textarea {
+  resize: none;
+  border-radius: 4px;
+  border: 1px var(--brand-main-color) solid;
+  width: 100%;
+  outline: none;
+}
+
+.label {
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.modal-button-group {
+  display: flex;
+  justify-content: center;
+}
+
+.field-description {
+  font-size: 0.8em;
+  color: #5e5e5e;
 }

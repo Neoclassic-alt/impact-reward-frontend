@@ -33,7 +33,7 @@ onMounted(async () => {
 <style scoped>
 .header {
   background: var(--brand-main-color);
-  padding: 10px 60px;
+  padding: 10px 20px;
 }
 .header__logo {
   height: 60px;

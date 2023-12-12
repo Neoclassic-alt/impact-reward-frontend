@@ -31,6 +31,7 @@ const currentTab = ref<BonusShopTabs>('community')
 .bonus-shop__tab {
   padding: 12px 20px;
   font-weight: 500;
+  padding-top: 0;
 }
 
 .active {
