@@ -30,6 +30,8 @@ onMounted(async () => {
   <footer class="footer">Plain text</footer>
 </template>
 
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+
 <style scoped>
 .header {
   background: var(--brand-main-color);

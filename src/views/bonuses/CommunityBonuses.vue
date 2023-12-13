@@ -3,8 +3,8 @@ import { useBonusAvailableStore } from '@/stores/bonuses'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref, reactive, computed } from 'vue'
 import type { bonus } from '@/types/bonuses'
-import { russianBonusTypes } from '@/constants/bonuses'
 import { vOnClickOutside } from '@vueuse/components'
+import { RouterLink } from 'vue-router'
 
 const bonusAvailableStore = useBonusAvailableStore()
 const { bonusAvaliableCosts } = storeToRefs(bonusAvailableStore)
@@ -51,15 +51,8 @@ const bonusesFullShown: Set<string | number> = reactive(new Set())
 const modal = ref<modalInfo>({ state: null, id: null })
 const addBonusTextarea = ref<HTMLTextAreaElement | null>(null)
 
-function openModal(
-  state: NonNullable<modalInfo['state']>,
-  id: modalInfo['id'],
-  action_id: null | number = null,
-) {
+function openModal(state: NonNullable<modalInfo['state']>, id: modalInfo['id']) {
   modal.value = { state, id }
-  if (action_id === 1) {
-    setTimeout(() => addBonusTextarea.value?.focus(), 0)
-  }
 }
 
 function closeModal() {
@@ -69,6 +62,10 @@ function closeModal() {
 const currentBonus = computed(() =>
   modal.value.id ? bonuses.find((item) => item.id === modal.value.id) : null,
 )
+
+function setFocus() {
+  setTimeout(() => addBonusTextarea.value?.focus(), 0)
+}
 </script>
 
 <template>
@@ -76,7 +73,7 @@ const currentBonus = computed(() =>
     <p>Добавить группу бонусов:</p>
     <menu class="bonus-add__button-group list-to-menu">
       <li class="bonus-add__button button" v-for="cost in bonusAvaliableCosts" :key="cost">
-        {{ cost }}
+        <RouterLink :to="'/add-bonus-group/' + cost" class="menu-link">{{ cost }}</RouterLink>
       </li>
     </menu>
   </div>
@@ -123,7 +120,7 @@ const currentBonus = computed(() =>
           href="#"
           class="button action-button add-button"
           style="border-color: var(--success-color); margin-right: 16px"
-          @click.prevent="openModal('add', bonus.id, 1)"
+          @click.prevent="openModal('add', bonus.id), setFocus()"
           >Добавить</a
         >
         <a
@@ -140,9 +137,10 @@ const currentBonus = computed(() =>
     <div v-if="modal.state == 'add'" class="modal">
       <div v-on-click-outside="closeModal">
         <p class="bonus__title">Добавить бонусы к группе бонусов “{{ currentBonus?.title }}”</p>
-        <form class="form" autocomplete="off"><!-- russianBonusTypes[currentBonus.type + '_plural'] -->
-          <label class="label"
-            >{{ "Бонусы" }} через пробел
+        <form style="width: 100%" autocomplete="off">
+          <label class="label">
+            {{ currentBonus?.type == 'link' ? 'Ссылки' : '' }}
+            {{ currentBonus?.type == 'promocode' ? 'Промокоды' : '' }} через пробел
             <span style="color: var(--danger-color)">*</span></label
           >
           <textarea
@@ -175,7 +173,7 @@ const currentBonus = computed(() =>
     <div v-if="modal.state == 'delete'" class="modal">
       <div v-on-click-outside="closeModal">
         <p class="bonus__title">Удалить группу бонусов “{{ currentBonus?.title }}”?</p>
-        <p style="margin-bottom: 25px">Данное действие необратимо.</p>
+        <p style="margin-bottom: var(--base-margin)">Данное действие необратимо.</p>
         <div class="modal-button-group">
           <a
             href="#"
@@ -201,7 +199,7 @@ const currentBonus = computed(() =>
 .bonus__add {
   display: flex;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: var(--base-margin);
 }
 .bonus-add__button-group {
   display: flex;
@@ -215,9 +213,9 @@ const currentBonus = computed(() =>
   cursor: pointer;
 }
 .bonus__title {
-  font-size: 20px;
+  font-size: 1.25em;
   font-weight: 500;
-  margin-bottom: 25px;
+  margin-bottom: var(--base-margin);
 }
 
 .bonus__description {
@@ -230,12 +228,12 @@ const currentBonus = computed(() =>
 }
 .bonus {
   border: 1px var(--brand-main-color) solid;
-  padding: 25px;
+  padding: var(--base-margin);
   display: flex;
   flex-direction: column;
   width: calc(50% - 13px);
   box-sizing: border-box;
-  margin-bottom: 25px;
+  margin-bottom: var(--base-margin);
 }
 
 .bonus:nth-child(2n + 1) {

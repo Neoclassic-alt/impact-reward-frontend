@@ -20,6 +20,11 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: '/add-bonus-group/:cost',
+      name: 'AddBonusGroup',
+      component: () => import('../views/bonuses/AddBonusGroup.vue'),
+    },
   ],
 })
 

@@ -5,6 +5,7 @@
   --danger-color: rgb(241, 34, 27);
   --success-color: rgb(58, 214, 64);
   --light-hover: #ededed;
+  --base-margin: 25px;
 }
 
 body {
