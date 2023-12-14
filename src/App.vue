@@ -16,7 +16,7 @@ import NavigationMenu from './components/NavigationMenu.vue'
   <footer class="footer">Plain text</footer>
 </template>
 
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
 
 <style scoped>
 .header {
