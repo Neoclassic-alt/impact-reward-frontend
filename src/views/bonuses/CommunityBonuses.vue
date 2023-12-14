@@ -72,9 +72,9 @@ function setFocus() {
   <div class="bonus__add" v-if="bonusAvaliableCosts.size">
     <p>Добавить группу бонусов:</p>
     <menu class="bonus-add__button-group list-to-menu">
-      <li 
-        class="bonus-add__button button" 
-        v-for="cost in bonusAvaliableCosts" 
+      <li
+        class="bonus-add__button button"
+        v-for="cost in bonusAvaliableCosts"
         :key="cost"
         @click="$router.push('/add-bonus-group/' + cost)"
       >

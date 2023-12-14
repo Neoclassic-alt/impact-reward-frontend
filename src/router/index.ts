@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import GeneralInfo from '../views/GeneralInfo.vue'
+import { useMenuStore } from '@/stores/pages'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,14 +10,14 @@ const router = createRouter({
       name: 'GeneralInfo',
       component: GeneralInfo,
       meta: {
-        menuItem: 'GeneralInfo'
-      }
+        menuItem: 'GeneralInfo',
+      },
     },
     {
       path: '/bonus-shop',
       component: () => import('../views/BonusShop.vue'),
       meta: {
-        menuItem: 'BonusShop'
+        menuItem: 'BonusShop',
       },
       children: [
         {
@@ -31,14 +32,21 @@ const router = createRouter({
       name: 'AddBonusGroup',
       component: () => import('../views/bonuses/AddBonusGroup.vue'),
       meta: {
-        menuItem: 'BonusShop'
-      }
+        menuItem: 'BonusShop',
+      },
     },
   ],
 })
 
-/*router.beforeEach((to, from) => {
-
-})*/
+router.beforeEach((to) => {
+  const menuStore = useMenuStore()
+  const { changeItem } = menuStore
+  if (to.meta.menuItem == 'GeneralInfo') {
+    changeItem('generalInfo')
+  }
+  if (to.meta.menuItem == 'BonusShop') {
+    changeItem('bonusShop')
+  }
+})
 
 export default router
