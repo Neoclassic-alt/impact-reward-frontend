@@ -8,10 +8,16 @@ const router = createRouter({
       path: '/',
       name: 'GeneralInfo',
       component: GeneralInfo,
+      meta: {
+        menuItem: 'GeneralInfo'
+      }
     },
     {
       path: '/bonus-shop',
       component: () => import('../views/BonusShop.vue'),
+      meta: {
+        menuItem: 'BonusShop'
+      },
       children: [
         {
           path: '',
@@ -24,8 +30,15 @@ const router = createRouter({
       path: '/add-bonus-group/:cost',
       name: 'AddBonusGroup',
       component: () => import('../views/bonuses/AddBonusGroup.vue'),
+      meta: {
+        menuItem: 'BonusShop'
+      }
     },
   ],
 })
+
+/*router.beforeEach((to, from) => {
+
+})*/
 
 export default router

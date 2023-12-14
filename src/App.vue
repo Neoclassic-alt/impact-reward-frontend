@@ -1,20 +1,6 @@
 <script setup lang="ts">
-import { RouterView, useRoute, useRouter } from 'vue-router'
+import { RouterView } from 'vue-router'
 import NavigationMenu from './components/NavigationMenu.vue'
-import { onMounted } from 'vue'
-import { useMenuStore } from './stores/pages'
-
-const route = useRoute()
-const router = useRouter()
-const menuStore = useMenuStore()
-const { changeItem } = menuStore
-
-onMounted(async () => {
-  await router.isReady()
-  if (route.name === 'BonusShop') {
-    changeItem('bonusShop')
-  }
-})
 </script>
 
 <template>

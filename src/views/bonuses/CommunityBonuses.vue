@@ -143,11 +143,10 @@ function setFocus() {
       <div v-on-click-outside="closeModal">
         <p class="bonus__title">Добавить бонусы к группе бонусов “{{ currentBonus?.title }}”</p>
         <form style="width: 100%" autocomplete="off">
-          <label class="label">
+          <label class="label required">
             {{ currentBonus?.type == 'link' ? 'Ссылки' : '' }}
             {{ currentBonus?.type == 'promocode' ? 'Промокоды' : '' }} через пробел
-            <span style="color: var(--danger-color)">*</span></label
-          >
+          </label>
           <textarea
             class="textarea"
             required
