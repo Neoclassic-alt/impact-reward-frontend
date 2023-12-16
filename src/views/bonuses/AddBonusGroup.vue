@@ -60,7 +60,6 @@ const onSubmit = handleSubmit((values) => {
       <img src="./../../assets/icons/arrow-left.svg" style="margin-right: 8px" />
       <span>Назад к магазину бонусов</span>
     </a>
-    <pre>{{ valid }}</pre>
     <form
       @submit="onSubmit"
       style="margin-top: var(--base-margin); margin-bottom: var(--base-margin); width: 450px"
