@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import type { bonusCost, bonusCosts } from '@/types/bonuses'
 
 export const useBonusAvailableStore = defineStore('bonusAvailable', () => {
-  const bonusAvaliableCosts = ref<bonusCosts>(new Set([20, 50, 100, 200, 500]))
+  const bonusAvaliableCosts = ref<bonusCosts>(new Set([]))
 
   function setAvaliableCosts(newAvaliableCosts: bonusCost[]) {
     newAvaliableCosts.forEach((item) => bonusAvaliableCosts.value.add(item))

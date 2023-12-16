@@ -4,7 +4,6 @@ import { storeToRefs } from 'pinia'
 import { onMounted, ref, reactive, computed } from 'vue'
 import type { bonus } from '@/types/bonuses'
 import { vOnClickOutside } from '@vueuse/components'
-import { RouterLink } from 'vue-router'
 
 const bonusAvailableStore = useBonusAvailableStore()
 const { bonusAvaliableCosts } = storeToRefs(bonusAvailableStore)
@@ -12,7 +11,7 @@ const { setAvaliableCosts } = bonusAvailableStore
 
 /* затем, разумеется, будет заменено данными с API */
 onMounted(() => {
-  setAvaliableCosts([20, 50, 100, 200, 500])
+  setAvaliableCosts([100, 500])
 })
 
 const bonuses = reactive<bonus[]>([
@@ -34,7 +33,7 @@ const bonuses = reactive<bonus[]>([
   },
   {
     id: '1133',
-    cost: 100,
+    cost: 200,
     title: 'Название бонуса 2',
     description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Numquam, est.',
     instruction: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Numquam, est.',
@@ -121,6 +120,7 @@ function setFocus() {
         >
       </template>
       <div>
+        <span style="font-size: 1.25em; margin-right: 1em; font-weight: 500">{{ bonus.cost }}</span>
         <a
           href="#"
           class="button action-button add-button"

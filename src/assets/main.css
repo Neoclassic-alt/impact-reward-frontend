@@ -184,10 +184,32 @@
 
 .main-button {
   background-color: var(--brand-main-color);
-  font-weight: 500;
+  font-weight: 600;
   border: none;
   color: #ffffff;
   width: 100%;
   box-sizing: border-box;
   text-align: center;
+  font-size: 16px;
+}
+
+.main-button:disabled {
+  opacity: 50%;
+  cursor: not-allowed;
+}
+
+.input-error {
+  border: 1px var(--danger-color) solid;
+}
+
+.field-error {
+  display: inline-block;
+  color: var(--danger-color);
+  font-size: 0.8em;
+  margin-bottom: 1em;
+  visibility: hidden;
+}
+
+.error-show {
+  visibility: visible;
 }
