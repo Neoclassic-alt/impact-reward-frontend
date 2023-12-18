@@ -139,6 +139,10 @@ onMounted(() => {
   border-radius: 12px;
 }
 
+.float-menu {
+  display: none;
+}
+
 /*@media screen and (max-width: 768px) {
   .nav {
     position: static;
