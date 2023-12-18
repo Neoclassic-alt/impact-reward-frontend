@@ -35,6 +35,14 @@ const router = createRouter({
         menuItem: 'BonusShop',
       },
     },
+    {
+      path: '/login',
+      name: 'Login',
+      component: () => import('../views/ImpactLogin.vue'),
+      meta: {
+        requiresAuth: false
+      }
+    }
   ],
 })
 

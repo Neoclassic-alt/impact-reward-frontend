@@ -38,7 +38,7 @@ const initialValues = {
   bonuses: '',
 }
 
-const { errors, defineField, handleSubmit, meta } = useForm({
+const { errors, defineField, handleSubmit } = useForm({
   validationSchema: schema,
   initialValues,
 })
@@ -70,7 +70,7 @@ const onSubmit = handleSubmit((values) => {
         Номинал: <b>{{ $route.params.cost }}</b>
       </p>
       <p class="complex-label">
-        <label class="label required">Название</label>
+        <label class="label">Название</label>
         <span class="symbols-count">{{ title.length }}/40</span>
       </p>
       <input
@@ -86,12 +86,11 @@ const onSubmit = handleSubmit((values) => {
         >{{ errors.title }}&nbsp;</span
       >
       <p class="complex-label">
-        <label class="label required">Описание</label>
+        <label class="label">Описание</label>
         <span class="symbols-count">{{ description.length }}/100</span>
       </p>
       <textarea
         class="textarea"
-        required
         rows="3"
         :class="{ 'input-error': errors.description }"
         v-model="description"
@@ -102,12 +101,11 @@ const onSubmit = handleSubmit((values) => {
       >
       <h3 class="form-fieldset-title">Что увидит покупатель после оплаты</h3>
       <p class="complex-label">
-        <label class="label required">Инструкция</label>
+        <label class="label">Инструкция</label>
         <span class="symbols-count">{{ instruction.length }}/150</span>
       </p>
       <textarea
         class="textarea"
-        required
         rows="3"
         v-model.trim="instruction"
         v-bind="instructionAttrs"
@@ -134,13 +132,12 @@ const onSubmit = handleSubmit((values) => {
           class="multiselect-custom"
         />
       </div>
-      <label class="label required">
+      <label class="label">
         {{ bonusType.type == 'link' ? 'Ссылки' : '' }}
         {{ bonusType.type == 'promocode' ? 'Промокоды' : '' }} через пробел
       </label>
       <textarea
         class="textarea"
-        required
         rows="5"
         spellcheck="false"
         v-model.trim="bonuses"
@@ -152,7 +149,7 @@ const onSubmit = handleSubmit((values) => {
       </p>
       <span class="field-error" :class="{ 'error-show': errors.bonuses }">{{ errors.bonuses }}</span
       ><!-- Неразрывный пробел убран -->
-      <button class="button main-button" :disabled="!meta.valid" @click.prevent>
+      <button class="button main-button">
         Создать группу бонусов
       </button>
     </form>

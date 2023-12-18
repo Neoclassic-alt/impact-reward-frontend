@@ -8,7 +8,7 @@ import NavigationMenu from './components/NavigationMenu.vue'
     <img src="./assets/impact_logo.png" alt="Logo" class="header__logo" />
   </header>
   <div class="container">
-    <NavigationMenu />
+    <NavigationMenu v-if="$route.meta.requiresAuth !== false"/>
     <div class="main-margins">
       <RouterView />
     </div>
@@ -40,4 +40,13 @@ import NavigationMenu from './components/NavigationMenu.vue'
   background: #f0f0f0;
   padding: 10px 60px;
 }
+
+/*@media screen and (max-width: 768px) {
+  .container {
+    display: block;
+  }
+  .header__logo {
+    height: 40px;
+  }
+}*/
 </style>

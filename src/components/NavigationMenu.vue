@@ -23,6 +23,9 @@ onMounted(() => {
   const nav = document.querySelector('.nav')! as HTMLDivElement
   const footer = document.querySelector('.footer')! as HTMLDivElement
   document.addEventListener('scroll', () => {
+    if (document.documentElement.clientWidth < 768) {
+      return
+    }
     if (window.scrollY > header.offsetHeight) {
       nav.style.top = window.scrollY - header.offsetHeight + 'px'
       if (
@@ -71,11 +74,14 @@ onMounted(() => {
     </menu>
     <ul class="list-to-menu">
       <li class="nav__item">
-        <img src="../assets/icons/logout.svg" />
+        <img src="../assets/icons/logout.svg" style="display: block" />
         <span class="nav__text" style="color: var(--danger-color)">Выйти</span>
       </li>
     </ul>
   </nav>
+  <div class="float-menu">
+    <img src="../assets/icons/menu-hamburger.svg" style="display: block" />
+  </div>
 </template>
 
 <style scoped>
@@ -122,4 +128,27 @@ onMounted(() => {
 .active img {
   filter: invert(1);
 }
+
+.float-menu {
+  position: absolute;
+  z-index: 9998;
+  background-color: #e0e0e0;
+  padding: 8px;
+  top: 12px;
+  right: 40px;
+  border-radius: 12px;
+}
+
+/*@media screen and (max-width: 768px) {
+  .nav {
+    position: static;
+    display: none;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .float-menu {
+    display: none;
+  }
+}*/
 </style>

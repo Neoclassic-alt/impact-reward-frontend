@@ -7,7 +7,6 @@
 
 .main-margins {
   max-width: 1200px;
-  /*margin: 0 auto;*/
   width: 100%;
   margin-top: 30px;
 }
@@ -121,7 +120,7 @@
 }
 
 .label {
-  display: inline-block;
+  display: block;
   margin-bottom: 8px;
   font-size: 14px;
 }
@@ -213,3 +212,16 @@
 .error-show {
   visibility: visible;
 }
+
+.community-title {
+  color: var(--caption);
+  font-size: 0.9em;
+  margin-bottom: 1em;
+}
+
+/*@media screen and (max-width: 768px) {
+  .main {
+    padding-left: 25px;
+    padding-right: 50px;
+  }
+}*/

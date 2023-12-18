@@ -10,6 +10,13 @@
   --disabled-button: #d6d6d6;
 }
 
+:root {
+  --mini: 320px;
+  --middle: 768px;
+  --big: 992px;
+  --xl: 1366px;
+}
+
 body {
   font-family:
     Montserrat,

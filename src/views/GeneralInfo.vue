@@ -8,7 +8,6 @@ const ticker = ref('STAR')
 <template>
   <main class="main">
     <h2 class="page-header">Сообщество “{{ 'Маркетинг без границ' }}”</h2>
-
     <section class="block-info">
       <p class="block-info__title_1">Профиль</p>
       <p class="block-info__item">
@@ -28,7 +27,7 @@ const ticker = ref('STAR')
       </div>
     </section>
     <div class="blocks-group">
-      <section class="block-info" style="margin-right: 30px">
+      <section class="block-info">
         <p class="block-info__title_1">Монетный двор</p>
         <p class="block-info__item block-info__item_justify">
           <span class="block-info__prop">Монетные прессы</span>
@@ -65,18 +64,23 @@ const ticker = ref('STAR')
 <style scoped>
 .blocks-group {
   display: flex;
+  gap: 30px;
 }
-
 .block-info {
   flex: 1;
 }
-
 .block-info__prop {
   display: inline-block;
 }
-
 .block-info__item_justify {
   display: flex;
   justify-content: space-between;
 }
+
+/*@media screen and (max-width: 1024px) {
+  .blocks-group {
+    display: block;
+  }
+}*/
+
 </style>
