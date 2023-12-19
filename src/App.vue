@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import NavigationMenu from './components/NavigationMenu.vue'
+import { useGeneralStore } from './stores/general';
+import { storeToRefs } from 'pinia';
+
+const generalInfo = useGeneralStore()
+const { communityTitle } = storeToRefs(generalInfo)
+const { setCommunityTitle } = generalInfo
+
+setCommunityTitle('Маркетинг без границ')
 </script>
 
 <template>
   <header class="header" id="header">
     <img src="./assets/impact_logo.png" alt="Logo" class="header__logo" />
+    <p class="community-title">{{ communityTitle }}</p>
   </header>
   <div class="container">
     <NavigationMenu v-if="$route.meta.requiresAuth !== false"/>
@@ -22,6 +31,9 @@ import NavigationMenu from './components/NavigationMenu.vue'
 .header {
   background: var(--brand-main-color);
   padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .header__logo {
   height: 60px;
@@ -39,6 +51,12 @@ import NavigationMenu from './components/NavigationMenu.vue'
 .footer {
   background: #f0f0f0;
   padding: 10px 60px;
+}
+
+.community-title {
+  color: white;
+  font-weight: 500;
+  font-size: 1.1em;
 }
 
 /*@media screen and (max-width: 768px) {

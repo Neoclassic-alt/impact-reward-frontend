@@ -47,6 +47,12 @@
   display: inline-block;
 }
 
+.bonus-cost {
+  font-size: 1.33em; 
+  font-weight: 500; 
+  margin-bottom: 1em;
+}
+
 .button {
   border-width: 1px;
   border-style: solid;
@@ -211,12 +217,6 @@
 
 .error-show {
   visibility: visible;
-}
-
-.community-title {
-  color: var(--caption);
-  font-size: 0.9em;
-  margin-bottom: 1em;
 }
 
 /*@media screen and (max-width: 768px) {

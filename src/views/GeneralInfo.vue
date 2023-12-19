@@ -18,7 +18,7 @@ const ticker = ref('STAR')
         <span class="block-info__prop" style="margin-right: 109px">Адрес</span>
         <a :href="'http://t.me/' + communityLink" class="link">{{ communityLink }}</a>
       </p>
-      <div class="block-info__item">
+      <div class="block-info__item" style="display: flex">
         <span class="block-info__prop" style="margin-right: 82px">Описание</span>
         <span
           >Консультации и полезные материалы от гуру международного маркетинга Татьяны

@@ -115,12 +115,12 @@ function setFocus() {
           class="link"
           @click.prevent="bonusesFullShown.delete(bonus.id)"
           v-if="bonusesFullShown.has(bonus.id)"
-          style="margin-bottom: 16px"
+          style="margin-bottom: 0.8em"
           >Свернуть</a
         >
       </template>
+      <span class="bonus-cost">{{ bonus.cost }}</span>
       <div>
-        <span style="font-size: 1.25em; margin-right: 1em; font-weight: 500">{{ bonus.cost }}</span>
         <a
           href="#"
           class="button action-button add-button"
