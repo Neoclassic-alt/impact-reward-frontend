@@ -149,9 +149,7 @@ const onSubmit = handleSubmit((values) => {
       </p>
       <span class="field-error" :class="{ 'error-show': errors.bonuses }">{{ errors.bonuses }}</span
       ><!-- Неразрывный пробел убран -->
-      <button class="button main-button">
-        Создать группу бонусов
-      </button>
+      <button class="button main-button">Создать группу бонусов</button>
     </form>
   </main>
 </template>

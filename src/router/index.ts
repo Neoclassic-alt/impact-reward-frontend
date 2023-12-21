@@ -10,6 +10,7 @@ const router = createRouter({
       name: 'GeneralInfo',
       component: GeneralInfo,
       meta: {
+        requiresAuth: true,
         menuItem: 'GeneralInfo',
       },
     },
@@ -17,6 +18,7 @@ const router = createRouter({
       path: '/bonus-shop',
       component: () => import('../views/BonusShop.vue'),
       meta: {
+        requiresAuth: true,
         menuItem: 'BonusShop',
       },
       children: [
@@ -24,6 +26,9 @@ const router = createRouter({
           path: '',
           name: 'BonusShop',
           component: () => import('../views/bonuses/CommunityBonuses.vue'),
+          meta: {
+            requiresAuth: true,
+          },
         },
       ],
     },
@@ -33,6 +38,7 @@ const router = createRouter({
       component: () => import('../views/bonuses/AddBonusGroup.vue'),
       meta: {
         menuItem: 'BonusShop',
+        requiresAuth: true,
       },
     },
     {
@@ -40,9 +46,9 @@ const router = createRouter({
       name: 'Login',
       component: () => import('../views/ImpactLogin.vue'),
       meta: {
-        requiresAuth: false
-      }
-    }
+        requiresAuth: false,
+      },
+    },
   ],
 })
 

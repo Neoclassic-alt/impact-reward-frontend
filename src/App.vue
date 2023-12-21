@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import NavigationMenu from './components/NavigationMenu.vue'
-import { useGeneralStore } from './stores/general';
-import { storeToRefs } from 'pinia';
+import { useGeneralStore } from './stores/general'
+import { storeToRefs } from 'pinia'
 
 const generalInfo = useGeneralStore()
 const { communityTitle } = storeToRefs(generalInfo)
@@ -13,11 +13,13 @@ setCommunityTitle('Маркетинг без границ')
 
 <template>
   <header class="header" id="header">
-    <img src="./assets/impact_logo.png" alt="Logo" class="header__logo" />
-    <p class="community-title">{{ communityTitle }}</p>
+    <div class="header__container">
+      <img src="./assets/impact_logo.png" alt="Logo" class="header__logo" />
+      <p class="community-title">{{ communityTitle }}</p>
+    </div>
   </header>
   <div class="container">
-    <NavigationMenu v-if="$route.meta.requiresAuth !== false"/>
+    <NavigationMenu v-if="$route.meta.requiresAuth === true" />
     <div class="main-margins">
       <RouterView />
     </div>
@@ -31,9 +33,13 @@ setCommunityTitle('Маркетинг без границ')
 .header {
   background: var(--brand-main-color);
   padding: 10px 20px;
+}
+
+.header__container {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  max-width: 1288px;
 }
 .header__logo {
   height: 60px;

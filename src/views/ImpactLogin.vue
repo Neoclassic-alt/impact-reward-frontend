@@ -1,14 +1,20 @@
 <script setup lang="ts">
-// import { ref, computed } from 'vue'
+import { watch } from 'vue'
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
 import l18n from '@/constants/validation'
+import axios from 'axios'
+import { API_LOGIN } from '@/constants/endpoints'
+import { useQuery } from '@tanstack/vue-query'
+import type { response as loginResponse } from '@/api-types/login'
+import { useRouter } from 'vue-router'
+import type { AxiosResponse } from 'axios'
 
 yup.setLocale(l18n)
 
 const schema = yup.object({
   account: yup.string().required(),
-  key: yup.string().required()
+  key: yup.string().required(),
 })
 
 const initialValues = {
@@ -24,18 +30,41 @@ const { errors, defineField, handleSubmit } = useForm({
 const [account, accountAttrs] = defineField('account')
 const [key, keyAttrs] = defineField('key')
 
-const onSubmit = handleSubmit((values) => {
-  console.log(JSON.stringify(values, null, 2))
+const { status, fetchStatus, data, refetch } = useQuery({
+  queryKey: ['login'],
+  queryFn: login,
+  enabled: false,
+})
+
+const onSubmit = handleSubmit(() => {
+  refetch()
+})
+
+async function login(): Promise<AxiosResponse<loginResponse>> {
+  return await axios.post(API_LOGIN, {
+    account: account.value,
+    active_key: key.value,
+    api_key: '85506a63-c670-443c-9148-b6ad6f990fdf',
+  })
+}
+
+const router = useRouter()
+
+watch(status, (newStatus) => {
+  if (newStatus == 'success' && data.value?.data.success) {
+    router.push('/')
+  }
 })
 </script>
 
 <template>
   <main style="margin: 0 auto; width: fit-content">
     <h2 class="page-header">Вход в систему</h2>
-    <form 
-      style="width: 450px"
-      @submit="onSubmit"
-    >
+    <div class="alert-error" v-if="status == 'error'">
+      <h3>Произошла ошибка авторизации</h3>
+      <p>Проверьте авторизационные данные</p>
+    </div>
+    <form style="width: 450px" @submit="onSubmit">
       <label class="label">Импакт-аккаунт</label>
       <input
         type="text"
@@ -57,16 +86,17 @@ const onSubmit = handleSubmit((values) => {
         v-model="key"
         v-bind="keyAttrs"
       />
-      <span class="field-error" :class="{ 'error-show': errors.key }"
-        >{{ errors.key }}&nbsp;</span
-      >
-      <button class="button main-button">
-        Войти
+      <span class="field-error" :class="{ 'error-show': errors.key }">{{ errors.key }}&nbsp;</span>
+      <button class="button main-button" :disabled="fetchStatus == 'fetching'">
+        <img
+          src="./../assets/icons/button-loading.svg"
+          style="margin-right: 5px"
+          v-show="fetchStatus === 'fetching'"
+        />
+        <span>{{ fetchStatus === 'fetching' ? 'Вход в систему…' : 'Войти' }}</span>
       </button>
     </form>
   </main>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

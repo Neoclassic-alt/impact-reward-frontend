@@ -82,5 +82,4 @@ const ticker = ref('STAR')
     display: block;
   }
 }*/
-
 </style>

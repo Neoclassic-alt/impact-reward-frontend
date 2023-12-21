@@ -119,7 +119,10 @@ function setFocus() {
           >Свернуть</a
         >
       </template>
-      <span class="bonus-cost">{{ bonus.cost }}</span>
+      <span class="bonus-cost">
+        <span>{{ bonus.cost }}&nbsp;</span>
+        <img src="./../../assets/icons/award.svg" alt="tiker" />
+      </span>
       <div>
         <a
           href="#"
