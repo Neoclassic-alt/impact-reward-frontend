@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/vue-query'
 import type { response as loginResponse } from '@/api-types/login'
 import { useRouter } from 'vue-router'
 import type { AxiosResponse } from 'axios'
+import { useCommonStore } from '@/stores/common'
 
 yup.setLocale(l18n)
 
@@ -49,9 +50,16 @@ async function login(): Promise<AxiosResponse<loginResponse>> {
 }
 
 const router = useRouter()
+const { setCommonInfo } = useCommonStore()
 
 watch(status, (newStatus) => {
   if (newStatus == 'success' && data.value?.data.success) {
+    setCommonInfo(data.value?.data)
+    localStorage.setItem('account', JSON.stringify({
+      account: account.value,
+      active_key: key.value,
+      api_key: '85506a63-c670-443c-9148-b6ad6f990fdf',
+    }))
     router.push('/')
   }
 })
@@ -60,8 +68,12 @@ watch(status, (newStatus) => {
 <template>
   <main style="margin: 0 auto; width: fit-content">
     <h2 class="page-header">Вход в систему</h2>
+    <div class="alert-error" v-if="$route.query.message == 'non-auth'">
+      <h3 style="margin-bottom: 5px;">Ошибка доступа</h3>
+      <p>Необходима авторизация</p>
+    </div>
     <div class="alert-error" v-if="status == 'error'">
-      <h3>Произошла ошибка авторизации</h3>
+      <h3 style="margin-bottom: 5px;">Произошла ошибка авторизации</h3>
       <p>Проверьте авторизационные данные</p>
     </div>
     <form style="width: 450px" @submit="onSubmit">
@@ -93,7 +105,7 @@ watch(status, (newStatus) => {
           style="margin-right: 5px"
           v-show="fetchStatus === 'fetching'"
         />
-        <span>{{ fetchStatus === 'fetching' ? 'Вход в систему…' : 'Войти' }}</span>
+        <span>{{ fetchStatus === 'fetching' ? 'Авторизация' : 'Войти' }}</span>
       </button>
     </form>
   </main>

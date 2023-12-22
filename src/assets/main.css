@@ -227,6 +227,7 @@
   padding: 15px 25px;
   border: 1px var(--danger-color) solid;
   background-color: rgb(241, 34, 27, 0.2);
+  margin-bottom: 1em;
 }
 
 /*@media screen and (max-width: 768px) {

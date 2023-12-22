@@ -1,21 +1,18 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import NavigationMenu from './components/NavigationMenu.vue'
-import { useGeneralStore } from './stores/general'
+import NavigationMenu from '@/components/NavigationMenu.vue'
+import { useCommonStore } from '@/stores/common'
 import { storeToRefs } from 'pinia'
 
-const generalInfo = useGeneralStore()
-const { communityTitle } = storeToRefs(generalInfo)
-const { setCommunityTitle } = generalInfo
-
-setCommunityTitle('Маркетинг без границ')
+const commonStore = useCommonStore()
+const { commonInfo } = storeToRefs(commonStore)
 </script>
 
 <template>
   <header class="header" id="header">
     <div class="header__container">
       <img src="./assets/impact_logo.png" alt="Logo" class="header__logo" />
-      <p class="community-title">{{ communityTitle }}</p>
+      <p class="community-title" v-if="$route.name != 'Login'">{{ commonInfo?.seller.community.community_name }}</p>
     </div>
   </header>
   <div class="container">
