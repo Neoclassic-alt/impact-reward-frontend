@@ -1,6 +1,6 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
-  --brand-main-color: rgb(103, 210, 233);
+  --brand-main-color: #67d2e9;
   --light-gray: #fdfdfd;
   --danger-color: rgb(241, 34, 27);
   --success-color: rgb(58, 214, 64);

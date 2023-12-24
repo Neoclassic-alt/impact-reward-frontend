@@ -14,7 +14,7 @@ const currentTab = ref<BonusShopTabs>('community')
       <li class="bonus-shop__tab" :class="{ active: currentTab === 'community' }">
         Бонусы сообщества
       </li>
-      <li class="bonus-shop__tab in_development" :class="{ active: currentTab === 'gold' }">
+      <li class="bonus-shop__tab nav_in-development" :class="{ active: currentTab === 'gold' }">
         <span>Золотые бонусы</span> <span class="soon-label">скоро</span>
       </li>
     </menu>

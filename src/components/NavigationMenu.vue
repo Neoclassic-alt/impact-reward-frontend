@@ -5,11 +5,19 @@ import { useRouter } from 'vue-router'
 import type { menuStates } from '@/types/pages'
 import { capitalizeFirstLetter } from '@/functions'
 import { onMounted } from 'vue'
+import { useCommonStore } from '@/stores/auth-common'
+
+const router = useRouter()
 
 const store = useMenuStore()
 const { activeItem } = storeToRefs(store) // деконструкция параметра с storeToRefs()
 const { changeItem } = store // действия деконструируются без функций
-const router = useRouter()
+const { clearData } = useCommonStore()
+
+function logout() {
+  clearData()
+  router.push({ name: 'Login' })
+}
 
 function GoToPageFromMenu(newItem: menuStates) {
   changeItem(newItem)
@@ -63,17 +71,17 @@ onMounted(() => {
       >
         <img src="../assets/icons/shop.svg" /> <span class="nav__text">Магазин бонусов</span>
       </li>
-      <li class="nav__item in_development" :class="{ active: activeItem === 'stats' }">
+      <li class="nav__item nav_in-development" :class="{ active: activeItem === 'stats' }">
         <img src="../assets/icons/stats.svg" /> <span class="nav__text">Статистика</span>
         <span class="soon-label">скоро</span>
       </li>
-      <li class="nav__item in_development" :class="{ active: activeItem === 'rating' }">
+      <li class="nav__item nav_in-development" :class="{ active: activeItem === 'rating' }">
         <img src="../assets/icons/cup_with_star.svg" /> <span class="nav__text">Рейтинг</span>
         <span class="soon-label">скоро</span>
       </li>
     </menu>
     <ul class="list-to-menu">
-      <li class="nav__item">
+      <li class="nav__item nav_danger" @click="logout">
         <img src="../assets/icons/logout.svg" style="display: block" />
         <span class="nav__text" style="color: var(--danger-color)">Выйти</span>
       </li>
@@ -105,12 +113,17 @@ onMounted(() => {
   align-items: center;
 }
 
-.nav__item:not(.in_development) {
+.nav__item:not(.nav_in-development) {
   cursor: pointer;
 }
 
-.nav__item:not(.in_development, .active):hover {
+.nav__item:not(.nav_in-development, .active, .nav_danger):hover {
   background-color: var(--light-hover);
+  transition: background-color 0.1s linear;
+}
+
+.nav__item.nav_danger:hover {
+  background-color: rgb(241, 34, 27, 0.16);
   transition: background-color 0.1s linear;
 }
 
@@ -118,6 +131,7 @@ onMounted(() => {
   margin-left: 12px;
   font-weight: 500;
   text-wrap: nowrap;
+  user-select: none;
 }
 
 .active {

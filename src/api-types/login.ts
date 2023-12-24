@@ -6,7 +6,7 @@ export type request = {
 
 export type response = {
   success: boolean
-  seller: {
+  issuer: {
     profile: {
       account: string // Импакт-аккаунт
       capital: number // если его разделить на 10000 и округлить вниз, получится количество прессов
@@ -16,9 +16,9 @@ export type response = {
       ticker: string // тикер монеты
     }
     community: {
-      community_name: string // имя сообщества
-      community_description: string // описание сообщества
-      community_username: string // ссылка на группу сообщества (для сайта надо преобразовать в https://t.me/impact_test)
+      name: string // имя сообщества
+      description: string // описание сообщества
+      username: string // ссылка на группу сообщества (для сайта надо преобразовать в https://t.me/impact_test)
     }
     rewards: {
       reward_amount: number // размер награды
