@@ -11,19 +11,19 @@ const communityLink = computed(() => common.value?.community.username.slice(1))
 
 <template>
   <main class="main">
-    <h2 class="page-header">Управление сообществом</h2>
-    <section class="block-info">
+    <h2 class="page-header">{{ common?.community.name }}</h2>
+    <section class="block-info big-block">
       <p class="block-info__title_1">Профиль</p>
       <p class="block-info__item">
-        <span class="block-info__prop" style="margin-right: 39px">Импакт-аккаунт</span>
-        <span>{{ common?.community.name }}</span>
+        <span class="block-info__prop">Импакт-аккаунт</span>
+        <span>{{ common?.profile.account }}</span>
       </p>
       <p class="block-info__item">
-        <span class="block-info__prop" style="margin-right: 109px">Адрес</span>
+        <span class="block-info__prop">Адрес</span>
         <a :href="'http://t.me/' + communityLink" class="link">{{ communityLink }}</a>
       </p>
       <div class="block-info__item" style="display: flex">
-        <span class="block-info__prop" style="margin-right: 82px">Описание</span>
+        <span class="block-info__prop">Описание</span>
         <span>{{ common?.community.description }}</span>
       </div>
     </section>
@@ -76,6 +76,10 @@ const communityLink = computed(() => common.value?.community.username.slice(1))
 .block-info__item_justify {
   display: flex;
   justify-content: space-between;
+}
+
+.big-block .block-info__prop {
+  min-width: 200px;
 }
 
 /*@media screen and (max-width: 1024px) {
