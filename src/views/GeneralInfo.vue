@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useCommonStore } from '@/stores/common'
+import { useCommonStore } from '@/stores/auth-common'
 import { storeToRefs } from 'pinia'
 
 const commonStore = useCommonStore()
-const { commonInfo } = storeToRefs(commonStore)
-const common = computed(() => commonInfo.value?.seller)
+const { getCommonInfo: common } = storeToRefs(commonStore)
 
-const communityLink = computed(() => common.value?.community.community_username.slice(1))
+const communityLink = computed(() => common.value?.community.username.slice(1))
 </script>
 
 <template>
@@ -17,7 +16,7 @@ const communityLink = computed(() => common.value?.community.community_username.
       <p class="block-info__title_1">Профиль</p>
       <p class="block-info__item">
         <span class="block-info__prop" style="margin-right: 39px">Импакт-аккаунт</span>
-        <span>{{ common?.community.community_name }}</span>
+        <span>{{ common?.community.name }}</span>
       </p>
       <p class="block-info__item">
         <span class="block-info__prop" style="margin-right: 109px">Адрес</span>
@@ -25,9 +24,7 @@ const communityLink = computed(() => common.value?.community.community_username.
       </p>
       <div class="block-info__item" style="display: flex">
         <span class="block-info__prop" style="margin-right: 82px">Описание</span>
-        <span
-          >{{ common?.community.community_description }}</span
-        >
+        <span>{{ common?.community.description }}</span>
       </div>
     </section>
     <div class="blocks-group">

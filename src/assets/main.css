@@ -65,12 +65,12 @@
   color: #000000;
 }
 
-.in_development {
+.nav_in-development {
   display: flex;
   align-items: center;
 }
 
-.in_development > *:not(:last-child) {
+.nav_in-development > *:not(:last-child) {
   opacity: 0.5;
   cursor: not-allowed;
 }

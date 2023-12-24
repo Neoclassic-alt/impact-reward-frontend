@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import { watch } from 'vue'
+import { watch, reactive } from 'vue'
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
 import l18n from '@/constants/validation'
-import axios from 'axios'
-import { API_LOGIN } from '@/constants/endpoints'
 import { useQuery } from '@tanstack/vue-query'
-import type { response as loginResponse } from '@/api-types/login'
 import { useRouter } from 'vue-router'
-import type { AxiosResponse } from 'axios'
-import { useCommonStore } from '@/stores/common'
+import { useCommonStore } from '@/stores/auth-common'
 
 yup.setLocale(l18n)
 
@@ -33,7 +29,7 @@ const [key, keyAttrs] = defineField('key')
 
 const { status, fetchStatus, data, refetch } = useQuery({
   queryKey: ['login'],
-  queryFn: login,
+  queryFn: () => fetchLogin(accountData),
   enabled: false,
 })
 
@@ -41,25 +37,19 @@ const onSubmit = handleSubmit(() => {
   refetch()
 })
 
-async function login(): Promise<AxiosResponse<loginResponse>> {
-  return await axios.post(API_LOGIN, {
-    account: account.value,
-    active_key: key.value,
-    api_key: '85506a63-c670-443c-9148-b6ad6f990fdf',
-  })
-}
+const accountData = reactive({
+  account,
+  active_key: key,
+  api_key: '85506a63-c670-443c-9148-b6ad6f990fdf',
+})
 
 const router = useRouter()
-const { setCommonInfo } = useCommonStore()
+const { setCommonInfo, setAccountData, fetchLogin } = useCommonStore()
 
 watch(status, (newStatus) => {
   if (newStatus == 'success' && data.value?.data.success) {
     setCommonInfo(data.value?.data)
-    localStorage.setItem('account', JSON.stringify({
-      account: account.value,
-      active_key: key.value,
-      api_key: '85506a63-c670-443c-9148-b6ad6f990fdf',
-    }))
+    setAccountData(accountData)
     router.push('/')
   }
 })
@@ -69,11 +59,11 @@ watch(status, (newStatus) => {
   <main style="margin: 0 auto; width: fit-content">
     <h2 class="page-header">Вход в систему</h2>
     <div class="alert-error" v-if="$route.query.message == 'non-auth'">
-      <h3 style="margin-bottom: 5px;">Ошибка доступа</h3>
+      <h3 style="margin-bottom: 5px">Ошибка доступа</h3>
       <p>Необходима авторизация</p>
     </div>
     <div class="alert-error" v-if="status == 'error'">
-      <h3 style="margin-bottom: 5px;">Произошла ошибка авторизации</h3>
+      <h3 style="margin-bottom: 5px">Произошла ошибка авторизации</h3>
       <p>Проверьте авторизационные данные</p>
     </div>
     <form style="width: 450px" @submit="onSubmit">
