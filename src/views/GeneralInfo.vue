@@ -20,7 +20,12 @@ const communityLink = computed(() => common.value?.community.username.slice(1))
       </p>
       <p class="block-info__item">
         <span class="block-info__prop">Адрес</span>
-        <a :href="'http://t.me/' + communityLink" class="link">{{ communityLink }}</a>
+        <a 
+          :href="'http://t.me/' + communityLink" 
+          class="link"
+          v-if="common?.community.username !== 'Закрытая группа'"
+          >{{ communityLink }}</a>
+        <span v-else><i>Закрытая группа</i></span>
       </p>
       <div class="block-info__item" style="display: flex">
         <span class="block-info__prop">Описание</span>
@@ -47,7 +52,7 @@ const communityLink = computed(() => common.value?.community.username.slice(1))
         <p class="block-info__title_1">Касса</p>
         <p class="block-info__item block-info__item_justify">
           <span class="block-info__prop">Осталось наград</span>
-          <span>{{ common?.rewards.current_possible_rewards }}</span>
+          <span>{{ common?.rewards.current_possible_rewards }}/{{ common?.rewards.max_possible_rewards }}</span>
         </p>
         <p class="block-info__item block-info__item_justify">
           <span class="block-info__prop">Размер награды</span>
@@ -79,7 +84,7 @@ const communityLink = computed(() => common.value?.community.username.slice(1))
 }
 
 .big-block .block-info__prop {
-  min-width: 200px;
+  min-width: 150px;
 }
 
 /*@media screen and (max-width: 1024px) {
