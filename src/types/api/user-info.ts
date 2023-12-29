@@ -1,12 +1,9 @@
-export type request = {
-  account: string
-  active_key: string
-  api_key: string
-}
+import type { bonusGroup } from '@/types/bonuses'
 
 export type response = {
-  success: boolean
-  issuer: {
+  success?: boolean
+  seller: {
+    bonus_groups: bonusGroup[]
     profile: {
       account: string // Импакт-аккаунт
       capital: number // если его разделить на 10000 и округлить вниз, получится количество прессов

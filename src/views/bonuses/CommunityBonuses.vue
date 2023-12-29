@@ -1,52 +1,35 @@
 <script setup lang="ts">
-import { useBonusAvailableStore } from '@/stores/bonuses'
 import { storeToRefs } from 'pinia'
-import { onMounted, ref, reactive, computed } from 'vue'
-import type { bonus } from '@/types/bonuses'
+import { ref, reactive, computed } from 'vue'
 import { vOnClickOutside } from '@vueuse/components'
+import { useUserInfoStore } from '@/stores/user-info'
 
-const bonusAvailableStore = useBonusAvailableStore()
-const { bonusAvaliableCosts } = storeToRefs(bonusAvailableStore)
-const { setAvaliableCosts } = bonusAvailableStore
+const bonusAvaliableCosts = [
+  { group_name: 'C1', price: 20 },
+  { group_name: 'C2', price: 50 },
+  { group_name: 'C3', price: 100 },
+  { group_name: 'C4', price: 200 },
+  { group_name: 'C5', price: 500 },
+]
 
-/* затем, разумеется, будет заменено данными с API */
-onMounted(() => {
-  setAvaliableCosts([100, 500])
+const userInfoStore = useUserInfoStore()
+const { getBonusGroups: bonuses } = storeToRefs(userInfoStore)
+
+bonuses.value?.forEach((item) => {
+  const index = bonusAvaliableCosts.findIndex(
+    (bonus_group) => bonus_group.group_name == item.group_name,
+  )
+  if (index + 1) {
+    bonusAvaliableCosts.splice(index, 1)
+  }
 })
-
-const bonuses = reactive<bonus[]>([
-  {
-    id: '1111',
-    cost: 20,
-    title: 'Хорошее название бонуса',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Numquam, est.',
-    instruction: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Numquam, est.',
-    type: 'promocode',
-  },
-  {
-    id: '1122',
-    cost: 50,
-    title: 'Название бонуса 2',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Numquam, est.',
-    instruction: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Numquam, est.',
-    type: 'link',
-  },
-  {
-    id: '1133',
-    cost: 200,
-    title: 'Название бонуса 2',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Numquam, est.',
-    instruction: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Numquam, est.',
-    type: 'link',
-  },
-])
 
 type modalInfo = {
   state: null | 'add' | 'delete'
-  id: null | string | number
+  id: null | number
 }
 
-const bonusesFullShown: Set<string | number> = reactive(new Set())
+const bonusesFullShown: Set<number> = reactive(new Set())
 const modal = ref<modalInfo>({ state: null, id: null })
 const addBonusTextarea = ref<HTMLTextAreaElement | null>(null)
 
@@ -59,7 +42,7 @@ function closeModal() {
 }
 
 const currentBonus = computed(() =>
-  modal.value.id ? bonuses.find((item) => item.id === modal.value.id) : null,
+  modal.value.id ? bonuses.value?.find((item) => item.id === modal.value.id) : null,
 )
 
 function setFocus() {
@@ -68,24 +51,32 @@ function setFocus() {
 </script>
 
 <template>
-  <div class="bonus__add" v-if="bonusAvaliableCosts.size">
+  <div class="bonus__add" v-if="bonusAvaliableCosts.length">
     <p>Добавить группу бонусов:</p>
     <menu class="bonus-add__button-group list-to-menu">
       <li
         class="bonus-add__button button"
         v-for="cost in bonusAvaliableCosts"
-        :key="cost"
-        @click="$router.push('/add-bonus-group/' + cost)"
+        :key="cost.group_name"
+        @click="$router.push('/add-bonus-group/' + cost.price)"
       >
         {{ cost }}
       </li>
     </menu>
   </div>
+  <div v-else class="alert-warning">
+    <h3 style="margin-bottom: 5px">Вы больше не можете создавать группы бонусов</h3>
+    <p>
+      Все возможные группы бонусов заняты. После удаления группы бонусов вы можете создать новую с
+      той же стоимостью.
+    </p>
+  </div>
+
   <div class="bonus-group">
     <div class="bonus" v-for="bonus in bonuses" :key="bonus.id">
-      <p class="bonus__title">{{ bonus.title }}</p>
+      <p class="bonus__title">{{ bonus.name }}</p>
       <p class="bonus__description">
-        {{ bonus.description }}
+        {{ bonus.caption }}
         <a
           href="#"
           class="link"
@@ -97,14 +88,11 @@ function setFocus() {
       <template v-if="bonusesFullShown.has(bonus.id)">
         <div class="block-info__item">
           <span class="block-info__prop">Тип:&nbsp;</span>
-          <span
-            >{{ bonus.type === 'link' ? 'Ссылка' : ''
-            }}{{ bonus.type === 'promocode' ? 'Промокод' : '' }}</span
-          >
+          <span> {{ bonus.name_variable_content }}</span>
         </div>
         <div class="block-info__item">
           <span class="block-info__prop">Инструкция:&nbsp;</span>
-          <span>{{ bonus.instruction }}</span>
+          <span>{{ bonus.permanent_content }}</span>
         </div>
         <div class="block-info__item">
           <span class="block-info__prop">Осталось бонусов:&nbsp;</span>
@@ -120,8 +108,8 @@ function setFocus() {
         >
       </template>
       <span class="bonus-cost">
-        <span>{{ bonus.cost }}&nbsp;</span>
-        <img src="./../../assets/icons/award.svg" alt="tiker" />
+        <span>{{ bonus.price }}&nbsp;</span>
+        <!-- <img src="./../../assets/icons/award.svg" alt="tiker" /> -->
       </span>
       <div>
         <a
@@ -144,11 +132,10 @@ function setFocus() {
   <teleport to="body">
     <div v-if="modal.state == 'add'" class="modal">
       <div v-on-click-outside="closeModal">
-        <p class="bonus__title">Добавить бонусы к группе бонусов “{{ currentBonus?.title }}”</p>
+        <p class="bonus__title">Добавить бонусы к группе бонусов “{{ currentBonus?.name }}”</p>
         <form style="width: 100%" autocomplete="off">
           <label class="label required">
-            {{ currentBonus?.type == 'link' ? 'Ссылки' : '' }}
-            {{ currentBonus?.type == 'promocode' ? 'Промокоды' : '' }} через пробел
+            {{ currentBonus?.name_variable_content }} через пробел
           </label>
           <textarea
             class="textarea"
@@ -179,7 +166,7 @@ function setFocus() {
     </div>
     <div v-if="modal.state == 'delete'" class="modal">
       <div v-on-click-outside="closeModal">
-        <p class="bonus__title">Удалить группу бонусов “{{ currentBonus?.title }}”?</p>
+        <p class="bonus__title">Удалить группу бонусов “{{ currentBonus?.name }}”?</p>
         <p style="margin-bottom: var(--base-margin)">Данное действие необратимо.</p>
         <div class="modal-button-group">
           <a

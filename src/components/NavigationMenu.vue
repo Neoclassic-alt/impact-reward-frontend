@@ -5,14 +5,14 @@ import { useRouter } from 'vue-router'
 import type { menuStates } from '@/types/pages'
 import { capitalizeFirstLetter } from '@/functions'
 import { onMounted } from 'vue'
-import { useCommonStore } from '@/stores/auth-common'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 
 const store = useMenuStore()
 const { activeItem } = storeToRefs(store) // деконструкция параметра с storeToRefs()
 const { changeItem } = store // действия деконструируются без функций
-const { clearData } = useCommonStore()
+const { clearData } = useAuthStore()
 
 function logout() {
   clearData()

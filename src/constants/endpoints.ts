@@ -1,3 +1,4 @@
-const API_POINT = 'https://api.impact-reward.com/api'
+const API_BASE = 'https://api.impact-reward.com/api'
 
-export const API_LOGIN = `${API_POINT}/login`
+export const API_LOGIN = `${API_BASE}/login`
+export const API_USER = `${API_BASE}/user`

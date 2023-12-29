@@ -2,23 +2,10 @@
 import { ref, onMounted } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 import NavigationMenu from '@/components/NavigationMenu.vue'
-//import { useCommonStore } from '@/stores/auth-common'
-//import { storeToRefs } from 'pinia'
-//import type { Ref } from 'vue'
-//import type { response as loginResponse } from './api-types/login'
 import LoadingScreen from './components/LoadingScreen.vue'
 
 const router = useRouter()
-//let commonInfo: Ref<loginResponse['issuer'] | null> = ref(null)
 const isLoaded = ref(false)
-
-/*onMounted(async () => {
-  await router.isReady()
-  const commonStore = useCommonStore()
-  const issuer = storeToRefs(commonStore).commonInfo.value?.issuer
-  issuer ? (commonInfo.value = issuer) : null
-  isLoaded.value = true
-})*/
 
 onMounted(async () => {
   await router.isReady()

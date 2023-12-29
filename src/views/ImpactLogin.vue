@@ -5,7 +5,7 @@ import * as yup from 'yup'
 import l18n from '@/constants/validation'
 import { useQuery } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router'
-import { useCommonStore } from '@/stores/auth-common'
+import { useAuthStore } from '@/stores/auth'
 
 yup.setLocale(l18n)
 
@@ -40,16 +40,15 @@ const onSubmit = handleSubmit(() => {
 const accountData = reactive({
   account,
   active_key: key,
-  api_key: '85506a63-c670-443c-9148-b6ad6f990fdf',
 })
 
 const router = useRouter()
-const { setCommonInfo, setAccountData, fetchLogin } = useCommonStore()
+const { setAccountData, fetchLogin } = useAuthStore()
 
 watch(status, (newStatus) => {
-  if (newStatus == 'success' && data.value?.data.success) {
-    setCommonInfo(data.value?.data)
-    setAccountData(accountData)
+  if (newStatus == 'success' && data.value?.data.access_token) {
+    //setCommonInfo(data.value?.data)
+    setAccountData(data.value.data.access_token)
     router.push('/')
   }
 })

@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import GeneralInfo from '@/views/GeneralInfo.vue'
 import { storeToRefs } from 'pinia'
 import { useMenuStore } from '@/stores/pages'
-import { useCommonStore } from '@/stores/auth-common'
+import { useAuthStore } from '@/stores/auth'
+import { useUserInfoStore } from '@/stores/user-info'
 
 // GeneralInfo - информация на главной странице,
 // а commonInfo - общая информация для всех страниц
@@ -65,16 +66,17 @@ const toLoginPath = {
 }
 
 router.beforeEach(async (to) => {
-  const commonStore = useCommonStore()
-  const { isCommonInfoLoaded } = storeToRefs(commonStore)
-  const { useLocalStorage, fetchLogin, setCommonInfo } = commonStore
+  const authStore = useAuthStore()
+  const userInfoStore = useUserInfoStore()
+  const { userInfo } = storeToRefs(userInfoStore)
+  const { fetchUserInfoAndSave } = userInfoStore
+  const { getAccountData } = authStore
   // Authorization flow: https://drive.google.com/file/d/1DxDP2ZnxCgn8JFOPnXB-7zGNSq9YR5Mf/view?usp=sharing
-  if (!isCommonInfoLoaded.value && to.meta.requiresAuth) {
-    const storage = useLocalStorage()
-    if (storage) {
+  if (!userInfo.value && to.meta.requiresAuth) {
+    const account_key = getAccountData()
+    if (account_key) {
       try {
-        const res = await fetchLogin(storage.value)
-        setCommonInfo(res.data)
+        await fetchUserInfoAndSave(account_key)
       } catch {
         return toLoginPath
       }

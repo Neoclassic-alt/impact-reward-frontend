@@ -1,35 +1,36 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useCommonStore } from '@/stores/auth-common'
+import { useUserInfoStore } from '@/stores/user-info'
 import { storeToRefs } from 'pinia'
 
-const commonStore = useCommonStore()
-const { getCommonInfo: common } = storeToRefs(commonStore)
+const userInfoStore = useUserInfoStore()
+const { getUserInfo: userInfo } = storeToRefs(userInfoStore)
 
-const communityLink = computed(() => common.value?.community.username.slice(1))
+const communityLink = computed(() => userInfo.value?.community.username.slice(1))
 </script>
 
 <template>
   <main class="main">
-    <h2 class="page-header">{{ common?.community.name }}</h2>
+    <h2 class="page-header">{{ userInfo?.community.name }}</h2>
     <section class="block-info big-block">
       <p class="block-info__title_1">Профиль</p>
       <p class="block-info__item">
         <span class="block-info__prop">Импакт-аккаунт</span>
-        <span>{{ common?.profile.account }}</span>
+        <span>{{ userInfo?.profile.account }}</span>
       </p>
       <p class="block-info__item">
         <span class="block-info__prop">Адрес</span>
-        <a 
-          :href="'http://t.me/' + communityLink" 
+        <a
+          :href="'http://t.me/' + communityLink"
           class="link"
-          v-if="common?.community.username !== 'Закрытая группа'"
-          >{{ communityLink }}</a>
+          v-if="userInfo?.community.username !== 'Закрытая группа'"
+          >{{ communityLink }}</a
+        >
         <span v-else><i>Закрытая группа</i></span>
       </p>
       <div class="block-info__item" style="display: flex">
         <span class="block-info__prop">Описание</span>
-        <span>{{ common?.community.description }}</span>
+        <span>{{ userInfo?.community.description }}</span>
       </div>
     </section>
     <div class="blocks-group">
@@ -37,30 +38,34 @@ const communityLink = computed(() => common.value?.community.username.slice(1))
         <p class="block-info__title_1">Монетный двор</p>
         <p class="block-info__item block-info__item_justify">
           <span class="block-info__prop">Монетные прессы</span>
-          <span>{{ common && Math.floor(common.profile.capital / 10000) }}</span>
+          <span>{{ userInfo && Math.floor(userInfo.profile.capital / 10000) }}</span>
         </p>
         <p class="block-info__item block-info__item_justify">
           <span class="block-info__prop">Монета</span>
-          <span>{{ common?.coin.name }}</span>
+          <span>{{ userInfo?.coin.name }}</span>
         </p>
         <p class="block-info__item block-info__item_justify">
           <span class="block-info__prop">Тикер</span>
-          <span>{{ common?.coin.ticker }}</span>
+          <span>{{ userInfo?.coin.ticker }}</span>
         </p>
       </section>
       <section class="block-info">
         <p class="block-info__title_1">Касса</p>
         <p class="block-info__item block-info__item_justify">
           <span class="block-info__prop">Осталось наград</span>
-          <span>{{ common?.rewards.current_possible_rewards }}/{{ common?.rewards.max_possible_rewards }}</span>
+          <span
+            >{{ userInfo?.rewards.current_possible_rewards }}/{{
+              userInfo?.rewards.max_possible_rewards
+            }}</span
+          >
         </p>
         <p class="block-info__item block-info__item_justify">
           <span class="block-info__prop">Размер награды</span>
-          <span>{{ common?.rewards.reward_amount }} {{ common?.coin.ticker }}</span>
+          <span>{{ userInfo?.rewards.reward_amount }} {{ userInfo?.coin.ticker }}</span>
         </p>
         <p class="block-info__item block-info__item_justify">
           <span class="block-info__prop">Темп пополнения</span>
-          <span>{{ common?.rewards.regeneration_value }} награды в час</span>
+          <span>{{ userInfo?.rewards.regeneration_value }} награды в час</span>
         </p>
       </section>
     </div>

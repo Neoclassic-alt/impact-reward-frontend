@@ -230,6 +230,13 @@
   margin-bottom: 1em;
 }
 
+.alert-warning {
+  padding: 15px 25px;
+  border: 1px rgba(241, 209, 28) solid;
+  background-color: rgba(241, 209, 28, 0.2);
+  margin-bottom: 1em;
+}
+
 /*@media screen and (max-width: 768px) {
   .main {
     padding-left: 25px;
