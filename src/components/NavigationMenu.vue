@@ -12,10 +12,10 @@ const router = useRouter()
 const store = useMenuStore()
 const { activeItem } = storeToRefs(store) // деконструкция параметра с storeToRefs()
 const { changeItem } = store // действия деконструируются без функций
-const { clearData } = useAuthStore()
+const { clearAccountData } = useAuthStore()
 
 function logout() {
-  clearData()
+  clearAccountData()
   router.push({ name: 'Login' })
 }
 
