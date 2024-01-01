@@ -76,7 +76,7 @@ router.beforeEach(async (to) => {
     const account_key = getAccountData()
     if (account_key) {
       try {
-        await fetchUserInfoAndSave(account_key)
+        await fetchUserInfoAndSave()
       } catch {
         return toLoginPath
       }

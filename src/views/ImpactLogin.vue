@@ -2,12 +2,9 @@
 import { watch, reactive } from 'vue'
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
-import l18n from '@/constants/validation'
 import { useQuery } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-
-yup.setLocale(l18n)
 
 const schema = yup.object({
   account: yup.string().required(),
@@ -47,7 +44,6 @@ const { setAccountData, fetchLogin } = useAuthStore()
 
 watch(status, (newStatus) => {
   if (newStatus == 'success' && data.value?.data.access_token) {
-    //setCommonInfo(data.value?.data)
     setAccountData(data.value.data.access_token)
     router.push('/')
   }

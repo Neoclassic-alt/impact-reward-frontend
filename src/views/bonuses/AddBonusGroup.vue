@@ -4,7 +4,6 @@ import VueMultiselect from 'vue-multiselect'
 import type { typeOfBonus } from '@/types/bonuses'
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
-import l18n from '@/constants/validation'
 
 const bonusType = ref<{ type: typeOfBonus; russianLabel: string }>({
   type: 'link',
@@ -15,8 +14,6 @@ const words = computed(() => (bonuses.value.length ? bonuses.value.split(' ').le
 
 /* Validation */
 
-yup.setLocale(l18n)
-
 const schema = yup.object({
   title: yup.string().required().max(40),
   description: yup.string().required().max(100),
@@ -26,7 +23,7 @@ const schema = yup.object({
     .required()
     .test(
       'wordsCount',
-      ({ value }) => `Число бонусов превышено на ${value.split(' ').length - 20}`,
+      ({ value }) => `Допустимое число бонусов превышено на ${value.split(' ').length - 20}`,
       (value) => value.split(' ').length <= 20,
     ),
 })
