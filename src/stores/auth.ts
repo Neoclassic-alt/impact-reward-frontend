@@ -6,7 +6,7 @@ import type { AxiosResponse } from 'axios'
 
 export const useAuthStore = defineStore('auth', () => {
   async function fetchLogin(accountInfo: loginRequest): Promise<AxiosResponse<loginResponse, any>> {
-    const response = await axios.post("/login", accountInfo)
+    const response = await axios.post('/login', accountInfo)
     return response
   }
 

@@ -8,7 +8,7 @@ export const useUserInfoStore = defineStore('user-info', () => {
   const userInfo = ref<userInfoResponse | null>(null)
 
   async function fetchUserInfoAndSave() {
-    const res = await axios.get("/user")
+    const res = await axios.get('/user')
 
     if (res.status == 200) {
       userInfo.value = res.data

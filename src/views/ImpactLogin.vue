@@ -5,6 +5,7 @@ import * as yup from 'yup'
 import { useQuery } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import AlertBlock from '@/components/AlertBlock.vue'
 
 const schema = yup.object({
   account: yup.string().required(),
@@ -53,14 +54,14 @@ watch(status, (newStatus) => {
 <template>
   <main style="margin: 0 auto; width: fit-content">
     <h2 class="page-header">Вход в систему</h2>
-    <div class="alert-error" v-if="$route.query.message == 'non-auth'">
-      <h3 style="margin-bottom: 5px">Ошибка доступа</h3>
-      <p>Необходима авторизация</p>
-    </div>
-    <div class="alert-error" v-if="status == 'error'">
-      <h3 style="margin-bottom: 5px">Произошла ошибка авторизации</h3>
-      <p>Проверьте авторизационные данные</p>
-    </div>
+    <AlertBlock v-if="$route.query.message == 'non-auth'">
+      <template #title>Ошибка доступа</template>
+      <template #text>Необходима авторизация</template>
+    </AlertBlock>
+    <AlertBlock v-if="status == 'error'">
+      <template #title>Произошла ошибка авторизации</template>
+      <template #text>Проверьте авторизационные данные</template>
+    </AlertBlock>
     <form style="width: 450px" @submit="onSubmit">
       <label class="label">Импакт-аккаунт</label>
       <input

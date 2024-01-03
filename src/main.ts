@@ -20,9 +20,9 @@ const BASE_API_URL = 'https://api.impact-reward.com/api'
 
 axios.interceptors.request.use((config) => {
   if (config.url !== '/login') {
-    config.headers["Authorization"] = `Bearer ${localStorage.getItem("account")}`
+    config.headers['Authorization'] = `Bearer ${localStorage.getItem('account')}`
   } else {
-    config.headers["Api-Key"] = '85506a63-c670-443c-9148-b6ad6f990fdf'
+    config.headers['Api-Key'] = '85506a63-c670-443c-9148-b6ad6f990fdf'
   }
 
   config.url = BASE_API_URL + config.url

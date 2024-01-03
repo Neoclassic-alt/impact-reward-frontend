@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref, toValue } from 'vue'
 import { vOnClickOutside } from '@vueuse/components'
-import axios from 'axios';
+import axios from 'axios'
 import * as yup from 'yup'
 import { useForm } from 'vee-validate'
 import { useMutation } from '@tanstack/vue-query'
+import AlertBlock from '@/components/AlertBlock.vue'
 
 const addBonusTextarea = ref<HTMLTextAreaElement | null>(null)
 
@@ -20,50 +21,56 @@ const schema = yup.object({
 })
 
 const props = defineProps<{
-  closeModal: () => void,
-  bonusGroupName?: string,
-  nameVariableContent?: string,
+  closeModal: () => void
+  bonusGroupName?: string
+  nameVariableContent?: string
   bonusGroupId?: number
 }>()
 
-const { errors, defineField, handleSubmit } = useForm({
+const { errors, defineField, handleSubmit, resetForm } = useForm({
   validationSchema: schema,
   initialValues: {
-    bonuses: ''
+    bonuses: '',
   },
 })
 
 const [bonuses, bonusesAttrs] = defineField('bonuses')
 
 type request = {
-  bonus_group_id: number | undefined,
+  bonus_group_id: number | undefined
   variable_content: string
 }
 
 const onSubmit = handleSubmit(() => {
   mutate({
     bonus_group_id: props.bonusGroupId,
-    variable_content: toValue(bonuses)
+    variable_content: toValue(bonuses),
   })
 })
 
-const { status, error, mutate } = useMutation({
+const { mutate, isError, isIdle, isPending, isSuccess } = useMutation({
   mutationFn: (bonuses: request) => axios.put('/seller/add_bonuses', bonuses),
+  onMutate: () => {
+    resetForm()
+  },
 })
 </script>
 
 <template>
   <div class="modal">
     <div v-on-click-outside="closeModal">
-      <p class="bonus__title">Добавить бонусы к группе бонусов “{{ bonusGroupName }}”</p>
+      <h2 class="bonus__title">Добавить бонусы к группе бонусов “{{ bonusGroupName }}”</h2>
+      <AlertBlock type="success" style="width: calc(100% - 50px)" v-if="isSuccess"
+        >Бонусы успешно добавлены</AlertBlock
+      >
+      <AlertBlock style="width: calc(100% - 50px)" v-if="isError"
+        >Ошибка при добавлении бонусов</AlertBlock
+      >
       <form style="width: 100%" autocomplete="off" @submit="onSubmit">
-        <label class="label required">
-          {{ nameVariableContent }} через пробел
-        </label>
+        <label class="label required"> {{ nameVariableContent }} через пробел </label>
         <textarea
           class="textarea"
           :class="{ 'input-error': errors.bonuses }"
-          required
           spellcheck="false"
           rows="3"
           ref="addBonusTextarea"
@@ -72,27 +79,32 @@ const { status, error, mutate } = useMutation({
         ></textarea>
         <span class="field-error" :class="{ 'error-show': errors.bonuses }"
           >{{ errors.bonuses }}&nbsp;</span
-        ><span class="field-description" style="margin-bottom: 16px" v-show="!errors.bonuses">До 20 слов</span>
+        ><span class="field-description" style="margin-bottom: 16px" v-show="!errors.bonuses"
+          >До 20 слов</span
+        >
         <div class="modal-button-group">
           <button
             href="#"
             class="button add-main-button"
             style="border-color: transparent; margin-right: 16px"
-            :disabled="status === 'pending'"
-            >
+            :disabled="isPending"
+          >
             <img
               src="./../../assets/icons/button-loading.svg"
               style="margin-right: 5px"
-              v-show="status === 'pending'"
+              v-show="isPending"
             />
-            <span>Добавить</span>
+            <span
+              >{{ isIdle || isError ? 'Добавить' : '' }}{{ isPending ? 'Добавляем…' : ''
+              }}{{ isSuccess ? 'Добавить ещё' : '' }}</span
+            >
           </button>
           <a
             href="#"
             class="button"
             style="border-color: var(--brand-main-color)"
             @click.prevent="closeModal()"
-            >Отмена</a
+            >Закрыть</a
           >
         </div>
       </form>
@@ -100,6 +112,4 @@ const { status, error, mutate } = useMutation({
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

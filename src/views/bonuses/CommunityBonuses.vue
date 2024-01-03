@@ -4,6 +4,7 @@ import { ref, reactive, computed } from 'vue'
 import { vOnClickOutside } from '@vueuse/components'
 import { useUserInfoStore } from '@/stores/user-info'
 import AddBonusModal from '@/components/bonus-modals/AddBonusModal.vue'
+import AlertBlock from '@/components/AlertBlock.vue'
 
 const bonusAvaliableCosts = [
   { group_name: 'C1', price: 20 },
@@ -64,14 +65,13 @@ const currentBonus = computed(() =>
       </li>
     </menu>
   </div>
-  <div v-else class="alert-warning">
-    <h3 style="margin-bottom: 5px">Вы больше не можете создавать группы бонусов</h3>
-    <p>
-      Все возможные группы бонусов заняты. После удаления группы бонусов вы можете создать новую с
-      той же стоимостью.
-    </p>
-  </div>
-
+  <AlertBlock v-else type="warning">
+    <template #title>Вы больше не можете создавать группы бонусов</template>
+    <template #text
+      >Все возможные группы бонусов заняты. После удаления группы бонусов вы можете создать новую с
+      той же стоимостью.</template
+    >
+  </AlertBlock>
   <div class="bonus-group">
     <div class="bonus" v-for="bonus in bonuses" :key="bonus.id">
       <p class="bonus__title">{{ bonus.name }}</p>
@@ -130,7 +130,7 @@ const currentBonus = computed(() =>
     </div>
   </div>
   <teleport to="body">
-    <add-bonus-modal 
+    <add-bonus-modal
       v-if="modal.state == 'add'"
       :bonus-group-name="currentBonus?.name"
       :name-variable-content="currentBonus?.name_variable_content"
@@ -142,11 +142,7 @@ const currentBonus = computed(() =>
         <p class="bonus__title">Удалить группу бонусов “{{ currentBonus?.name }}”?</p>
         <p style="margin-bottom: var(--base-margin)">Данное действие необратимо.</p>
         <div class="modal-button-group">
-          <a
-            href="#"
-            class="button delete-main-button"
-            style="margin-right: 16px"
-            @click.prevent
+          <a href="#" class="button delete-main-button" style="margin-right: 16px" @click.prevent
             >Удалить бонусы</a
           >
           <a
