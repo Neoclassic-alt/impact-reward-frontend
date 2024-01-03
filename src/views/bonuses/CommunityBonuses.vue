@@ -3,6 +3,8 @@ import { storeToRefs } from 'pinia'
 import { ref, reactive, computed } from 'vue'
 import { vOnClickOutside } from '@vueuse/components'
 import { useUserInfoStore } from '@/stores/user-info'
+import AddBonusModal from '@/components/bonus-modals/AddBonusModal.vue'
+import AlertBlock from '@/components/AlertBlock.vue'
 
 const bonusAvaliableCosts = [
   { group_name: 'C1', price: 20 },
@@ -31,7 +33,6 @@ type modalInfo = {
 
 const bonusesFullShown: Set<number> = reactive(new Set())
 const modal = ref<modalInfo>({ state: null, id: null })
-const addBonusTextarea = ref<HTMLTextAreaElement | null>(null)
 
 function openModal(state: NonNullable<modalInfo['state']>, id: modalInfo['id']) {
   modal.value = { state, id }
@@ -45,9 +46,9 @@ const currentBonus = computed(() =>
   modal.value.id ? bonuses.value?.find((item) => item.id === modal.value.id) : null,
 )
 
-function setFocus() {
+/*function setFocus() {
   setTimeout(() => addBonusTextarea.value?.focus(), 0)
-}
+}*/
 </script>
 
 <template>
@@ -64,14 +65,13 @@ function setFocus() {
       </li>
     </menu>
   </div>
-  <div v-else class="alert-warning">
-    <h3 style="margin-bottom: 5px">Вы больше не можете создавать группы бонусов</h3>
-    <p>
-      Все возможные группы бонусов заняты. После удаления группы бонусов вы можете создать новую с
-      той же стоимостью.
-    </p>
-  </div>
-
+  <AlertBlock v-else type="warning">
+    <template #title>Вы больше не можете создавать группы бонусов</template>
+    <template #text
+      >Все возможные группы бонусов заняты. После удаления группы бонусов вы можете создать новую с
+      той же стоимостью.</template
+    >
+  </AlertBlock>
   <div class="bonus-group">
     <div class="bonus" v-for="bonus in bonuses" :key="bonus.id">
       <p class="bonus__title">{{ bonus.name }}</p>
@@ -116,9 +116,9 @@ function setFocus() {
           href="#"
           class="button action-button add-button"
           style="border-color: var(--success-color); margin-right: 16px"
-          @click.prevent="openModal('add', bonus.id), setFocus()"
+          @click.prevent="openModal('add', bonus.id)"
           >Добавить</a
-        >
+        ><!-- setFocus() не использовано -->
         <a
           href="#"
           class="button action-button delete-button"
@@ -130,50 +130,19 @@ function setFocus() {
     </div>
   </div>
   <teleport to="body">
-    <div v-if="modal.state == 'add'" class="modal">
-      <div v-on-click-outside="closeModal">
-        <p class="bonus__title">Добавить бонусы к группе бонусов “{{ currentBonus?.name }}”</p>
-        <form style="width: 100%" autocomplete="off">
-          <label class="label required">
-            {{ currentBonus?.name_variable_content }} через пробел
-          </label>
-          <textarea
-            class="textarea"
-            required
-            spellcheck="false"
-            rows="3"
-            ref="addBonusTextarea"
-          ></textarea>
-          <p class="field-description" style="margin-bottom: 16px">До 20 слов</p>
-          <div class="modal-button-group">
-            <a
-              href="#"
-              class="button add-main-button"
-              style="border-color: var(--success-color); margin-right: 16px"
-              @click.prevent
-              >Добавить</a
-            >
-            <a
-              href="#"
-              class="button"
-              style="border-color: var(--brand-main-color)"
-              @click.prevent="closeModal()"
-              >Отмена</a
-            >
-          </div>
-        </form>
-      </div>
-    </div>
+    <add-bonus-modal
+      v-if="modal.state == 'add'"
+      :bonus-group-name="currentBonus?.name"
+      :name-variable-content="currentBonus?.name_variable_content"
+      :close-modal="closeModal"
+      :bonus-group-id="currentBonus?.id"
+    />
     <div v-if="modal.state == 'delete'" class="modal">
       <div v-on-click-outside="closeModal">
         <p class="bonus__title">Удалить группу бонусов “{{ currentBonus?.name }}”?</p>
         <p style="margin-bottom: var(--base-margin)">Данное действие необратимо.</p>
         <div class="modal-button-group">
-          <a
-            href="#"
-            class="button delete-main-button"
-            style="border-color: var(--danger-color); margin-right: 16px"
-            @click.prevent
+          <a href="#" class="button delete-main-button" style="margin-right: 16px" @click.prevent
             >Удалить бонусы</a
           >
           <a
@@ -189,7 +158,7 @@ function setFocus() {
   </teleport>
 </template>
 
-<style scoped>
+<style>
 .bonus__add {
   display: flex;
   align-items: center;
@@ -205,6 +174,11 @@ function setFocus() {
   border: 1px var(--brand-main-color) solid;
   margin-left: 20px;
   cursor: pointer;
+}
+.bonus__title {
+  font-size: 1.25em;
+  font-weight: 500;
+  margin-bottom: var(--base-margin);
 }
 .bonus__title {
   font-size: 1.25em;
@@ -259,6 +233,17 @@ function setFocus() {
   background-color: var(--success-color);
   color: #ffffff;
   font-weight: 500;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.add-main-button:disabled {
+  background-color: rgb(58, 214, 64, 0.5);
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 15px;
+  cursor: not-allowed;
 }
 
 .delete-main-button {

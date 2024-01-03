@@ -2,12 +2,10 @@
 import { watch, reactive } from 'vue'
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
-import l18n from '@/constants/validation'
 import { useQuery } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-
-yup.setLocale(l18n)
+import AlertBlock from '@/components/AlertBlock.vue'
 
 const schema = yup.object({
   account: yup.string().required(),
@@ -47,7 +45,6 @@ const { setAccountData, fetchLogin } = useAuthStore()
 
 watch(status, (newStatus) => {
   if (newStatus == 'success' && data.value?.data.access_token) {
-    //setCommonInfo(data.value?.data)
     setAccountData(data.value.data.access_token)
     router.push('/')
   }
@@ -57,14 +54,14 @@ watch(status, (newStatus) => {
 <template>
   <main style="margin: 0 auto; width: fit-content">
     <h2 class="page-header">Вход в систему</h2>
-    <div class="alert-error" v-if="$route.query.message == 'non-auth'">
-      <h3 style="margin-bottom: 5px">Ошибка доступа</h3>
-      <p>Необходима авторизация</p>
-    </div>
-    <div class="alert-error" v-if="status == 'error'">
-      <h3 style="margin-bottom: 5px">Произошла ошибка авторизации</h3>
-      <p>Проверьте авторизационные данные</p>
-    </div>
+    <AlertBlock v-if="$route.query.message == 'non-auth'">
+      <template #title>Ошибка доступа</template>
+      <template #text>Необходима авторизация</template>
+    </AlertBlock>
+    <AlertBlock v-if="status == 'error'">
+      <template #title>Произошла ошибка авторизации</template>
+      <template #text>Проверьте авторизационные данные</template>
+    </AlertBlock>
     <form style="width: 450px" @submit="onSubmit">
       <label class="label">Импакт-аккаунт</label>
       <input

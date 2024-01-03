@@ -62,27 +62,27 @@ onMounted(() => {
         :class="{ active: activeItem === 'generalInfo' }"
         @click="GoToPageFromMenu('generalInfo')"
       >
-        <img src="../assets/icons/info.svg" /><span class="nav__text">Информация</span>
+        <img src="../assets/icons/menu/info.svg" /><span class="nav__text">Информация</span>
       </li>
       <li
         class="nav__item"
         :class="{ active: activeItem === 'bonusShop' }"
         @click="GoToPageFromMenu('bonusShop')"
       >
-        <img src="../assets/icons/shop.svg" /> <span class="nav__text">Магазин бонусов</span>
+        <img src="../assets/icons/menu/shop.svg" /> <span class="nav__text">Магазин бонусов</span>
       </li>
       <li class="nav__item nav_in-development" :class="{ active: activeItem === 'stats' }">
-        <img src="../assets/icons/stats.svg" /> <span class="nav__text">Статистика</span>
+        <img src="../assets/icons/menu/stats.svg" /> <span class="nav__text">Статистика</span>
         <span class="soon-label">скоро</span>
       </li>
       <li class="nav__item nav_in-development" :class="{ active: activeItem === 'rating' }">
-        <img src="../assets/icons/cup_with_star.svg" /> <span class="nav__text">Рейтинг</span>
+        <img src="../assets/icons/menu/cup_with_star.svg" /> <span class="nav__text">Рейтинг</span>
         <span class="soon-label">скоро</span>
       </li>
     </menu>
     <ul class="list-to-menu">
       <li class="nav__item nav_danger" @click="logout">
-        <img src="../assets/icons/logout.svg" style="display: block" />
+        <img src="../assets/icons/menu/logout.svg" style="display: block" />
         <span class="nav__text" style="color: var(--danger-color)">Выйти</span>
       </li>
     </ul>
