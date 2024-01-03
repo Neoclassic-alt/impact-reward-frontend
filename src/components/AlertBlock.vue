@@ -1,7 +1,7 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    type?: 'error' | 'warning' | 'success'
+    type?: 'error' | 'warning' | 'success' | 'info'
   }>(),
   {
     type: 'error',
@@ -17,9 +17,10 @@ defineSlots<{
 
 <template>
   <div class="alert" :class="`alert-${type}`">
-    <img src="../assets/icons/alert/error.svg" alt="error icon" v-if="type == 'error'" />
-    <img src="../assets/icons/alert/warning.png" alt="warning icon" v-if="type == 'warning'" />
-    <img src="../assets/icons/alert/success.svg" alt="success icon" v-if="type == 'success'" />
+    <img src="../assets/icons/alert/error.svg" alt="Error icon" v-if="type == 'error'" />
+    <img src="../assets/icons/alert/warning.png" alt="Warning icon" v-if="type == 'warning'" />
+    <img src="../assets/icons/alert/success.svg" alt="Success icon" v-if="type == 'success'" />
+    <img src="../assets/icons/alert/info.svg" alt="Info icon" v-if="type == 'info'" />
     <div>
       <h3 style="margin-bottom: 5px" v-if="$slots.title"><slot name="title"></slot></h3>
       <p>
@@ -50,5 +51,10 @@ defineSlots<{
 .alert-success {
   border: 1px rgb(58, 214, 64) solid;
   background-color: rgba(58, 214, 64, 0.2);
+}
+
+.alert-info {
+  border: 1px rgb(40, 148, 221) solid;
+  background-color: rgba(40, 148, 221, 0.2);
 }
 </style>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useUserInfoStore } from '@/stores/user-info'
+import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 
-const userInfoStore = useUserInfoStore()
+const userInfoStore = useUserStore()
 const { getUserInfo: userInfo } = storeToRefs(userInfoStore)
 
 const communityLink = computed(() => userInfo.value?.community.username.slice(1))

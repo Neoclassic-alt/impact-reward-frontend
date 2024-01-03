@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { ref, reactive, computed } from 'vue'
-import { vOnClickOutside } from '@vueuse/components'
-import { useUserInfoStore } from '@/stores/user-info'
-import AddBonusModal from '@/components/bonus-modals/AddBonusModal.vue'
+import { useUserStore } from '@/stores/user'
+import AddBonusModal from '@/components/bonus/AddBonusModal.vue'
+import DeleteBonusGroupModal from '@/components/bonus/DeleteBonusGroupModal.vue'
 import AlertBlock from '@/components/AlertBlock.vue'
 
 const bonusAvaliableCosts = [
@@ -14,7 +14,7 @@ const bonusAvaliableCosts = [
   { group_name: 'C5', price: 500 },
 ]
 
-const userInfoStore = useUserInfoStore()
+const userInfoStore = useUserStore()
 const { getBonusGroups: bonuses } = storeToRefs(userInfoStore)
 
 bonuses.value?.forEach((item) => {
@@ -57,11 +57,11 @@ const currentBonus = computed(() =>
     <menu class="bonus-add__button-group list-to-menu">
       <li
         class="bonus-add__button button"
-        v-for="cost in bonusAvaliableCosts"
-        :key="cost.group_name"
-        @click="$router.push('/add-bonus-group/' + cost.price)"
+        v-for="bonus in bonusAvaliableCosts"
+        :key="bonus.group_name"
+        @click="$router.push('/add-bonus-group/' + bonus.price)"
       >
-        {{ cost }}
+        {{ bonus.price }}
       </li>
     </menu>
   </div>
@@ -71,6 +71,9 @@ const currentBonus = computed(() =>
       >Все возможные группы бонусов заняты. После удаления группы бонусов вы можете создать новую с
       той же стоимостью.</template
     >
+  </AlertBlock>
+  <AlertBlock type="info" v-if="!bonuses?.length">
+    Группы бонусов отсутствуют. Вы можете создать их с помощью кнопок выше.
   </AlertBlock>
   <div class="bonus-group">
     <div class="bonus" v-for="bonus in bonuses" :key="bonus.id">
@@ -96,7 +99,7 @@ const currentBonus = computed(() =>
         </div>
         <div class="block-info__item">
           <span class="block-info__prop">Осталось бонусов:&nbsp;</span>
-          <span>{{ 22 }}</span>
+          <span>{{ bonus.available_bonuses }}</span>
         </div>
         <a
           href="#"
@@ -137,24 +140,12 @@ const currentBonus = computed(() =>
       :close-modal="closeModal"
       :bonus-group-id="currentBonus?.id"
     />
-    <div v-if="modal.state == 'delete'" class="modal">
-      <div v-on-click-outside="closeModal">
-        <p class="bonus__title">Удалить группу бонусов “{{ currentBonus?.name }}”?</p>
-        <p style="margin-bottom: var(--base-margin)">Данное действие необратимо.</p>
-        <div class="modal-button-group">
-          <a href="#" class="button delete-main-button" style="margin-right: 16px" @click.prevent
-            >Удалить бонусы</a
-          >
-          <a
-            href="#"
-            class="button"
-            style="border-color: var(--brand-main-color)"
-            @click.prevent="closeModal()"
-            >Отмена</a
-          >
-        </div>
-      </div>
-    </div>
+    <delete-bonus-group-modal 
+      v-if="modal.state == 'delete'"
+      :close-modal="closeModal"
+      :bonus-group-name="currentBonus?.name"
+      :bonus-group-id="currentBonus?.id"
+    />
   </teleport>
 </template>
 
@@ -227,28 +218,5 @@ const currentBonus = computed(() =>
 .bonus-add__button:hover {
   background-color: rgb(103, 210, 233, 0.15);
   transition: background-color 0.1s linear;
-}
-
-.add-main-button {
-  background-color: var(--success-color);
-  color: #ffffff;
-  font-weight: 500;
-  font-size: 15px;
-  display: flex;
-  align-items: center;
-}
-
-.add-main-button:disabled {
-  background-color: rgb(58, 214, 64, 0.5);
-  color: #ffffff;
-  font-weight: 500;
-  font-size: 15px;
-  cursor: not-allowed;
-}
-
-.delete-main-button {
-  background-color: var(--danger-color);
-  color: #ffffff;
-  font-weight: 500;
 }
 </style>
