@@ -3,7 +3,7 @@ import GeneralInfo from '@/views/GeneralInfo.vue'
 import { storeToRefs } from 'pinia'
 import { useMenuStore } from '@/stores/pages'
 import { useAuthStore } from '@/stores/auth'
-import { useUserInfoStore } from '@/stores/user-info'
+import { useUserStore } from '@/stores/user'
 
 // GeneralInfo - информация на главной странице,
 // а commonInfo - общая информация для всех страниц
@@ -67,16 +67,16 @@ const toLoginPath = {
 
 router.beforeEach(async (to) => {
   const authStore = useAuthStore()
-  const userInfoStore = useUserInfoStore()
+  const userInfoStore = useUserStore()
   const { userInfo } = storeToRefs(userInfoStore)
-  const { fetchUserInfoAndSave } = userInfoStore
+  const { fetchUserAndSave } = userInfoStore
   const { getAccountData } = authStore
   // Authorization flow: https://drive.google.com/file/d/1DxDP2ZnxCgn8JFOPnXB-7zGNSq9YR5Mf/view?usp=sharing
   if (!userInfo.value && to.meta.requiresAuth) {
     const account_key = getAccountData()
     if (account_key) {
       try {
-        await fetchUserInfoAndSave()
+        await fetchUserAndSave()
       } catch {
         return toLoginPath
       }

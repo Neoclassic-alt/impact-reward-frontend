@@ -223,6 +223,10 @@
   visibility: visible;
 }
 
+.button:disabled {
+  cursor: not-allowed;
+}
+
 /*@media screen and (max-width: 768px) {
   .main {
     padding-left: 25px;

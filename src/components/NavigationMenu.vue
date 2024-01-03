@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { useMenuStore } from '@/stores/pages'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import type { menuStates } from '@/types/pages'
 import { capitalizeFirstLetter } from '@/functions'
 import { onMounted } from 'vue'
-import { useAuthStore } from '@/stores/auth'
+import { useMenuStore, useAuthStore, useUserStore } from '@/stores'
 
 const router = useRouter()
 
@@ -13,9 +12,11 @@ const store = useMenuStore()
 const { activeItem } = storeToRefs(store) // деконструкция параметра с storeToRefs()
 const { changeItem } = store // действия деконструируются без функций
 const { clearAccountData } = useAuthStore()
+const { clearUserInfo } = useUserStore()
 
 function logout() {
   clearAccountData()
+  clearUserInfo()
   router.push({ name: 'Login' })
 }
 

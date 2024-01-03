@@ -6,6 +6,7 @@ import * as yup from 'yup'
 import { useForm } from 'vee-validate'
 import { useMutation } from '@tanstack/vue-query'
 import AlertBlock from '@/components/AlertBlock.vue'
+import { useUserStore } from '@/stores'
 
 const addBonusTextarea = ref<HTMLTextAreaElement | null>(null)
 
@@ -48,9 +49,12 @@ const onSubmit = handleSubmit(() => {
   })
 })
 
+const { fetchUserAndSave } = useUserStore()
+
 const { mutate, isError, isIdle, isPending, isSuccess } = useMutation({
   mutationFn: (bonuses: request) => axios.put('/seller/add_bonuses', bonuses),
-  onMutate: () => {
+  onSuccess: () => {
+    fetchUserAndSave()
     resetForm()
   },
 })
@@ -64,7 +68,7 @@ const { mutate, isError, isIdle, isPending, isSuccess } = useMutation({
         >Бонусы успешно добавлены</AlertBlock
       >
       <AlertBlock style="width: calc(100% - 50px)" v-if="isError"
-        >Ошибка при добавлении бонусов</AlertBlock
+        >Ошибка при добавлении бонусов. Попробуйте добавить заново</AlertBlock
       >
       <form style="width: 100%" autocomplete="off" @submit="onSubmit">
         <label class="label required"> {{ nameVariableContent }} через пробел </label>
@@ -104,7 +108,7 @@ const { mutate, isError, isIdle, isPending, isSuccess } = useMutation({
             class="button"
             style="border-color: var(--brand-main-color)"
             @click.prevent="closeModal()"
-            >Закрыть</a
+            >{{isIdle ? 'Отмена' : 'Закрыть'}}</a
           >
         </div>
       </form>
@@ -112,4 +116,17 @@ const { mutate, isError, isIdle, isPending, isSuccess } = useMutation({
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.add-main-button {
+  background-color: var(--success-color);
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.add-main-button:disabled {
+  background-color: rgb(58, 214, 64, 0.5);
+}
+</style>
