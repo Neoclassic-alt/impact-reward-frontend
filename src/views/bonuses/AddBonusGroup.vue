@@ -1,16 +1,22 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import VueMultiselect from 'vue-multiselect'
-import type { typeOfBonus } from '@/types/bonuses'
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
+import type { typeOfBonus } from '@/types/bonuses'
+import { useUserStore } from '@/stores/user'
+import { useRoute } from 'vue-router'
+
+const { bonusAllCosts } = useUserStore()
+const route = useRoute()
 
 const bonusType = ref<{ type: typeOfBonus; russianLabel: string }>({
   type: 'link',
   russianLabel: 'Ссылка',
 })
 
-const words = computed(() => (bonuses.value.length ? bonuses.value.split(' ').length : 0))
+const words = computed(() => bonuses.value.length ? bonuses.value.split(' ').length : 0)
+const price = computed(() => bonusAllCosts.find((item) => item.group_name == route.params.group_name)?.price)
 
 /* Validation */
 
@@ -64,7 +70,7 @@ const onSubmit = handleSubmit((values) => {
     >
       <h3 class="form-fieldset-title">Что увидит покупатель до оплаты</h3>
       <p class="label" style="margin-bottom: 1em; font-size: 1em">
-        Номинал: <b>{{ $route.params.cost }}</b>
+        Номинал: <b>{{ price }}</b>
       </p>
       <p class="complex-label">
         <label class="label">Название</label>

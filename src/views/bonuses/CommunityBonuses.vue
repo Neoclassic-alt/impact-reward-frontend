@@ -6,25 +6,7 @@ import AddBonusModal from '@/components/bonus/AddBonusModal.vue'
 import DeleteBonusGroupModal from '@/components/bonus/DeleteBonusGroupModal.vue'
 import AlertBlock from '@/components/AlertBlock.vue'
 
-const bonusAvaliableCosts = [
-  { group_name: 'C1', price: 20 },
-  { group_name: 'C2', price: 50 },
-  { group_name: 'C3', price: 100 },
-  { group_name: 'C4', price: 200 },
-  { group_name: 'C5', price: 500 },
-]
-
-const userInfoStore = useUserStore()
-const { getBonusGroups: bonuses } = storeToRefs(userInfoStore)
-
-bonuses.value?.forEach((item) => {
-  const index = bonusAvaliableCosts.findIndex(
-    (bonus_group) => bonus_group.group_name == item.group_name,
-  )
-  if (index + 1) {
-    bonusAvaliableCosts.splice(index, 1)
-  }
-})
+const { getBonusGroups: bonuses, bonusAvaliableCosts } = storeToRefs(useUserStore())
 
 type modalInfo = {
   state: null | 'add' | 'delete'
@@ -59,7 +41,7 @@ const currentBonus = computed(() =>
         class="bonus-add__button button"
         v-for="bonus in bonusAvaliableCosts"
         :key="bonus.group_name"
-        @click="$router.push('/add-bonus-group/' + bonus.price)"
+        @click="$router.push('/add-bonus-group/' + bonus.group_name)"
       >
         {{ bonus.price }}
       </li>

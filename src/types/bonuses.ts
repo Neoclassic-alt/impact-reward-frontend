@@ -27,3 +27,8 @@ export interface bonusGroup {
   permanent_content: string
   price: string
 }
+
+export interface bonusPrice {
+  group_name: string
+  price: number
+}
