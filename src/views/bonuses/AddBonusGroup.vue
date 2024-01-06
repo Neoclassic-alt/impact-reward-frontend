@@ -3,19 +3,24 @@ import { ref, computed } from 'vue'
 import VueMultiselect from 'vue-multiselect'
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
-import type { typeOfBonus } from '@/types/bonuses'
 import { useUserStore } from '@/stores/user'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import axios from 'axios'
+import { useMutation } from '@tanstack/vue-query'
+import AlertBlock from '@/components/AlertBlock.vue'
+import type { typeOfBonus } from '@/types/bonuses'
+import type { request as bonusesRequest } from '@/types/api/bonuses'
 
-const { bonusAllCosts } = useUserStore()
+const { bonusAllCosts, fetchUserAndSave } = useUserStore()
 const route = useRoute()
+const router = useRouter()
 
 const bonusType = ref<{ type: typeOfBonus; russianLabel: string }>({
   type: 'link',
   russianLabel: 'Ссылка',
 })
 
-const words = computed(() => bonuses.value.length ? bonuses.value.split(' ').length : 0)
+const words = computed(() => bonuses.value.length ? bonuses.value.split(/\s+/).length : 0)
 const price = computed(() => bonusAllCosts.find((item) => item.group_name == route.params.group_name)?.price)
 
 /* Validation */
@@ -29,7 +34,7 @@ const schema = yup.object({
     .required()
     .test(
       'wordsCount',
-      ({ value }) => `Допустимое число бонусов превышено на ${value.split(' ').length - 20}`,
+      ({ value }) => `Допустимое число бонусов превышено на ${value.split(/\s+/).length - 20}`,
       (value) => value.split(' ').length <= 20,
     ),
 })
@@ -51,8 +56,28 @@ const [description, descriptionAttrs] = defineField('description')
 const [instruction, instructionAttrs] = defineField('instruction')
 const [bonuses, bonusesAttrs] = defineField('bonuses')
 
+function getRequest(v: typeof initialValues): bonusesRequest {
+  return {
+    type: route.params.group_name[0],
+    level: +route.params.group_name[1],
+    name: v.title,
+    caption: v.description,
+    permanent_content: v.instruction,
+    name_variable_content: bonusType.value.type,
+    variable_content: v.bonuses
+  }
+}
+
+const { mutate, isError, isPending, isSuccess } = useMutation({
+  mutationFn: (v: typeof initialValues) => axios.post('/seller/create_bonus_group', getRequest(v)),
+  onSuccess: () => {
+    router.push('/bonus-shop?message=bonus-group-added')
+    fetchUserAndSave()
+  }
+})
+
 const onSubmit = handleSubmit((values) => {
-  alert(JSON.stringify(values, null, 2))
+  mutate(values)
 })
 </script>
 
@@ -147,12 +172,22 @@ const onSubmit = handleSubmit((values) => {
         v-bind="bonusesAttrs"
         :class="{ 'input-error': errors.bonuses }"
       ></textarea>
-      <p class="field-description" style="margin-bottom: 16px" v-show="!errors?.bonuses">
+      <p class="field-description" v-show="!errors?.bonuses">
         {{ words }}/20 слов
       </p>
       <span class="field-error" :class="{ 'error-show': errors.bonuses }">{{ errors.bonuses }}</span
       ><!-- Неразрывный пробел убран -->
-      <button class="button main-button">Создать группу бонусов</button>
+      <AlertBlock style="width: 450px; box-sizing: border-box;" v-if="isError"
+        >Ошибка при добавлении группы бонусов. Попробуйте добавить заново</AlertBlock
+      >
+      <button class="button main-button" :disabled="isPending || isSuccess">
+        <img
+          src="./../../assets/icons/button-loading.svg"
+          style="margin-right: 5px"
+          v-show="isPending"
+        />
+        <span>{{ isPending ? 'Добавляем…' : 'Добавить группу бонусов' }}</span>
+      </button>
     </form>
   </main>
 </template>

@@ -1,10 +1,16 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+
+const closed = ref(false)
+
 withDefaults(
   defineProps<{
-    type?: 'error' | 'warning' | 'success' | 'info'
+    type?: 'error' | 'warning' | 'success' | 'info',
+    closable: boolean
   }>(),
   {
     type: 'error',
+    closable: false
   },
 )
 
@@ -16,17 +22,22 @@ defineSlots<{
 </script>
 
 <template>
-  <div class="alert" :class="`alert-${type}`">
-    <img src="../assets/icons/alert/error.svg" alt="Error icon" v-if="type == 'error'" />
-    <img src="../assets/icons/alert/warning.png" alt="Warning icon" v-if="type == 'warning'" />
-    <img src="../assets/icons/alert/success.svg" alt="Success icon" v-if="type == 'success'" />
-    <img src="../assets/icons/alert/info.svg" alt="Info icon" v-if="type == 'info'" />
-    <div>
-      <h3 style="margin-bottom: 5px" v-if="$slots.title"><slot name="title"></slot></h3>
-      <p>
-        <slot name="text"><slot></slot></slot>
-      </p>
+  <div class="alert" :class="`alert-${type}`" v-if="!closed">
+    <div class="alert__main">
+      <img src="../assets/icons/alert/error.svg" alt="Error icon" v-if="type == 'error'" />
+      <img src="../assets/icons/alert/warning.png" alt="Warning icon" v-if="type == 'warning'" />
+      <img src="../assets/icons/alert/success.svg" alt="Success icon" v-if="type == 'success'" />
+      <img src="../assets/icons/alert/info.svg" alt="Info icon" v-if="type == 'info'" />
+      <div>
+        <h3 style="margin-bottom: 5px" v-if="$slots.title"><slot name="title"></slot></h3>
+        <p>
+          <slot name="text"><slot></slot></slot>
+        </p>
+      </div>
     </div>
+    <a href="#" @click="closed = true" v-if="closable">
+      <img src="../assets/icons/close.svg" />
+    </a>
   </div>
 </template>
 
@@ -34,9 +45,15 @@ defineSlots<{
 .alert {
   display: flex;
   align-items: center;
-  gap: 15px;
   padding: 15px 20px;
   margin-bottom: 1em;
+  justify-content: space-between;
+}
+
+.alert__main {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 .alert-error {
   border: 1px var(--danger-color) solid;
