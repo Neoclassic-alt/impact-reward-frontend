@@ -57,6 +57,9 @@ const currentBonus = computed(() =>
   <AlertBlock type="info" v-if="!bonuses?.length">
     Группы бонусов отсутствуют. Вы можете создать их с помощью кнопок выше.
   </AlertBlock>
+  <AlertBlock type="success" closable style="margin-top: -12px;" v-if="$route.query.message == 'bonus-group-added'"
+    >Группа бонусов успешно создана</AlertBlock
+  >
   <div class="bonus-group">
     <div class="bonus" v-for="bonus in bonuses" :key="bonus.id">
       <p class="bonus__title">{{ bonus.name }}</p>

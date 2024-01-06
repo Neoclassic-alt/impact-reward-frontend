@@ -16,7 +16,7 @@ const schema = yup.object({
     .required()
     .test(
       'wordsCount',
-      ({ value }) => `Допустимое число бонусов превышено на ${value.split(' ').length - 20}`,
+      ({ value }) => `Допустимое число бонусов превышено на ${value.split(/\s+/).length - 20}`,
       (value) => value.split(' ').length <= 20,
     ),
 })
