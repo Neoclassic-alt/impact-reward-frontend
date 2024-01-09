@@ -26,16 +26,14 @@ export const useUserStore = defineStore('user-info', () => {
   const bonusAvaliableCosts = computed(() => {
     const _bonusAvaliableCosts = structuredClone(bonusAllCosts)
 
-    getBonusGroups.value?.forEach((item) => 
-      {
-        const index = _bonusAvaliableCosts.findIndex(
-          (bonus_group) => bonus_group.group_name == item.group_name,
-        )
-        if (index + 1) {
-          _bonusAvaliableCosts.splice(index, 1)
-        }
+    getBonusGroups.value?.forEach((item) => {
+      const index = _bonusAvaliableCosts.findIndex(
+        (bonus_group) => bonus_group.group_name == item.group_name,
+      )
+      if (index + 1) {
+        _bonusAvaliableCosts.splice(index, 1)
       }
-    )
+    })
 
     return _bonusAvaliableCosts
   })
@@ -47,5 +45,13 @@ export const useUserStore = defineStore('user-info', () => {
     userInfo.value = null
   }
 
-  return { userInfo, getUserInfo, getBonusGroups, bonusAvaliableCosts, bonusAllCosts, fetchUserAndSave, clearUserInfo }
+  return {
+    userInfo,
+    getUserInfo,
+    getBonusGroups,
+    bonusAvaliableCosts,
+    bonusAllCosts,
+    fetchUserAndSave,
+    clearUserInfo,
+  }
 })

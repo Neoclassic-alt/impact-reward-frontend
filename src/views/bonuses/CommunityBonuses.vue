@@ -5,6 +5,7 @@ import { useUserStore } from '@/stores/user'
 import AddBonusModal from '@/components/bonus/AddBonusModal.vue'
 import DeleteBonusGroupModal from '@/components/bonus/DeleteBonusGroupModal.vue'
 import AlertBlock from '@/components/AlertBlock.vue'
+import { getRussianBonusType } from '@/constants/bonuses'
 
 const { getBonusGroups: bonuses, bonusAvaliableCosts } = storeToRefs(useUserStore())
 
@@ -57,7 +58,12 @@ const currentBonus = computed(() =>
   <AlertBlock type="info" v-if="!bonuses?.length">
     Группы бонусов отсутствуют. Вы можете создать их с помощью кнопок выше.
   </AlertBlock>
-  <AlertBlock type="success" closable style="margin-top: -12px;" v-if="$route.query.message == 'bonus-group-added'"
+  <AlertBlock
+    type="success"
+    style="margin-top: -12px"
+    v-if="$route.query.message == 'bonus-group-added'"
+    closable
+    @close="() => $router.push({query: {}})"
     >Группа бонусов успешно создана</AlertBlock
   >
   <div class="bonus-group">
@@ -76,7 +82,7 @@ const currentBonus = computed(() =>
       <template v-if="bonusesFullShown.has(bonus.id)">
         <div class="block-info__item">
           <span class="block-info__prop">Тип:&nbsp;</span>
-          <span> {{ bonus.name_variable_content }}</span>
+          <span> {{ getRussianBonusType(bonus.name_variable_content) }}</span>
         </div>
         <div class="block-info__item">
           <span class="block-info__prop">Инструкция:&nbsp;</span>
@@ -125,7 +131,7 @@ const currentBonus = computed(() =>
       :close-modal="closeModal"
       :bonus-group-id="currentBonus?.id"
     />
-    <delete-bonus-group-modal 
+    <delete-bonus-group-modal
       v-if="modal.state == 'delete'"
       :close-modal="closeModal"
       :bonus-group-name="currentBonus?.name"

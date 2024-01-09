@@ -20,8 +20,10 @@ const bonusType = ref<{ type: typeOfBonus; russianLabel: string }>({
   russianLabel: 'Ссылка',
 })
 
-const words = computed(() => bonuses.value.length ? bonuses.value.split(/\s+/).length : 0)
-const price = computed(() => bonusAllCosts.find((item) => item.group_name == route.params.group_name)?.price)
+const words = computed(() => (bonuses.value.length ? bonuses.value.split(/\s+/).length : 0))
+const price = computed(
+  () => bonusAllCosts.find((item) => item.group_name == route.params.group_name)?.price,
+)
 
 /* Validation */
 
@@ -64,7 +66,7 @@ function getRequest(v: typeof initialValues): bonusesRequest {
     caption: v.description,
     permanent_content: v.instruction,
     name_variable_content: bonusType.value.type,
-    variable_content: v.bonuses
+    variable_content: v.bonuses,
   }
 }
 
@@ -73,7 +75,7 @@ const { mutate, isError, isPending, isSuccess } = useMutation({
   onSuccess: () => {
     router.push('/bonus-shop?message=bonus-group-added')
     fetchUserAndSave()
-  }
+  },
 })
 
 const onSubmit = handleSubmit((values) => {
@@ -172,12 +174,10 @@ const onSubmit = handleSubmit((values) => {
         v-bind="bonusesAttrs"
         :class="{ 'input-error': errors.bonuses }"
       ></textarea>
-      <p class="field-description" v-show="!errors?.bonuses">
-        {{ words }}/20 слов
-      </p>
+      <p class="field-description" v-show="!errors?.bonuses">{{ words }}/20 слов</p>
       <span class="field-error" :class="{ 'error-show': errors.bonuses }">{{ errors.bonuses }}</span
       ><!-- Неразрывный пробел убран -->
-      <AlertBlock style="width: 450px; box-sizing: border-box;" v-if="isError"
+      <AlertBlock style="width: 450px; box-sizing: border-box" v-if="isError"
         >Ошибка при добавлении группы бонусов. Попробуйте добавить заново</AlertBlock
       >
       <button class="button main-button" :disabled="isPending || isSuccess">
