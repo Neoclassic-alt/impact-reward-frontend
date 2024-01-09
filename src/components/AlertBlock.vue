@@ -5,12 +5,13 @@ const closed = ref(false)
 
 withDefaults(
   defineProps<{
-    type?: 'error' | 'warning' | 'success' | 'info',
+    type?: 'error' | 'warning' | 'success' | 'info'
     closable: boolean
+    onClose?: () => void
   }>(),
   {
     type: 'error',
-    closable: false
+    closable: false,
   },
 )
 
@@ -35,7 +36,7 @@ defineSlots<{
         </p>
       </div>
     </div>
-    <a href="#" @click="closed = true" v-if="closable">
+    <a href="#" @click="(closed = true), onClose?.()" v-if="closable">
       <img src="../assets/icons/close.svg" />
     </a>
   </div>

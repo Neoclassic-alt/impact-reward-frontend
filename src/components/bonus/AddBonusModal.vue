@@ -7,6 +7,7 @@ import { useForm } from 'vee-validate'
 import { useMutation } from '@tanstack/vue-query'
 import AlertBlock from '@/components/AlertBlock.vue'
 import { useUserStore } from '@/stores'
+import { getRussianBonusType } from '@/constants/bonuses'
 
 const addBonusTextarea = ref<HTMLTextAreaElement | null>(null)
 
@@ -17,7 +18,7 @@ const schema = yup.object({
     .test(
       'wordsCount',
       ({ value }) => `Допустимое число бонусов превышено на ${value.split(/\s+/).length - 20}`,
-      (value) => value.split(' ').length <= 20,
+      (value) => value.split(/\s+/).length <= 20,
     ),
 })
 
@@ -71,7 +72,7 @@ const { mutate, isError, isIdle, isPending, isSuccess } = useMutation({
         >Ошибка при добавлении бонусов. Попробуйте добавить заново</AlertBlock
       >
       <form style="width: 100%" autocomplete="off" @submit="onSubmit">
-        <label class="label required"> {{ nameVariableContent }} через пробел </label>
+        <label class="label required"> {{ nameVariableContent && getRussianBonusType(nameVariableContent, 'plural') }} через пробел </label>
         <textarea
           class="textarea"
           :class="{ 'input-error': errors.bonuses }"
@@ -108,7 +109,7 @@ const { mutate, isError, isIdle, isPending, isSuccess } = useMutation({
             class="button"
             style="border-color: var(--brand-main-color)"
             @click.prevent="closeModal()"
-            >{{isIdle ? 'Отмена' : 'Закрыть'}}</a
+            >{{ isIdle ? 'Отмена' : 'Закрыть' }}</a
           >
         </div>
       </form>
