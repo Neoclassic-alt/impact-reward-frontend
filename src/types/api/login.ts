@@ -6,3 +6,8 @@ export type request = {
 export type response = {
   access_token: string
 }
+
+export type error = {
+  success: boolean
+  message: string
+}

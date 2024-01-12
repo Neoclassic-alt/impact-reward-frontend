@@ -10,7 +10,7 @@ withDefaults(
     onClose?: () => void
   }>(),
   {
-    type: 'error',
+    type: 'info',
     closable: false,
   },
 )

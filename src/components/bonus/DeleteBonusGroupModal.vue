@@ -51,7 +51,7 @@ const {
         >Группа бонусов успешно удалена. Сообщение закроется через {{ closeTimer }}
         {{ plural(closeTimer, 'секунду', 'секунды', 'секунд') }}</AlertBlock
       >
-      <AlertBlock style="width: calc(100% - 50px)" v-if="isError"
+      <AlertBlock type="error" style="width: calc(100% - 50px)" v-if="isError"
         >Ошибка при удалении группы бонусов. Попробуйте удалить заново</AlertBlock
       >
       <p style="margin-bottom: var(--base-margin)" v-if="!isSuccess">Данное действие необратимо.</p>

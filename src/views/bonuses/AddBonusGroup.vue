@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import VueMultiselect from 'vue-multiselect'
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
@@ -177,7 +177,7 @@ const onSubmit = handleSubmit((values) => {
       <p class="field-description" v-show="!errors?.bonuses">{{ words }}/20 слов</p>
       <span class="field-error" :class="{ 'error-show': errors.bonuses }">{{ errors.bonuses }}</span
       ><!-- Неразрывный пробел убран -->
-      <AlertBlock style="width: 450px; box-sizing: border-box" v-if="isError"
+      <AlertBlock type="error" style="width: 450px; box-sizing: border-box" v-if="isError"
         >Ошибка при добавлении группы бонусов. Попробуйте добавить заново</AlertBlock
       >
       <button class="button main-button" :disabled="isPending || isSuccess">

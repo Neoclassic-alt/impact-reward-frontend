@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 import NavigationMenu from '@/components/NavigationMenu.vue'
 import LoadingScreen from './components/LoadingScreen.vue'
@@ -26,7 +26,13 @@ onMounted(async () => {
       <RouterView />
     </div>
   </div>
-  <footer class="footer">Plain text</footer>
+  <footer class="footer">
+    <section class="footer__content">
+      <img src="./assets/community_02.png" style="border-radius: 50%" width="100" height="100" />
+      <p class="footer__text" style="color: white; margin-top: 34px; margin-bottom: 10px">По всем вопросам:<br /> Светлана Макаревская</p>
+      <p class="footer__text"><a href="https://t.me/Svetlana_IMPACT" target="_blank" rel="noopener" class="footer__link">t.me/Svetlana_IMPACT</a></p>
+    </section>
+  </footer>
 </template>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
@@ -54,17 +60,34 @@ onMounted(async () => {
 
 .container {
   display: flex;
-  min-height: calc(100vh - 124px);
+  min-height: calc(100vh - 160px);
 }
 .footer {
-  background: #f0f0f0;
-  padding: 10px 60px;
+  background: rgb(44, 49, 50);
+  padding-top: 100px;
+  padding-bottom: 100px;
 }
 
 .community-title {
   color: white;
   font-weight: 500;
   font-size: 1.1em;
+}
+
+.footer__content {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.footer__text {
+  font-size: 22px;
+  text-align: center;
+  opacity: 0.4;
+}
+
+.footer__link {
+  color: rgb(25, 188, 230);
 }
 
 /*@media screen and (max-width: 768px) {

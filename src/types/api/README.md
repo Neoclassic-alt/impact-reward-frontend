@@ -4,9 +4,7 @@
 
 - `request` - request type
 - `response` - response type
-- `errors` - errors types in the process of accessing the API
-
-Pay attention that `request` and `response` in the singular, while `errors` are multiple.
+- `error` (`errors`) - errors types in the process of accessing the API
 
 ## Export types
 

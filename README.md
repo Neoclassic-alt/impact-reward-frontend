@@ -15,7 +15,8 @@
 
 ### Скриншоты системы
 
-...
+![11](https://github.com/Neoclassic-alt/impact-reward-frontend/blob/main/screenshots/impact-reward1.png)
+![11](https://github.com/Neoclassic-alt/impact-reward-frontend/blob/main/screenshots/impact-reward2.png)
 
 ### Используемые технологии
 

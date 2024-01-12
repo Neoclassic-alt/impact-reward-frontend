@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { watch, reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
-import { useQuery } from '@tanstack/vue-query'
+import { useMutation } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import AlertBlock from '@/components/AlertBlock.vue'
+import type { AxiosError } from 'axios'
+import type { error as loginError } from '@/types/api/login'
 
 const schema = yup.object({
   account: yup.string().required(),
@@ -25,14 +27,23 @@ const { errors, defineField, handleSubmit } = useForm({
 const [account, accountAttrs] = defineField('account')
 const [key, keyAttrs] = defineField('key')
 
-const { status, fetchStatus, data, refetch } = useQuery({
-  queryKey: ['login'],
-  queryFn: () => fetchLogin(accountData),
-  enabled: false,
+const errorMessage = ref('')
+
+const { mutate, data, isPending, isError } = useMutation({
+  mutationFn: () => fetchLogin(accountData),
+  onSuccess: () => {
+    if (data.value?.data.access_token) {
+      setAccountData(data.value.data.access_token)
+      router.push('/')
+    }
+  },
+  onError: (error) => {
+    errorMessage.value = ((error as AxiosError).response?.data as loginError).message
+  }
 })
 
 const onSubmit = handleSubmit(() => {
-  refetch()
+  mutate()
 })
 
 const accountData = reactive({
@@ -42,25 +53,18 @@ const accountData = reactive({
 
 const router = useRouter()
 const { setAccountData, fetchLogin } = useAuthStore()
-
-watch(status, (newStatus) => {
-  if (newStatus == 'success' && data.value?.data.access_token) {
-    setAccountData(data.value.data.access_token)
-    router.push('/')
-  }
-})
 </script>
 
 <template>
   <main style="margin: 0 auto; width: fit-content">
     <h2 class="page-header">Вход в систему</h2>
-    <AlertBlock v-if="$route.query.message == 'non-auth'">
+    <AlertBlock type="error" v-if="$route.query.message == 'non-auth'">
       <template #title>Ошибка доступа</template>
       <template #text>Необходима авторизация</template>
     </AlertBlock>
-    <AlertBlock v-if="status == 'error'">
+    <AlertBlock type="error" v-if="isError">
       <template #title>Произошла ошибка авторизации</template>
-      <template #text>Проверьте авторизационные данные</template>
+      <template #text>Причина: {{ errorMessage }}</template>
     </AlertBlock>
     <form style="width: 450px" @submit="onSubmit">
       <label class="label">Импакт-аккаунт</label>
@@ -85,13 +89,13 @@ watch(status, (newStatus) => {
         v-bind="keyAttrs"
       />
       <span class="field-error" :class="{ 'error-show': errors.key }">{{ errors.key }}&nbsp;</span>
-      <button class="button main-button" :disabled="fetchStatus == 'fetching'">
+      <button class="button main-button" :disabled="isPending">
         <img
           src="./../assets/icons/button-loading.svg"
           style="margin-right: 5px"
-          v-show="fetchStatus === 'fetching'"
+          v-show="isPending"
         />
-        <span>{{ fetchStatus === 'fetching' ? 'Авторизация' : 'Войти' }}</span>
+        <span>{{ isPending ? 'Авторизация' : 'Войти' }}</span>
       </button>
     </form>
   </main>
