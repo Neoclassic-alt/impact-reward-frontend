@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { ref, reactive, computed } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useUserStore } from '@/stores/user'
 import AddBonusModal from '@/components/bonus/AddBonusModal.vue'
 import DeleteBonusGroupModal from '@/components/bonus/DeleteBonusGroupModal.vue'

@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { response as userInfoResponse } from '@/types/api/user'
 import axios from 'axios'

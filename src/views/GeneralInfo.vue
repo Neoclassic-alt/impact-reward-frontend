@@ -65,7 +65,7 @@ const communityLink = computed(() => userInfo.value?.community.username.slice(1)
         </p>
         <p class="block-info__item block-info__item_justify">
           <span class="block-info__prop">Темп пополнения</span>
-          <span>{{ userInfo?.rewards.regeneration_value }} награды в час</span>
+          <span>{{ userInfo?.rewards.regeneration_value }} нагр./час</span>
         </p>
       </section>
     </div>

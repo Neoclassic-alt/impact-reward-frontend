@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import type { menuStates } from '@/types/pages'
 import { capitalizeFirstLetter } from '@/functions'
 import { onMounted } from 'vue'
-import { useMenuStore, useAuthStore, useUserStore } from '@/stores'
+import { useAuthStore, useMenuStore, useUserStore } from '@/stores'
 
 const router = useRouter()
 
@@ -15,9 +15,9 @@ const { clearAccountData } = useAuthStore()
 const { clearUserInfo } = useUserStore()
 
 function logout() {
+  router.push({ name: 'Login' })
   clearAccountData()
   clearUserInfo()
-  router.push({ name: 'Login' })
 }
 
 function GoToPageFromMenu(newItem: menuStates) {

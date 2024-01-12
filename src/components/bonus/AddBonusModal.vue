@@ -68,7 +68,7 @@ const { mutate, isError, isIdle, isPending, isSuccess } = useMutation({
       <AlertBlock type="success" style="width: calc(100% - 50px)" v-if="isSuccess"
         >Бонусы успешно добавлены</AlertBlock
       >
-      <AlertBlock style="width: calc(100% - 50px)" v-if="isError"
+      <AlertBlock type="error" style="width: calc(100% - 50px)" v-if="isError"
         >Ошибка при добавлении бонусов. Попробуйте добавить заново</AlertBlock
       >
       <form style="width: 100%" autocomplete="off" @submit="onSubmit">
