@@ -1,18 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import GeneralInfo from '@/views/GeneralInfo.vue'
 import { storeToRefs } from 'pinia'
-import { useMenuStore } from '@/stores/pages'
-import { useAuthStore } from '@/stores/auth'
-import { useUserStore } from '@/stores/user'
-
-// GeneralInfo - информация на главной странице,
-// а commonInfo - общая информация для всех страниц
+import { useMenuStore, useAuthStore, useUserStore } from '@/stores'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: '/account',
       name: 'GeneralInfo',
       component: GeneralInfo,
       meta: {
