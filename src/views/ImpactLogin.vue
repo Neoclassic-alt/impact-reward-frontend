@@ -29,11 +29,11 @@ const [key, keyAttrs] = defineField('key')
 
 const errorMessage = ref('')
 
-const { mutate, data, isPending, isError } = useMutation({
+const { mutate, isPending, isError } = useMutation({
   mutationFn: () => fetchLogin(accountData),
-  onSuccess: () => {
-    if (data.value?.data.access_token) {
-      setAccountData(data.value.data.access_token)
+  onSuccess: (data) => {
+    if (data.data.access_token) {
+      setAccountData(data.data.access_token)
       router.push('/')
     }
   },
