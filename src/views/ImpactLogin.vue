@@ -34,12 +34,12 @@ const { mutate, isPending, isError } = useMutation({
   onSuccess: (data) => {
     if (data.data.access_token) {
       setAccountData(data.data.access_token)
-      router.push('/')
+      router.push({ name: 'GeneralInfo' })
     }
   },
   onError: (error) => {
     errorMessage.value = ((error as AxiosError).response?.data as loginError).message
-  }
+  },
 })
 
 const onSubmit = handleSubmit(() => {
@@ -62,7 +62,15 @@ const { setAccountData, fetchLogin } = useAuthStore()
       <template #title>Ошибка доступа</template>
       <template #text>Необходима авторизация</template>
     </AlertBlock>
-    <AlertBlock type="error" v-if="isError">
+    <AlertBlock
+      type="error"
+      v-if="$route.query.message == 'non-seller'"
+      style="max-width: 450px; box-sizing: border-box"
+    >
+      <template #title>Ошибка доступа</template>
+      <template #text>Пользователи без прав администратора не могут войти в систему</template>
+    </AlertBlock>
+    <AlertBlock type="error" v-if="isError" style="max-width: 450px; box-sizing: border-box">
       <template #title>Произошла ошибка авторизации</template>
       <template #text>Причина: {{ errorMessage }}</template>
     </AlertBlock>

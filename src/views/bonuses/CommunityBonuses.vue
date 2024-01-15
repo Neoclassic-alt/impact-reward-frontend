@@ -28,10 +28,6 @@ function closeModal() {
 const currentBonus = computed(() =>
   modal.value.id ? bonuses.value?.find((item) => item.id === modal.value.id) : null,
 )
-
-/*function setFocus() {
-  setTimeout(() => addBonusTextarea.value?.focus(), 0)
-}*/
 </script>
 
 <template>
@@ -42,7 +38,14 @@ const currentBonus = computed(() =>
         class="bonus-add__button button"
         v-for="bonus in bonusAvaliableCosts"
         :key="bonus.group_name"
-        @click="$router.push('/add-bonus-group/' + bonus.group_name)"
+        @click="
+          $router.push({
+            name: 'AddBonusGroup',
+            params: {
+              group_name: bonus.group_name,
+            },
+          })
+        "
       >
         {{ bonus.price }}
       </li>
@@ -63,7 +66,7 @@ const currentBonus = computed(() =>
     style="margin-top: -12px"
     v-if="$route.query.message == 'bonus-group-added'"
     closable
-    @close="() => $router.push({query: {}})"
+    @close="() => $router.push({ query: {} })"
     >Группа бонусов успешно создана</AlertBlock
   >
   <div class="bonus-group">

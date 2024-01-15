@@ -60,18 +60,33 @@ const toLoginPath = {
   },
 }
 
+const nonSeller = {
+  name: 'Login',
+  query: {
+    message: 'non-seller',
+  },
+}
+
 router.beforeEach(async (to) => {
+  if (to.path === '/') {
+    return { name: 'GeneralInfo' }
+  }
   const authStore = useAuthStore()
   const userInfoStore = useUserStore()
   const { userInfo } = storeToRefs(userInfoStore)
-  const { fetchUserAndSave } = userInfoStore
-  const { getAccountData } = authStore
+  const { fetchUserAndSave, clearUserInfo } = userInfoStore
+  const { getAccountData, clearAccountData } = authStore
   // Authorization flow: https://drive.google.com/file/d/1DxDP2ZnxCgn8JFOPnXB-7zGNSq9YR5Mf/view?usp=sharing
   if (!userInfo.value && to.meta.requiresAuth) {
     const account_key = getAccountData()
     if (account_key) {
       try {
         await fetchUserAndSave()
+        if (!Object.prototype.hasOwnProperty.call(userInfo.value, 'seller')) {
+          clearAccountData()
+          clearUserInfo()
+          return nonSeller
+        }
       } catch {
         return toLoginPath
       }

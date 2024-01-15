@@ -39,7 +39,7 @@ export const useUserStore = defineStore('user-info', () => {
   })
 
   const getUserInfo = computed(() => userInfo.value?.seller)
-  const getBonusGroups = computed(() => userInfo.value?.seller.bonus_groups)
+  const getBonusGroups = computed(() => userInfo.value?.seller?.bonus_groups)
 
   function clearUserInfo() {
     userInfo.value = null

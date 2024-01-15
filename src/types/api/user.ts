@@ -2,7 +2,7 @@ import type { bonusGroup } from '@/types/bonuses'
 
 export type response = {
   success?: boolean
-  seller: {
+  seller?: {
     bonus_groups: bonusGroup[]
     profile: {
       account: string // Импакт-аккаунт
@@ -22,6 +22,16 @@ export type response = {
       current_possible_rewards: number // оставшееся количество наград
       max_possible_rewards: number // максимальное количество наград
       regeneration_value: number // темп пополнения
+    }
+  }
+  buyer?: {
+    balance: {}
+    profile: {
+      account: string
+      tg_about: string | null
+      tg_avatar: string | null
+      tg_nickname: string
+      tg_username: string | null
     }
   }
 }

@@ -41,31 +41,32 @@ describe.concurrent('AlertBlock', () => {
 vi.mock('vue-router', () => ({
   useRoute: vi.fn(),
   useRouter: vi.fn(() => ({
-    push: () => {}
-  }))
+    push: () => {},
+  })),
 }))
 
 describe('Navigation menu', () => {
   beforeEach(() => {
-    (useRoute as Mock).mockImplementationOnce(() => ({
-      name: 'GeneralInfo'
+    ;(useRoute as Mock).mockImplementationOnce(() => ({
+      name: 'GeneralInfo',
     }))
-  
     ;(useRouter as Mock).mockImplementationOnce(() => ({
-      push: vi.fn()
+      push: vi.fn(),
     }))
   })
 
   test('Navmenu on general info page', async () => {
     const wrapper = mount(NavigationMenu, {
       global: {
-        plugins: [createTestingPinia({
-          createSpy: vi.fn()
-        })],
+        plugins: [
+          createTestingPinia({
+            createSpy: vi.fn(),
+          }),
+        ],
       },
     })
-  
+
     expect(wrapper.find('.active').exists()).toBe(true)
-    expect(wrapper.find('.active .nav__text').text()).toBe("Информация")
+    expect(wrapper.find('.active .nav__text').text()).toBe('Информация')
   })
 })
