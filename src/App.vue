@@ -29,8 +29,15 @@ onMounted(async () => {
   <footer class="footer">
     <section class="footer__content">
       <img src="./assets/community_02.png" style="border-radius: 50%" width="100" height="100" />
-      <p class="footer__text" style="color: white; margin-top: 34px; margin-bottom: 10px">По всем вопросам:<br /> Светлана Макаревская</p>
-      <p class="footer__text"><a href="https://t.me/Svetlana_IMPACT" target="_blank" rel="noopener" class="footer__link">t.me/Svetlana_IMPACT</a></p>
+      <p class="footer__text" style="color: white; margin-top: 34px; margin-bottom: 10px">
+        По всем вопросам:<br />
+        Светлана Макаревская
+      </p>
+      <p class="footer__text">
+        <a href="https://t.me/Svetlana_IMPACT" target="_blank" rel="noopener" class="footer__link"
+          >t.me/Svetlana_IMPACT</a
+        >
+      </p>
     </section>
   </footer>
 </template>

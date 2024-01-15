@@ -3,7 +3,6 @@ import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import type { menuStates } from '@/types/pages'
 import { capitalizeFirstLetter } from '@/functions'
-import { onMounted } from 'vue'
 import { useAuthStore, useMenuStore, useUserStore } from '@/stores'
 
 const router = useRouter()
@@ -27,7 +26,7 @@ function GoToPageFromMenu(newItem: menuStates) {
 }
 
 // сделаем меню непрокручиваемым после шапки
-onMounted(() => {
+/*onMounted(() => {
   const header = document.getElementById('header')! as HTMLDivElement
   const nav = document.querySelector('.nav')! as HTMLDivElement
   const footer = document.querySelector('.footer')! as HTMLDivElement
@@ -51,7 +50,7 @@ onMounted(() => {
       nav.style.top = '0'
     }
   })
-})
+})*/
 </script>
 
 <template>

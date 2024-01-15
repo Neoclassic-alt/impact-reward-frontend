@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, toValue } from 'vue'
+import { ref, toValue, onMounted } from 'vue'
 import { vOnClickOutside } from '@vueuse/components'
 import axios from 'axios'
 import * as yup from 'yup'
@@ -59,6 +59,10 @@ const { mutate, isError, isIdle, isPending, isSuccess } = useMutation({
     resetForm()
   },
 })
+
+onMounted(() => {
+  addBonusTextarea.value?.focus()
+})
 </script>
 
 <template>
@@ -72,7 +76,10 @@ const { mutate, isError, isIdle, isPending, isSuccess } = useMutation({
         >Ошибка при добавлении бонусов. Попробуйте добавить заново</AlertBlock
       >
       <form style="width: 100%" autocomplete="off" @submit="onSubmit">
-        <label class="label required"> {{ nameVariableContent && getRussianBonusType(nameVariableContent, 'plural') }} через пробел </label>
+        <label class="label required">
+          {{ nameVariableContent && getRussianBonusType(nameVariableContent, 'plural') }} через
+          пробел
+        </label>
         <textarea
           class="textarea"
           :class="{ 'input-error': errors.bonuses }"
