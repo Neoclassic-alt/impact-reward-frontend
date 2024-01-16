@@ -92,9 +92,9 @@ const communityLink = computed(() => userInfo.value?.community.username.slice(1)
   min-width: 150px;
 }
 
-/*@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1024px) {
   .blocks-group {
     display: block;
   }
-}*/
+}
 </style>
