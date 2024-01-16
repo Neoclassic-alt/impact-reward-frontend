@@ -97,12 +97,12 @@ onMounted(async () => {
   color: rgb(25, 188, 230);
 }
 
-/*@media screen and (max-width: 768px) {
-  .container {
+@media screen and (max-width: 768px) {
+  /*.container {
     display: block;
-  }
+  }*/
   .header__logo {
     height: 40px;
   }
-}*/
+}
 </style>

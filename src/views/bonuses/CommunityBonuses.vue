@@ -106,7 +106,6 @@ const currentBonus = computed(() =>
       </template>
       <span class="bonus-cost">
         <span>{{ bonus.price }}&nbsp;</span>
-        <!-- <img src="./../../assets/icons/award.svg" alt="tiker" /> -->
       </span>
       <div>
         <a
@@ -115,7 +114,7 @@ const currentBonus = computed(() =>
           style="border-color: var(--success-color); margin-right: 16px"
           @click.prevent="openModal('add', bonus.id)"
           >Добавить</a
-        ><!-- setFocus() не использовано -->
+        >
         <a
           href="#"
           class="button action-button delete-button"
@@ -153,11 +152,12 @@ const currentBonus = computed(() =>
   display: flex;
   margin-block-start: 0;
   margin-block-end: 0;
+  gap: 20px;
+  margin-left: 20px;
 }
 
 .bonus-add__button {
   border: 1px var(--brand-main-color) solid;
-  margin-left: 20px;
   cursor: pointer;
 }
 .bonus__title {
@@ -178,7 +178,10 @@ const currentBonus = computed(() =>
 .bonus-group {
   display: flex;
   flex-wrap: wrap;
+  gap: var(--base-margin);
+  margin-bottom: var(--base-margin);
 }
+
 .bonus {
   border: 1px var(--brand-main-color) solid;
   padding: var(--base-margin);
@@ -186,11 +189,6 @@ const currentBonus = computed(() =>
   flex-direction: column;
   width: calc(50% - 13px);
   box-sizing: border-box;
-  margin-bottom: var(--base-margin);
-}
-
-.bonus:nth-child(2n + 1) {
-  margin-right: 26px;
 }
 
 .action-button {
@@ -213,4 +211,22 @@ const currentBonus = computed(() =>
   background-color: rgb(103, 210, 233, 0.15);
   transition: background-color 0.1s linear;
 }
+
+@media screen and (max-width: 768px) {
+  .bonus__add {
+    display: none;
+  }
+  .bonus-group {
+    flex-direction: column;
+  }
+  .bonus {
+    width: auto;
+  }
+}
+
+/*@media screen and (max-width: 450px) {
+  .bonus-shop__tabs {
+
+  }
+}*/
 </style>

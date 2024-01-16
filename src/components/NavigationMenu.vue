@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import type { menuStates } from '@/types/pages'
 import { capitalizeFirstLetter } from '@/functions'
 import { useAuthStore, useMenuStore, useUserStore } from '@/stores'
+import { useWindowSize } from '@vueuse/core'
 
 const router = useRouter()
 
@@ -19,7 +21,10 @@ function logout() {
   clearUserInfo()
 }
 
+const isMenuOpen = ref(false)
+
 function GoToPageFromMenu(newItem: menuStates) {
+  isMenuOpen.value = false
   changeItem(newItem)
   // роуты называется точно так же, как menuStates, за исключением первой буквы
   router.push({ name: capitalizeFirstLetter(newItem) })
@@ -51,10 +56,17 @@ function GoToPageFromMenu(newItem: menuStates) {
     }
   })
 })*/
+
+const { width } = useWindowSize()
+
+watch(isMenuOpen, (isOpen) => {
+  document.documentElement.style.overflow = isOpen ? 'hidden' : 'visible'
+})
+
 </script>
 
 <template>
-  <nav class="nav" ref="nav">
+  <nav class="nav" ref="nav" v-show="isMenuOpen || width > 768">
     <h2 class="nav__header"></h2>
     <menu class="list-to-menu">
       <li
@@ -87,9 +99,10 @@ function GoToPageFromMenu(newItem: menuStates) {
       </li>
     </ul>
   </nav>
-  <div class="float-menu">
-    <img src="../assets/icons/menu-hamburger.svg" style="display: block" />
-  </div>
+  <a class="float-menu" href="#" @click="isMenuOpen = !isMenuOpen">
+    <img src="../assets/icons/menu-hamburger.svg" style="display: block" v-if="!isMenuOpen" />
+    <img src="../assets/icons/menu-close.svg" style="display: block" v-else />
+  </a>
 </template>
 
 <style scoped>
@@ -146,27 +159,26 @@ function GoToPageFromMenu(newItem: menuStates) {
 .float-menu {
   position: absolute;
   z-index: 9998;
-  background-color: #e0e0e0;
+  /*background-color: #e0e0e0;*/
   padding: 8px;
   top: 12px;
-  right: 40px;
+  right: 15px;
   border-radius: 12px;
 }
 
-.float-menu {
-  display: none;
-}
-
-/*@media screen and (max-width: 768px) {
+@media screen and (max-width: 768px) {
   .nav {
-    position: static;
-    display: none;
+    max-width: none;
+    width: 100svw;
+    position: fixed;
+    height: 100svh;
+    z-index: 2;
   }
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 769px) {
   .float-menu {
     display: none;
   }
-}*/
+}
 </style>
