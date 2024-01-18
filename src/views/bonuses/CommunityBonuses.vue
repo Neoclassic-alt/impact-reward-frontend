@@ -32,7 +32,7 @@ const currentBonus = computed(() =>
 
 <template>
   <div class="bonus__add" v-if="bonusAvaliableCosts.length">
-    <p>Добавить группу бонусов:</p>
+    <p style="margin-bottom: 10px">Добавить группу бонусов:</p>
     <menu class="bonus-add__button-group list-to-menu">
       <li
         class="bonus-add__button button"
@@ -212,10 +212,20 @@ const currentBonus = computed(() =>
   transition: background-color 0.1s linear;
 }
 
+.bonus__add_mobile {
+  display: none;
+}
+
+.bonus__add_mobile-button {
+  padding: 12px 20px;
+  border: 1px var(--brand-main-color) solid;
+  border-radius: 10px;
+  margin-bottom: calc(var(--base-margin) / 2);
+  width: fit-content;
+}
+
 @media screen and (max-width: 768px) {
-  .bonus__add {
-    display: none;
-  }
+  
   .bonus-group {
     flex-direction: column;
   }
@@ -224,9 +234,26 @@ const currentBonus = computed(() =>
   }
 }
 
-/*@media screen and (max-width: 450px) {
-  .bonus-shop__tabs {
-
+@media screen and (max-width: 576px) {
+  .bonus__add {
+    flex-direction: column;
+    align-items: flex-start;
   }
-}*/
+  .bonus-add__button-group {
+    margin-left: 0;
+    gap: 15px;
+  }
+  .bonus-add__button.button {
+    padding: 10px 16px;
+    font-size: 0.9em;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .bonus-shop__tabs {
+    width: 100vw;
+    margin-left: -25px;
+    font-size: 0.93em;
+  }
+}
 </style>

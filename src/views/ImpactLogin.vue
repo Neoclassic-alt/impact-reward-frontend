@@ -56,25 +56,24 @@ const { setAccountData, fetchLogin } = useAuthStore()
 </script>
 
 <template>
-  <main style="margin: 0 auto; width: fit-content">
+  <main style="margin: 0 auto; max-width: 450px; padding: 0 20px">
     <h2 class="page-header">Вход в систему</h2>
     <AlertBlock type="error" v-if="$route.query.message == 'non-auth'">
       <template #title>Ошибка доступа</template>
       <template #text>Необходима авторизация</template>
     </AlertBlock>
     <AlertBlock
+    v-if="$route.query.message == 'non-seller'"
       type="error"
-      v-if="$route.query.message == 'non-seller'"
-      style="max-width: 450px; box-sizing: border-box"
     >
       <template #title>Ошибка доступа</template>
       <template #text>Пользователи без прав администратора не могут войти в систему</template>
     </AlertBlock>
-    <AlertBlock type="error" v-if="isError" style="max-width: 450px; box-sizing: border-box">
+    <AlertBlock type="error" v-if="isError">
       <template #title>Произошла ошибка авторизации</template>
       <template #text>Причина: {{ errorMessage }}</template>
     </AlertBlock>
-    <form style="width: 450px" @submit="onSubmit">
+    <form @submit="onSubmit">
       <label class="label">Импакт-аккаунт</label>
       <input
         type="text"
@@ -109,4 +108,11 @@ const { setAccountData, fetchLogin } = useAuthStore()
   </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+.login-form {
+  width: 100%; 
+  padding: 0 20px; 
+  max-width: 490px; 
+  box-sizing: border-box;
+}
+</style>
