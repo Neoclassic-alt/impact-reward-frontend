@@ -47,11 +47,11 @@ const {
   <div class="modal">
     <div v-on-click-outside="closeModal">
       <p class="bonus__title" v-if="!isSuccess">Удалить группу бонусов “{{ bonusGroupName }}”?</p>
-      <AlertBlock type="success" style="width: calc(100% - 50px)" v-if="isSuccess"
+      <AlertBlock type="success" style="width: calc(100% - 40px)" v-if="isSuccess"
         >Группа бонусов успешно удалена. Сообщение закроется через {{ closeTimer }}
         {{ plural(closeTimer, 'секунду', 'секунды', 'секунд') }}</AlertBlock
       >
-      <AlertBlock type="error" style="width: calc(100% - 50px)" v-if="isError"
+      <AlertBlock type="error" style="width: calc(100% - 40px)" v-if="isError"
         >Ошибка при удалении группы бонусов. Попробуйте удалить заново</AlertBlock
       >
       <p style="margin-bottom: var(--base-margin)" v-if="!isSuccess">Данное действие необратимо.</p>

@@ -69,10 +69,10 @@ onMounted(() => {
   <div class="modal">
     <div v-on-click-outside="closeModal">
       <h2 class="bonus__title">Добавить бонусы к группе бонусов “{{ bonusGroupName }}”</h2>
-      <AlertBlock type="success" style="width: calc(100% - 50px)" v-if="isSuccess"
+      <AlertBlock type="success" style="width: calc(100% - 40px)" v-if="isSuccess"
         >Бонусы успешно добавлены</AlertBlock
       >
-      <AlertBlock type="error" style="width: calc(100% - 50px)" v-if="isError"
+      <AlertBlock type="error" style="width: calc(100% - 40px)" v-if="isError"
         >Ошибка при добавлении бонусов. Попробуйте добавить заново</AlertBlock
       >
       <form style="width: 100%" autocomplete="off" @submit="onSubmit">
