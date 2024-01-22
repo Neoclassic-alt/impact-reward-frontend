@@ -12,10 +12,10 @@ const currentTab = ref<BonusShopTabs>('community')
     <h2 class="page-header">Магазин бонусов</h2>
     <menu class="bonus-shop__tabs list-to-menu">
       <li class="bonus-shop__tab" :class="{ active: currentTab === 'community' }">
-        Бонусы сообщества
+        Бонусы&nbsp;сообщества
       </li>
       <li class="bonus-shop__tab nav_in-development" :class="{ active: currentTab === 'gold' }">
-        <span>Золотые бонусы</span> <span class="soon-label">скоро</span>
+        <span>Золотые&nbsp;бонусы</span>&nbsp;<span class="soon-label">скоро</span>
       </li>
     </menu>
     <RouterView />
@@ -29,6 +29,7 @@ const currentTab = ref<BonusShopTabs>('community')
   flex: 0;
   text-wrap: nowrap;
   overflow-x: auto;
+  user-select: none;
 }
 
 .bonus-shop__tab {
