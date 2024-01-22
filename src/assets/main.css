@@ -16,6 +16,11 @@
   color: #40a5ee;
   font-weight: 600;
   text-decoration: none;
+  width: fit-content;
+}
+
+.link-dashed {
+  border-bottom: 1px #40a5ee dashed;
 }
 
 .menu-link {
@@ -90,7 +95,6 @@
 
 .modal {
   background-color: rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
   position: fixed;
   top: 0;
   right: 0;

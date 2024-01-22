@@ -26,6 +26,9 @@ const currentTab = ref<BonusShopTabs>('community')
 .bonus-shop__tabs {
   display: flex;
   border-bottom: 1px #e1e1e1 solid;
+  flex: 0;
+  text-wrap: nowrap;
+  overflow-x: auto;
 }
 
 .bonus-shop__tab {
@@ -38,5 +41,30 @@ const currentTab = ref<BonusShopTabs>('community')
 .active {
   color: #67d2e9;
   border-bottom: 3px var(--brand-main-color) solid;
+}
+
+.bonus-shop__tab:not(.active) {
+  border-bottom: 3px transparent solid;
+}
+
+@media screen and (max-width: 450px) {
+  .bonus-shop__tabs {
+    margin-left: -25px;
+    border-bottom: none;
+    width: 100vw;
+    gap: 20px;
+  }
+  .bonus-shop__tab:first-child {
+    margin-left: 25px;
+  }
+  .bonus-shop__tab:last-child {
+    margin-right: 25px;
+  }
+  .bonus-shop__tab {
+    padding: 8px 0;
+  }
+  .page-header {
+    margin-bottom: 0;
+  }
 }
 </style>
