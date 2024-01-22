@@ -24,7 +24,7 @@ const communityLink = computed(() => userInfo.value?.community.username.slice(1)
           :href="'http://t.me/' + communityLink"
           class="link"
           v-if="userInfo?.community.username !== 'Закрытая группа'"
-          >{{ communityLink }}</a
+          ><span>{{ communityLink }}</span> <img src="./../assets/icons/external-link.svg" style="position: relative; top: 2px"/></a
         >
         <span v-else><i>Закрытая группа</i></span>
       </p>

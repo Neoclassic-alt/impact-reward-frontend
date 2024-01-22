@@ -240,20 +240,20 @@ const currentBonus = computed(() =>
     align-items: flex-start;
   }
   .bonus-add__button-group {
-    margin-left: 0;
+    margin-left: -25px;
     gap: 15px;
+    max-width: 100vw;
+    overflow-x: auto;
   }
   .bonus-add__button.button {
     padding: 10px 16px;
     font-size: 0.9em;
   }
-}
-
-@media screen and (max-width: 450px) {
-  .bonus-shop__tabs {
-    width: 100vw;
-    margin-left: -25px;
-    font-size: 0.93em;
+  .bonus-add__button.button:first-child {
+    margin-left: var(--base-margin)
+  }
+  .bonus-add__button.button:last-child {
+    margin-right: var(--base-margin)
   }
 }
 </style>

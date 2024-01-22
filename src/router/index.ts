@@ -16,7 +16,7 @@ const router = createRouter({
       },
     },
     {
-      path: '/bonus-shop',
+      path: '/account/bonuses',
       component: () => import('../views/BonusShop.vue'),
       meta: {
         requiresAuth: true,
@@ -34,7 +34,7 @@ const router = createRouter({
       ],
     },
     {
-      path: '/add-bonus-group/:group_name',
+      path: '/account/add-bonus-group/:group_name',
       name: 'AddBonusGroup',
       component: () => import('../views/bonuses/AddBonusGroup.vue'),
       meta: {
