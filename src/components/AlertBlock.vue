@@ -26,7 +26,12 @@ defineSlots<{
   <div class="alert" :class="`alert-${type}`" v-if="!closed">
     <div class="alert__main">
       <img src="../assets/icons/alert/error.svg" alt="Error icon" v-if="type == 'error'" />
-      <img src="../assets/icons/alert/warning.png" alt="Warning icon" v-if="type == 'warning'" width="32" />
+      <img
+        src="../assets/icons/alert/warning.png"
+        alt="Warning icon"
+        v-if="type == 'warning'"
+        width="32"
+      />
       <img src="../assets/icons/alert/success.svg" alt="Success icon" v-if="type == 'success'" />
       <img src="../assets/icons/alert/info.svg" alt="Info icon" v-if="type == 'info'" />
       <div>
@@ -46,11 +51,9 @@ defineSlots<{
 .alert {
   display: flex;
   align-items: center;
-  padding: 15px 20px;
+  padding: 15px;
   margin-bottom: 1em;
   justify-content: space-between;
-  /*margin-left: 20px;
-  margin-right: 20px;*/
 }
 
 .alert__main {

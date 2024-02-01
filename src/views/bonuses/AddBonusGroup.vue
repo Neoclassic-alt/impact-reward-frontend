@@ -91,14 +91,16 @@ const onSubmit = handleSubmit((values) => {
 <template>
   <main class="main add-bonus-form">
     <h2 class="page-header">Добавить группу бонусов</h2>
-    <a href="#" class="link flex-center" @click.prevent="$router.back()" style="margin-bottom: var(--base-margin);">
+    <a
+      href="#"
+      class="link flex-center"
+      @click.prevent="$router.back()"
+      style="margin-bottom: var(--base-margin)"
+    >
       <img src="./../../assets/icons/arrow-left.svg" style="margin-right: 8px" />
       <span>Назад к магазину бонусов</span>
     </a>
-    <form
-      @submit="onSubmit"
-      autocomplete="off"
-    >
+    <form @submit="onSubmit" autocomplete="off">
       <h3 class="form-fieldset-title">Что увидит покупатель до оплаты</h3>
       <p class="label" style="margin-bottom: 1em; font-size: 1em">
         Номинал: <b>{{ price }}</b>
@@ -198,13 +200,12 @@ const onSubmit = handleSubmit((values) => {
 
 <style scoped>
 .add-bonus-form {
-  margin: var(--base-margin) 0; 
-  max-width: 450px
+  margin: var(--base-margin) 0;
+  max-width: 450px;
 }
 .form-fieldset-title {
   margin-block-end: 1.3em;
   font-size: 1.1em;
   font-weight: 500;
 }
-
 </style>

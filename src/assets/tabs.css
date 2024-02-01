@@ -1,0 +1,53 @@
+.bonus-shop__tabs {
+  display: flex;
+  border-bottom: 1px #e1e1e1 solid;
+  flex: 0;
+  text-wrap: nowrap;
+  overflow-x: auto;
+  user-select: none;
+}
+
+.bonus-shop__tab {
+  padding: 12px 20px;
+  font-weight: 500;
+  padding-top: 0;
+  text-align: center;
+}
+
+.bonus-shop__tab:not(.nav_in-development) {
+  cursor: pointer;
+}
+
+.bonus-shop__tab:not(.nav_in-development, .active):hover {
+  color: hsl(0, 0%, 55%);
+}
+
+.active {
+  color: #67d2e9;
+  border-bottom: 3px var(--brand-main-color) solid;
+}
+
+.bonus-shop__tab:not(.active) {
+  border-bottom: 3px transparent solid;
+}
+
+@media screen and (max-width: 450px) {
+  .bonus-shop__tabs {
+    margin-left: -25px;
+    border-bottom: none;
+    width: 100vw;
+    gap: 20px;
+  }
+  .bonus-shop__tab:first-child {
+    margin-left: 25px;
+  }
+  .bonus-shop__tab:last-child {
+    margin-right: 25px;
+  }
+  .bonus-shop__tab {
+    padding: 8px 0;
+  }
+  .page-header {
+    margin-bottom: 0;
+  }
+}

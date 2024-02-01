@@ -4,12 +4,22 @@
   padding-left: 100px;
   padding-right: 100px;
 }
-
 .main-margins {
   max-width: 1200px;
-  width: 100%;
   margin-top: 30px;
   margin-bottom: var(--base-margin);
+}
+
+@media screen and (min-width: 768px) {
+  .main-margins {
+    width: calc(100vw - var(--menu-width));
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .main-margins {
+    width: 100%;
+  }
 }
 
 .link {
@@ -76,7 +86,7 @@
   align-items: center;
 }
 
-.nav_in-development > *:not(:last-child) {
+.nav_in-development > *:not(.soon-label) {
   opacity: 0.5;
   cursor: not-allowed;
 }

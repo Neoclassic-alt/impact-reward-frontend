@@ -62,10 +62,7 @@ const { setAccountData, fetchLogin } = useAuthStore()
       <template #title>Ошибка доступа</template>
       <template #text>Необходима авторизация</template>
     </AlertBlock>
-    <AlertBlock
-    v-if="$route.query.message == 'non-seller'"
-      type="error"
-    >
+    <AlertBlock v-if="$route.query.message == 'non-seller'" type="error">
       <template #title>Ошибка доступа</template>
       <template #text>Пользователи без прав администратора не могут войти в систему</template>
     </AlertBlock>
@@ -110,9 +107,9 @@ const { setAccountData, fetchLogin } = useAuthStore()
 
 <style scoped>
 .login-form {
-  width: 100%; 
-  padding: 0 20px; 
-  max-width: 490px; 
+  width: 100%;
+  padding: 0 20px;
+  max-width: 490px;
   box-sizing: border-box;
 }
 </style>
