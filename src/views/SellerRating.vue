@@ -11,20 +11,20 @@ const coinsHeaders: Header[] = [
   { text: 'Импакт-аккаунт', value: 'profile.impact-account', width: 100, fixed: true },
   { text: 'Пользователь', value: 'profile.tg_username', sortable: true, width: 125 },
   { text: 'За эту неделю', value: 'coins.received_coins_per_current_week', sortable: true },
-  { text: 'За последние 7 дней', value: 'coins.received_coins_per_last_7_days', sortable: true },
+  { text: `За 7\u{00a0}дней`, value: 'coins.received_coins_per_last_7_days', sortable: true },
   { text: 'За текущий месяц', value: 'coins.received_coins_per_current_month', sortable: true },
-  { text: 'За последние 30 дней', value: 'coins.received_coins_per_last_30_days', sortable: true },
-  { text: 'Всего денег', value: 'coins.total_received_coins', sortable: true, width: 80 },
+  { text: 'За 30\u{00a0}дней', value: 'coins.received_coins_per_last_30_days', sortable: true },
+  { text: 'Всего монет', value: 'coins.total_received_coins', sortable: true, width: 80 },
   { text: 'Баланс', value: 'profile.current_balance', sortable: true, width: 70 },
 ]
 
 const awardsHeaders: Header[] = [
   { text: 'Импакт-аккаунт', value: 'profile.impact-account', width: 100, fixed: true },
-  { text: 'Пользователь', value: 'profile.tg_username', sortable: true },
+  { text: 'Пользователь', value: 'profile.tg_username', sortable: true, width: 125 },
   { text: 'За эту неделю', value: 'rewards.rewards_per_current_week', sortable: true },
-  { text: 'За последние 7 дней', value: 'rewards.rewards_per_last_7_days', sortable: true },
+  { text: 'За 7\u{00a0}дней', value: 'rewards.rewards_per_last_7_days', sortable: true },
   { text: 'За текущий месяц', value: 'rewards.rewards_per_current_month', sortable: true },
-  { text: 'За последние 30 дней', value: 'rewards.rewards_per_last_30_days', sortable: true },
+  { text: 'За 30\u{00a0}дней', value: 'rewards.rewards_per_last_30_days', sortable: true },
   { text: 'Всего наград', value: 'rewards.total_rewards', sortable: true },
 ]
 
@@ -42,21 +42,21 @@ const { width } = useWindowSize()
 
 <template>
   <main class="main">
-    <h2 class="page-header">Рейтинг покупателей</h2>
+    <h2 class="page-header">Рейтинг участников сообщества</h2>
     <menu class="bonus-shop__tabs list-to-menu">
       <li
         class="bonus-shop__tab"
         :class="{ active: currentTab === 'coins' }"
         @click="currentTab = 'coins'"
       >
-        Рейтинг по монетам
+        Монеты
       </li>
       <li
         class="bonus-shop__tab"
         :class="{ active: currentTab === 'awards' }"
         @click="currentTab = 'awards'"
       >
-        Рейтинг по наградам
+        Награды
       </li>
     </menu>
     <AlertBlock type="warning" v-if="width < 768">
@@ -77,15 +77,30 @@ const { width } = useWindowSize()
       empty-message="Нет данных"
       :loading="!items?.data.ratings"
       :buttons-pagination="width >= 570"
+      show-index
+      show-index-symbol="№"
     >
       <template #[`item-profile.tg_username`]="item">
         <div class="account">
           <img v-if="item.profile.tg_avatar" :src="item.profile.tg_avatar" class="avatar" />
+          <img v-else src="./../assets/icons/avatar-default.svg" class="avatar" />
           <span>{{ item.profile.tg_username }}</span>
         </div>
       </template>
       <template #[`item-profile.impact-account`]="item">
         {{ item.profile['impact-account'].split('.')[0] }}
+      </template>
+      <template #loading>
+        <div data-v-32683533="" class="vue3-easy-data-table__loading">
+          <div data-v-32683533="" class="vue3-easy-data-table__loading-mask"></div>
+          <div data-v-32683533="" class="loading-entity">
+            <div data-v-1fa3a520="" data-v-32683533="" class="lds-ring" style="--26774109: #67d2e9;">
+              <div data-v-1fa3a520=""></div><div data-v-1fa3a520=""></div>
+              <div data-v-1fa3a520=""></div><div data-v-1fa3a520=""></div>
+            </div>
+          </div>
+          <p style="margin-left: 10px">Загрузка данных занимает несколько секунд, подождите…</p>
+        </div>
       </template>
     </EasyDataTable>
     <EasyDataTable
@@ -103,15 +118,30 @@ const { width } = useWindowSize()
       empty-message="Нет данных"
       :loading="!items?.data.ratings"
       :buttons-pagination="width >= 570"
+      show-index
+      show-index-symbol="№"
     >
       <template #[`item-profile.tg_username`]="item">
         <div class="account">
           <img v-if="item.profile.tg_avatar" :src="item.profile.tg_avatar" class="avatar" />
+          <img v-else src="./../assets/icons/avatar-default.svg" class="avatar" />
           <span>{{ item.profile.tg_username }}</span>
         </div>
       </template>
       <template #[`item-profile.impact-account`]="item">
         {{ item.profile['impact-account'].split('.')[0] }}
+      </template>
+      <template #loading>
+        <div data-v-32683533="" class="vue3-easy-data-table__loading">
+          <div data-v-32683533="" class="vue3-easy-data-table__loading-mask"></div>
+          <div data-v-32683533="" class="loading-entity">
+            <div data-v-1fa3a520="" data-v-32683533="" class="lds-ring" style="--26774109: #67d2e9;">
+              <div data-v-1fa3a520=""></div><div data-v-1fa3a520=""></div>
+              <div data-v-1fa3a520=""></div><div data-v-1fa3a520=""></div>
+            </div>
+          </div>
+          <p style="margin-left: 10px">Загрузка данных занимает несколько секунд, подождите…</p>
+        </div>
       </template>
     </EasyDataTable>
   </main>
@@ -122,6 +152,7 @@ const { width } = useWindowSize()
   width: 32px;
   height: 32px;
   border-radius: 25%;
+  background-color: aliceblue;
 }
 .account {
   display: flex;
@@ -138,5 +169,19 @@ const { width } = useWindowSize()
 }
 .account {
   overflow-x: auto;
+}
+
+.account::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background-color: #aaa; /* or add it to the track */
+}
+
+.account::-webkit-scrollbar-thumb {
+  background: #727272;
+}
+
+.vue3-easy-data-table__body tr > td:nth-child(2) {
+  text-align: left !important;
 }
 </style>
