@@ -9,13 +9,13 @@ import AlertBlock from '@/components/AlertBlock.vue'
 
 const coinsHeaders: Header[] = [
   { text: 'Импакт-аккаунт', value: 'profile.impact-account', width: 100, fixed: true },
-  { text: 'Пользователь', value: 'profile.tg_username', sortable: true },
+  { text: 'Пользователь', value: 'profile.tg_username', sortable: true, width: 125 },
   { text: 'За эту неделю', value: 'coins.received_coins_per_current_week', sortable: true },
   { text: 'За последние 7 дней', value: 'coins.received_coins_per_last_7_days', sortable: true },
   { text: 'За текущий месяц', value: 'coins.received_coins_per_current_month', sortable: true },
   { text: 'За последние 30 дней', value: 'coins.received_coins_per_last_30_days', sortable: true },
-  { text: 'Всего денег', value: 'coins.total_received_coins', sortable: true },
-  { text: 'Баланс', value: 'profile.current_balance', sortable: true },
+  { text: 'Всего денег', value: 'coins.total_received_coins', sortable: true, width: 80 },
+  { text: 'Баланс', value: 'profile.current_balance', sortable: true, width: 70 },
 ]
 
 const awardsHeaders: Header[] = [
@@ -135,5 +135,8 @@ const { width } = useWindowSize()
 /* Нужно для корректного показа кнопок */
 .buttons-pagination > .button {
   all: unset;
+}
+.account {
+  overflow-x: auto;
 }
 </style>
