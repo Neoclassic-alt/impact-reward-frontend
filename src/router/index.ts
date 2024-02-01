@@ -50,6 +50,15 @@ const router = createRouter({
         requiresAuth: false,
       },
     },
+    {
+      path: '/account/rating',
+      name: 'Rating',
+      component: () => import('../views/SellerRating.vue'),
+      meta: {
+        menuItem: 'Rating',
+        requiresAuth: true,
+      },
+    },
   ],
 })
 
@@ -102,6 +111,9 @@ router.beforeEach(async (to) => {
   }
   if (to.meta.menuItem == 'BonusShop') {
     changeItem('bonusShop')
+  }
+  if (to.meta.menuItem == 'Rating') {
+    changeItem('rating')
   }
 })
 

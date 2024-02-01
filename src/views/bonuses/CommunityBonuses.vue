@@ -225,7 +225,6 @@ const currentBonus = computed(() =>
 }
 
 @media screen and (max-width: 768px) {
-  
   .bonus-group {
     flex-direction: column;
   }
@@ -250,10 +249,10 @@ const currentBonus = computed(() =>
     font-size: 0.9em;
   }
   .bonus-add__button.button:first-child {
-    margin-left: var(--base-margin)
+    margin-left: var(--base-margin);
   }
   .bonus-add__button.button:last-child {
-    margin-right: var(--base-margin)
+    margin-right: var(--base-margin);
   }
 }
 </style>

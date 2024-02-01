@@ -62,7 +62,6 @@ const { width } = useWindowSize()
 watch(isMenuOpen, (isOpen) => {
   document.documentElement.style.overflow = isOpen ? 'hidden' : 'visible'
 })
-
 </script>
 
 <template>
@@ -87,9 +86,12 @@ watch(isMenuOpen, (isOpen) => {
         <img src="../assets/icons/menu/stats.svg" /> <span class="nav__text">Статистика</span>
         <span class="soon-label">скоро</span>
       </li>
-      <li class="nav__item nav_in-development" :class="{ active: activeItem === 'rating' }">
+      <li
+        class="nav__item"
+        :class="{ active: activeItem === 'rating' }"
+        @click="GoToPageFromMenu('rating')"
+      >
         <img src="../assets/icons/menu/cup_with_star.svg" /> <span class="nav__text">Рейтинг</span>
-        <span class="soon-label">скоро</span>
       </li>
     </menu>
     <ul class="list-to-menu">
@@ -172,7 +174,7 @@ watch(isMenuOpen, (isOpen) => {
     width: 100svw;
     position: fixed;
     height: 100svh;
-    z-index: 2;
+    z-index: 4;
   }
 }
 

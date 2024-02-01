@@ -1,6 +1,8 @@
 import './assets/main.css'
 import axios from 'axios'
 import * as yup from 'yup'
+import Vue3EasyDataTable from 'vue3-easy-data-table'
+import 'vue3-easy-data-table/dist/style.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -15,6 +17,8 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(VueQueryPlugin)
+
+app.component('EasyDataTable', Vue3EasyDataTable)
 
 const BASE_API_URL = 'https://api.impact-reward.com/api'
 
