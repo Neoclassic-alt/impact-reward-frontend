@@ -18,7 +18,7 @@ const coinsHeaders: Header[] = [
   { text: 'Баланс', value: 'profile.current_balance', sortable: true, width: 70 },
 ]
 
-const awardsHeaders: Header[] = [
+const rewardsHeaders: Header[] = [
   { text: 'Импакт-аккаунт', value: 'profile.impact-account', width: 100, fixed: true },
   { text: 'Пользователь', value: 'profile.tg_username', sortable: true, width: 125 },
   { text: 'За эту неделю', value: 'rewards.rewards_per_current_week', sortable: true },
@@ -28,12 +28,33 @@ const awardsHeaders: Header[] = [
   { text: 'Всего наград', value: 'rewards.total_rewards', sortable: true },
 ]
 
-const { data: items } = useQuery({
-  queryKey: ['rating'],
-  queryFn: () => axios.get('/seller/ratings'),
+// TODO
+/*const bonusesHeaders: Header[] = [
+  { text: 'Импакт-аккаунт', value: 'profile.impact-account', width: 100, fixed: true },
+  { text: 'Пользователь', value: 'profile.tg_username', sortable: true, width: 125 },
+  { text: 'За эту неделю', value: 'bonuses.bonuses_per_current_week', sortable: true },
+  { text: 'За 7\u{00a0}дней', value: 'bonuses.bonuses_per_last_7_days', sortable: true },
+  { text: 'За текущий месяц', value: 'bonuses.bonuses_per_current_month', sortable: true },
+  { text: 'За 30\u{00a0}дней', value: 'bonuses.bonuses_per_last_30_days', sortable: true },
+  { text: 'Всего наград', value: 'bonuses.total_bonuses', sortable: true },
+]*/
+
+const { data: coinsItems } = useQuery({
+  queryKey: ['rating', 'rating_by_coins'],
+  queryFn: () => axios.get('/seller/rating_by_coins'),
 })
 
-type RatingTabs = 'coins' | 'awards'
+/*const { data: bonusesItems } = useQuery({
+  queryKey: ['rating', 'rating_by_bonuses'],
+  queryFn: () => axios.get('/seller/rating_by_bonuses'),
+})*/
+
+const { data: rewardsItems } = useQuery({
+  queryKey: ['rating', 'rating_by_rewards'],
+  queryFn: () => axios.get('/seller/rating_by_rewards'),
+})
+
+type RatingTabs = 'bonuses' | 'coins' | 'rewards'
 
 const currentTab = ref<RatingTabs>('coins')
 
@@ -51,10 +72,17 @@ const { width } = useWindowSize()
       >
         Монеты
       </li>
+      <!--<li
+        class="bonus-shop__tab"
+        :class="{ active: currentTab === 'bonuses' }"
+        @click="currentTab = 'bonuses'"
+      >
+        Бонусы
+      </li>-->
       <li
         class="bonus-shop__tab"
-        :class="{ active: currentTab === 'awards' }"
-        @click="currentTab = 'awards'"
+        :class="{ active: currentTab === 'rewards' }"
+        @click="currentTab = 'rewards'"
       >
         Награды
       </li>
@@ -65,7 +93,7 @@ const { width } = useWindowSize()
     <EasyDataTable
       v-show="currentTab == 'coins'"
       :headers="coinsHeaders"
-      :items="items?.data.ratings || []"
+      :items="coinsItems?.data.rating || []"
       header-text-direction="center"
       body-text-direction="center"
       border-cell
@@ -75,10 +103,12 @@ const { width } = useWindowSize()
       rows-of-page-separator-message="из"
       rows-per-page-message="Записей на странице:"
       empty-message="Нет данных"
-      :loading="!items?.data.ratings"
+      :loading="!coinsItems?.data.rating"
       :buttons-pagination="width >= 570"
       show-index
       show-index-symbol="№"
+      sort-by="coins.received_coins_per_last_30_days"
+      sort-type="desc"
     >
       <template #[`item-profile.tg_username`]="item">
         <div class="account">
@@ -104,9 +134,9 @@ const { width } = useWindowSize()
       </template>
     </EasyDataTable>
     <EasyDataTable
-      v-show="currentTab == 'awards'"
-      :headers="awardsHeaders"
-      :items="items?.data.ratings || []"
+      v-show="currentTab == 'rewards'"
+      :headers="rewardsHeaders"
+      :items="rewardsItems?.data.rating || []"
       header-text-direction="center"
       body-text-direction="center"
       border-cell
@@ -116,10 +146,12 @@ const { width } = useWindowSize()
       rows-of-page-separator-message="из"
       rows-per-page-message="Записей на странице:"
       empty-message="Нет данных"
-      :loading="!items?.data.ratings"
+      :loading="!rewardsItems?.data.rating"
       :buttons-pagination="width >= 570"
       show-index
       show-index-symbol="№"
+      sort-by="rewards.rewards_per_last_30_days"
+      sort-type="desc"
     >
       <template #[`item-profile.tg_username`]="item">
         <div class="account">
@@ -144,6 +176,49 @@ const { width } = useWindowSize()
         </div>
       </template>
     </EasyDataTable>
+    <!--<EasyDataTable
+      v-show="currentTab == 'bonuses'"
+      :headers="bonusesHeaders"
+      :items="bonusesItems?.data.rating || []"
+      header-text-direction="center"
+      body-text-direction="center"
+      border-cell
+      :rows-items="[15, 20, 25]"
+      theme-color="#67d2e9"
+      :rows-per-page="10"
+      rows-of-page-separator-message="из"
+      rows-per-page-message="Записей на странице:"
+      empty-message="Нет данных"
+      :loading="!bonusesItems?.data.rating"
+      :buttons-pagination="width >= 570"
+      show-index
+      show-index-symbol="№"
+      sort-by="bonuses.bonuses_per_last_30_days"
+      sort-type="desc"
+    >
+      <template #[`item-profile.tg_username`]="item">
+        <div class="account">
+          <img v-if="item.profile.tg_avatar" :src="item.profile.tg_avatar" class="avatar" />
+          <img v-else src="./../assets/icons/avatar-default.svg" class="avatar" />
+          <span>{{ item.profile.tg_username }}</span>
+        </div>
+      </template>
+      <template #[`item-profile.impact-account`]="item">
+        {{ item.profile['impact-account'].split('.')[0] }}
+      </template>
+      <template #loading>
+        <div data-v-32683533="" class="vue3-easy-data-table__loading">
+          <div data-v-32683533="" class="vue3-easy-data-table__loading-mask"></div>
+          <div data-v-32683533="" class="loading-entity">
+            <div data-v-1fa3a520="" data-v-32683533="" class="lds-ring" style="--26774109: #67d2e9;">
+              <div data-v-1fa3a520=""></div><div data-v-1fa3a520=""></div>
+              <div data-v-1fa3a520=""></div><div data-v-1fa3a520=""></div>
+            </div>
+          </div>
+          <p style="margin-left: 10px">Загрузка данных занимает несколько секунд, подождите…</p>
+        </div>
+      </template>
+    </EasyDataTable>-->
   </main>
 </template>
 
