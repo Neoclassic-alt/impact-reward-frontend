@@ -6,32 +6,35 @@ import { useQuery } from '@tanstack/vue-query'
 import './../assets/tabs.css'
 import { useWindowSize } from '@vueuse/core'
 import AlertBlock from '@/components/AlertBlock.vue'
+import VueMultiselect from 'vue-multiselect'
 
 const coinsHeaders: Header[] = [
-  { text: 'Импакт-аккаунт', value: 'profile.impact-account', width: 100, fixed: true },
-  { text: 'Пользователь', value: 'profile.tg_username', sortable: true, width: 125 },
-  { text: 'За эту неделю', value: 'coins.received_coins_per_current_week', sortable: true },
-  { text: `За 7\u{00a0}дней`, value: 'coins.received_coins_per_last_7_days', sortable: true },
-  { text: 'За текущий месяц', value: 'coins.received_coins_per_current_month', sortable: true },
-  { text: 'За 30\u{00a0}дней', value: 'coins.received_coins_per_last_30_days', sortable: true },
-  { text: 'Всего монет', value: 'coins.total_received_coins', sortable: true, width: 80 },
-  { text: 'Баланс', value: 'profile.current_balance', sortable: true, width: 70 },
+  { text: 'Импакт-аккаунт', value: 'profile.impact-account', fixed: true },
+  { text: 'Участник', value: 'profile.tg_username', sortable: true },
+  /*{ text: 'За эту неделю', value: 'coins.received_coins_per_current_week', sortable: true },*/
+  { text: `7 дней`, value: 'coins.received_coins_per_last_7_days', sortable: true },
+  /*{ text: 'За текущий месяц', value: 'coins.received_coins_per_current_month', sortable: true },*/
+  { text: '30 дней', value: 'coins.received_coins_per_last_30_days', sortable: true },
+  { text: '365 дней', value: 'todo', sortable: true },
+  { text: 'Всего монет', value: 'coins.total_received_coins', sortable: true },
+  { text: 'Баланс', value: 'profile.current_balance', sortable: true },
 ]
 
 const rewardsHeaders: Header[] = [
-  { text: 'Импакт-аккаунт', value: 'profile.impact-account', width: 100, fixed: true },
-  { text: 'Пользователь', value: 'profile.tg_username', sortable: true, width: 125 },
-  { text: 'За эту неделю', value: 'rewards.rewards_per_current_week', sortable: true },
-  { text: 'За 7\u{00a0}дней', value: 'rewards.rewards_per_last_7_days', sortable: true },
-  { text: 'За текущий месяц', value: 'rewards.rewards_per_current_month', sortable: true },
-  { text: 'За 30\u{00a0}дней', value: 'rewards.rewards_per_last_30_days', sortable: true },
+  { text: 'Импакт-аккаунт', value: 'profile.impact-account', fixed: true },
+  { text: 'Участник', value: 'profile.tg_username', sortable: true },
+  /*{ text: 'За эту неделю', value: 'rewards.rewards_per_current_week', sortable: true },*/
+  { text: '7 дней', value: 'rewards.rewards_per_last_7_days', sortable: true },
+  /*{ text: 'За текущий месяц', value: 'rewards.rewards_per_current_month', sortable: true },*/
+  { text: '30 дней', value: 'rewards.rewards_per_last_30_days', sortable: true },
+  { text: '365 дней', value: 'todo', sortable: true },
   { text: 'Всего наград', value: 'rewards.total_rewards', sortable: true },
 ]
 
 // TODO
 /*const bonusesHeaders: Header[] = [
   { text: 'Импакт-аккаунт', value: 'profile.impact-account', width: 100, fixed: true },
-  { text: 'Пользователь', value: 'profile.tg_username', sortable: true, width: 125 },
+  { text: 'Участник', value: 'profile.tg_username', sortable: true, width: 125 },
   { text: 'За эту неделю', value: 'bonuses.bonuses_per_current_week', sortable: true },
   { text: 'За 7\u{00a0}дней', value: 'bonuses.bonuses_per_last_7_days', sortable: true },
   { text: 'За текущий месяц', value: 'bonuses.bonuses_per_current_month', sortable: true },
@@ -41,7 +44,15 @@ const rewardsHeaders: Header[] = [
 
 const { data: coinsItems } = useQuery({
   queryKey: ['rating', 'rating_by_coins'],
-  queryFn: () => axios.get('/seller/rating_by_coins'),
+  queryFn: async () => {
+    const start = performance.now()
+    const res = await axios.get('/seller/rating_by_coins')
+    const time = performance.now() - start
+    console.log("Rating by coins", (time / 1000).toFixed(2), "s")
+    return res
+  },
+  refetchOnWindowFocus: false,
+  refetchOnReconnect: false,
 })
 
 /*const { data: bonusesItems } = useQuery({
@@ -51,7 +62,15 @@ const { data: coinsItems } = useQuery({
 
 const { data: rewardsItems } = useQuery({
   queryKey: ['rating', 'rating_by_rewards'],
-  queryFn: () => axios.get('/seller/rating_by_rewards'),
+  queryFn: async () => {
+    const start = performance.now()
+    const res = await axios.get('/seller/rating_by_rewards')
+    const time = performance.now() - start
+    console.log("Rating by rewards", (time / 1000).toFixed(2), "s")
+    return res
+  },
+  refetchOnWindowFocus: false,
+  refetchOnReconnect: false,
 })
 
 type RatingTabs = 'bonuses' | 'coins' | 'rewards'
@@ -59,11 +78,52 @@ type RatingTabs = 'bonuses' | 'coins' | 'rewards'
 const currentTab = ref<RatingTabs>('coins')
 
 const { width } = useWindowSize()
+
+const searchInput = ref<HTMLInputElement | null>(null)
+const searchValue = ref("")
+
+const selectedFields = ref([
+  { type: 'tg_username', russianLabel: 'Участник' },
+  { type: '7_days', russianLabel: '7 дней' },
+  { type: '30_days', russianLabel: '30 дней' },
+  { type: '365_days', russianLabel: '365 дней' },
+])
 </script>
 
 <template>
   <main class="main">
     <h2 class="page-header">Рейтинг участников сообщества</h2>
+    <div style="display: flex">
+      <div class="table-search" @click="searchInput?.focus()">
+        <img src="../assets/icons/search.svg" />
+        <input class="table-search__input" placeholder="Поиск участников в таблице" ref="searchInput" v-model="searchValue" maxlength="32" />
+      </div>
+      <VueMultiselect
+        v-model="selectedFields"
+        :options="[
+          { type: 'tg_username', russianLabel: 'Участник' },
+          { type: '7_days', russianLabel: '7 дней' },
+          { type: '30_days', russianLabel: '30 дней' },
+          { type: '365_days', russianLabel: '365 дней' },
+        ]"
+        :showLabels="false"
+        :searchable="false"
+        label="russianLabel"
+        track-by="type"
+        placeholder="Выберите поля"
+        style="width: 200px"
+        class="multiselect-custom"
+        :multiple="true"
+        :close-on-select="false"
+        :clear-on-select="false"
+      >
+        <template #selection="{ values }">
+          <span class="multiselect__single" v-if="values.length">
+            {{ values.length == 4 ? "Все" : values.length }} поля выбраны
+          </span>
+        </template>
+      </VueMultiselect>
+    </div>
     <menu class="bonus-shop__tabs list-to-menu">
       <li
         class="bonus-shop__tab"
@@ -97,6 +157,7 @@ const { width } = useWindowSize()
       header-text-direction="center"
       body-text-direction="center"
       border-cell
+      fixed-header
       :rows-items="[15, 20, 25]"
       theme-color="#67d2e9"
       :rows-per-page="10"
@@ -107,8 +168,13 @@ const { width } = useWindowSize()
       :buttons-pagination="width >= 570"
       show-index
       show-index-symbol="№"
+      :index-column-width="40"
       sort-by="coins.received_coins_per_last_30_days"
       sort-type="desc"
+      :table-min-height="100"
+      :prevent-context-menu-row="false"
+      search-field="profile.tg_username"
+      :search-value="searchValue"
     >
       <template #[`item-profile.tg_username`]="item">
         <div class="account">
@@ -140,6 +206,7 @@ const { width } = useWindowSize()
       header-text-direction="center"
       body-text-direction="center"
       border-cell
+      fixed-header
       :rows-items="[15, 20, 25]"
       theme-color="#67d2e9"
       :rows-per-page="10"
@@ -150,8 +217,13 @@ const { width } = useWindowSize()
       :buttons-pagination="width >= 570"
       show-index
       show-index-symbol="№"
+      :index-column-width="40"
       sort-by="rewards.rewards_per_last_30_days"
       sort-type="desc"
+      :table-min-height="100"
+      :prevent-context-menu-row="false"
+      search-field="profile.tg_username"
+      :search-value="searchValue"
     >
       <template #[`item-profile.tg_username`]="item">
         <div class="account">
@@ -228,6 +300,7 @@ const { width } = useWindowSize()
   height: 32px;
   border-radius: 25%;
   background-color: aliceblue;
+  user-select: none;
 }
 .account {
   display: flex;
@@ -235,6 +308,26 @@ const { width } = useWindowSize()
   gap: 10px;
   padding: 5px 0;
 }
+
+.table-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #999;
+  border-radius: 4px;
+  padding: 7px 10px;
+  margin-bottom: 25px;
+  cursor: text;
+  user-select: none;
+  width: 280px;
+}
+
+.table-search__input {
+  width: 100%;
+  border: none;
+  outline: none;
+}
+
 </style>
 
 <style>
@@ -242,9 +335,9 @@ const { width } = useWindowSize()
 .buttons-pagination > .button {
   all: unset;
 }
-.account {
+/*.account {
   overflow-x: auto;
-}
+}*/
 
 .account::-webkit-scrollbar {
   width: 5px;
@@ -256,7 +349,20 @@ const { width } = useWindowSize()
   background: #727272;
 }
 
-.vue3-easy-data-table__body tr > td:nth-child(2) {
+.vue3-easy-data-table__body td:nth-child(2) {
   text-align: left !important;
+}
+
+.vue3-easy-data-table__main.table-fixed table {
+  table-layout: auto;
+}
+
+
+.vue3-easy-data-table__header th {
+  white-space: nowrap;
+}
+
+.vue3-easy-data-table__body tr {
+  font-size: 13px !important;
 }
 </style>
