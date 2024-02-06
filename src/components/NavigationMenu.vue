@@ -126,6 +126,7 @@ watch(isMenuOpen, (isOpen) => {
   padding: 12px 20px;
   display: flex;
   align-items: center;
+  user-select: none;
 }
 
 .nav__item:not(.nav_in-development) {
