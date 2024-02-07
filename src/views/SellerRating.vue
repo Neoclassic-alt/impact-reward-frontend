@@ -165,8 +165,7 @@ onMounted(() => {
   const mouseover = (event: Event) => {
     const td = (event.target as HTMLElement)?.closest('td')
     if (
-      width.value > 768 &&
-      td &&
+      width.value > 768 && td?.children[0] &&
       td.children[0].classList.contains('account') &&
       td.clientWidth < td.scrollWidth
     ) {
