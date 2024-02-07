@@ -177,12 +177,11 @@ onMounted(() => {
         `top: ${Math.floor(top) + window.scrollY - 1}px; left: ${Math.floor(left) + window.scrollX - 1}px`,
       )
       document.body.append(newTd)
-      newTd.addEventListener('pointerout', () => {
+      newTd.addEventListener('pointerleave', () => {
         newTd.remove()
       })
-    }
+      }
   }
-
   tbody[0].addEventListener('pointerover', mouseover)
   tbody[1].addEventListener('pointerover', mouseover)
 })
@@ -379,7 +378,15 @@ onMounted(() => {
         <div class="account">
           <img v-if="item.profile.tg_avatar" :src="item.profile.tg_avatar" class="avatar" />
           <img v-else src="./../assets/icons/avatar-default.svg" class="avatar" />
-          <span>{{ item.profile.tg_username }}</span>
+          <span v-if="item.profile.tg_username">
+            <a
+              :href="`https://t.me/${item.profile.tg_username}`"
+              class="external-link"
+              target="_blank"
+              rel="noopener"
+              >{{ item.profile.tg_username }}</a
+            >
+          </span>
         </div>
       </template>
       <template #[`item-profile.impact-account`]="item">
