@@ -165,7 +165,7 @@ const onSubmit = handleSubmit((values) => {
           track-by="type"
           placeholder="Выберите значение"
           style="width: 150px"
-          class="multiselect-custom"
+          class="multiselect-custom multiselect-only-one"
         />
       </div>
       <label class="label">
