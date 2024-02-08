@@ -74,7 +74,7 @@ const { mutate, isError, isPending, isSuccess } = useMutation({
   mutationFn: (v: typeof initialValues) => axios.post('/seller/create_bonus_group', getRequest(v)),
   onSuccess: () => {
     router.push({
-      name: 'AddBonusGroup',
+      name: 'BonusShop',
       query: {
         message: 'bonus-group-added',
       },
