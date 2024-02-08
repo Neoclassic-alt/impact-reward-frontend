@@ -7,38 +7,30 @@ import './../assets/tabs.css'
 import { useWindowSize } from '@vueuse/core'
 import AlertBlock from '@/components/AlertBlock.vue'
 import VueMultiselect from 'vue-multiselect'
+import { monthNC } from '@/constants/months'
+
+const currentMonth = monthNC[(new Date).getMonth()]
 
 const coinsHeaders = computed<Header[]>(() => {
   const columns: Header[] = [
     { text: 'Импакт-аккаунт', value: 'profile.impact-account', fixed: true },
+    { text: 'Участник', value: 'profile.tg_username', sortable: true, width: 115 },
   ]
-  if (selectedFields.value.find((field) => field.type == 'tg_username')) {
-    columns.push({ text: 'Участник', value: 'profile.tg_username', sortable: true, width: 115 })
+  if (selectedFields.value.find((field) => field.type == '7_days')) {
+    columns.push({
+      text: `7 дней`,
+      value: 'coins.received_coins_per_last_7_days',
+      sortable: true,
+    })
   }
-  if (selectedFields.value.find((field) => field.type == '7_days/current_week')) {
-    if (dateMode.value == 'Период') {
-      columns.push({
-        text: 'Неделя',
-        value: 'coins.received_coins_per_current_week',
-        sortable: true,
-      })
-    }
-    if (dateMode.value == 'Последняя активность') {
-      columns.push({
-        text: `7 дней`,
-        value: 'coins.received_coins_per_last_7_days',
-        sortable: true,
-      })
-    }
+  if (selectedFields.value.find((field) => field.type == 'current_week')) {
+    columns.push({
+      text: 'Эта неделя',
+      value: 'coins.received_coins_per_current_week',
+      sortable: true,
+    })
   }
-  if (selectedFields.value.find((field) => field.type == '30_days/current_month')) {
-    if (dateMode.value == 'Период') {
-      columns.push({
-        text: 'Текущий месяц',
-        value: 'coins.received_coins_per_current_month',
-        sortable: true,
-      })
-    }
+  if (selectedFields.value.find((field) => field.type == '30_days')) {
     if (dateMode.value == 'Последняя активность') {
       columns.push({
         text: '30 дней',
@@ -47,56 +39,48 @@ const coinsHeaders = computed<Header[]>(() => {
       })
     }
   }
-  if (selectedFields.value.find((field) => field.type == 'total')) {
+  if (selectedFields.value.find((field) => field.type == 'current_month')) {
+    columns.push({
+      text: currentMonth,
+      value: 'coins.received_coins_per_current_month',
+      sortable: true,
+    })
+  }
+  if (selectedFields.value.find((field) => field.type == 'money_spent')) {
     columns.push({ text: 'Всего монет', value: 'coins.total_received_coins', sortable: true })
   }
-  columns.push({ text: 'Баланс', value: 'profile.current_balance', sortable: true })
+  if (selectedFields.value.find((field) => field.type == 'balance')) {
+    columns.push({ text: 'Баланс', value: 'profile.current_balance', sortable: true })
+  }
   return columns
 })
 
 const rewardsHeaders = computed<Header[]>(() => {
   const columns: Header[] = [
     { text: 'Импакт-аккаунт', value: 'profile.impact-account', fixed: true },
+    { text: 'Участник', value: 'profile.tg_username', sortable: true }
   ]
-  if (selectedFields.value.find((field) => field.type == 'tg_username')) {
-    columns.push({ text: 'Участник', value: 'profile.tg_username', sortable: true })
+  if (selectedFields.value.find((field) => field.type == '7_days')) {
+    columns.push({ text: `7 дней`, value: 'rewards.rewards_per_last_7_days', sortable: true })
   }
-  if (selectedFields.value.find((field) => field.type == '7_days/current_week')) {
-    if (dateMode.value == 'Период') {
-      columns.push({ text: 'Неделя', value: 'rewards.rewards_per_current_week', sortable: true })
-    }
-    if (dateMode.value == 'Последняя активность') {
-      columns.push({ text: `7 дней`, value: 'rewards.rewards_per_last_7_days', sortable: true })
-    }
+  if (selectedFields.value.find((field) => field.type == 'current_week')) {
+    columns.push({ text: 'Эта неделя', value: 'rewards.rewards_per_current_week', sortable: true })
   }
-  if (selectedFields.value.find((field) => field.type == '30_days/current_month')) {
-    if (dateMode.value == 'Период') {
-      columns.push({
-        text: 'Текущий месяц',
-        value: 'rewards.rewards_per_current_month',
-        sortable: true,
-      })
-    }
-    if (dateMode.value == 'Последняя активность') {
-      columns.push({ text: '30 дней', value: 'rewards.rewards_per_last_30_days', sortable: true })
-    }
+  if (selectedFields.value.find((field) => field.type == 'current_month')) {
+    columns.push({
+      text: currentMonth,
+      value: 'rewards.rewards_per_current_month',
+      sortable: true,
+    })
   }
-  if (selectedFields.value.find((field) => field.type == 'total')) {
+  if (selectedFields.value.find((field) => field.type == '30_days')) {
+    columns.push({ text: '30 дней', value: 'rewards.rewards_per_last_30_days', sortable: true })
+  }
+  if (selectedFields.value.find((field) => field.type == 'total_rewards')) {
     columns.push({ text: 'Всего наград', value: 'rewards.total_rewards', sortable: true })
   }
   return columns
 })
-
-// TODO
-/*const bonusesHeaders: Header[] = [
-  { text: 'Импакт-аккаунт', value: 'profile.impact-account', width: 100, fixed: true },
-  { text: 'Участник', value: 'profile.tg_username', sortable: true, width: 125 },
-  { text: 'За эту неделю', value: 'bonuses.bonuses_per_current_week', sortable: true },
-  { text: 'За 7\u{00a0}дней', value: 'bonuses.bonuses_per_last_7_days', sortable: true },
-  { text: 'За текущий месяц', value: 'bonuses.bonuses_per_current_month', sortable: true },
-  { text: 'За 30\u{00a0}дней', value: 'bonuses.bonuses_per_last_30_days', sortable: true },
-  { text: 'Всего наград', value: 'bonuses.total_bonuses', sortable: true },
-]*/
 
 const { data: coinsItems } = useQuery({
   queryKey: ['rating', 'rating_by_coins'],
@@ -110,11 +94,6 @@ const { data: coinsItems } = useQuery({
   refetchOnWindowFocus: false,
   refetchOnReconnect: false,
 })
-
-/*const { data: bonusesItems } = useQuery({
-  queryKey: ['rating', 'rating_by_bonuses'],
-  queryFn: () => axios.get('/seller/rating_by_bonuses'),
-})*/
 
 const { data: rewardsItems } = useQuery({
   queryKey: ['rating', 'rating_by_rewards'],
@@ -139,18 +118,11 @@ const searchInput = ref<HTMLInputElement | null>(null)
 const searchValue = ref('')
 
 const selectedFields = ref([
-  { type: 'tg_username', 'label.last_activity': 'Участник', 'label.period': 'Участник' },
-  {
-    type: '7_days/current_week',
-    'label.last_activity': '7 дней',
-    'label.period': 'Последняя неделя',
-  },
-  {
-    type: '30_days/current_month',
-    'label.last_activity': '30 дней',
-    'label.period': 'Последний месяц',
-  },
-  { type: 'total', 'label.last_activity': 'Всего', 'label.period': 'Всего' },
+  { type: '7_days', label: '7 дней' },
+  { type: '30_days', label: '30 дней' },
+  { type: 'money_spent', label: 'Всего монет', caption: 'Монеты' },
+  { type: 'balance', label: 'Баланс', caption: 'Монеты' },
+  { type: 'total_rewards', label: 'Всего наград', caption: 'Награды' },
 ])
 
 type dateModes = 'Период' | 'Последняя активность'
@@ -185,6 +157,24 @@ onMounted(() => {
   tbody[0].addEventListener('pointerover', mouseover)
   tbody[1].addEventListener('pointerover', mouseover)
 })
+
+const allOptions = [
+  { type: '7_days', label: '7 дней' },
+  { type: '30_days', label: '30 дней' },
+  { type: 'current_week', label: 'Эта неделя' },
+  { type: 'current_month', label: currentMonth },
+  { type: 'money_spent', label: 'Всего монет', caption: 'Монеты' },
+  { type: 'balance', label: 'Баланс', caption: 'Монеты' },
+  { type: 'total_rewards', label: 'Всего наград', caption: 'Награды' },
+]
+
+function toggleFields () {
+  if (selectedFields.value.length == 7) {
+    selectedFields.value = []
+  } else {
+    selectedFields.value = allOptions
+  }
+}
 </script>
 
 <template>
@@ -200,54 +190,64 @@ onMounted(() => {
           v-model="searchValue"
           maxlength="32"
         />
+        <img 
+          src="../assets/icons/close.svg" 
+          class="clear-input-button" 
+          v-show="searchValue" 
+          @click="searchValue = ''"
+        />
       </div>
-      <!--:showLabels="false"-->
       <VueMultiselect
         v-model="selectedFields"
         :options="[
-          { type: 'tg_username', 'label.last_activity': 'Участник', 'label.period': 'Участник' },
-          {
-            type: '7_days/current_week',
-            'label.last_activity': '7 дней',
-            'label.period': 'Последняя неделя',
-          },
-          {
-            type: '30_days/current_month',
-            'label.last_activity': '30 дней',
-            'label.period': 'Последний месяц',
-          },
-          { type: 'total', 'label.last_activity': 'Всего', 'label.period': 'Всего' },
+          { type: '7_days', label: '7 дней' },
+          { type: '30_days', label: '30 дней' },
+          { type: 'current_week', label: 'Эта неделя' },
+          { type: 'current_month', label: currentMonth },
+          { type: 'money_spent', label: 'Всего монет', caption: 'Монеты' },
+          { type: 'balance', label: 'Баланс', caption: 'Монеты' },
+          { type: 'total_rewards', label: 'Всего наград', caption: 'Награды' },
         ]"
         selectLabel="Показать"
         deselectLabel="Скрыть"
         selectedLabel=""
         :searchable="false"
-        :label="dateMode == 'Последняя активность' ? 'label.last_activity' : 'label.period'"
+        label="label"
         track-by="type"
         placeholder=""
         class="multiselect-custom multiselect-width"
         :multiple="true"
         :close-on-select="false"
+        :max-height="325"
       >
         <template #selection="{ values, isOpen }">
           <div style="display: flex; align-items: center; gap: 12px">
             <img src="../assets/icons/eye-slash.svg" height="20" />
             <span v-if="!isOpen">Показать/скрыть колонки</span>
             <span v-else>
-              <span v-if="values.length && values.length != 3">
+              <span v-if="values.length && values.length != 6">
                 {{
-                  values.length == 4
+                  values.length == 7
                     ? 'Все колонки показаны'
-                    : `${4 - values.length} колонки скрыты`
+                    : `${7 - values.length} колонки скрыты`
                 }}
               </span>
-              <span v-if="values.length == 3">1 колонка скрыта</span>
+              <span v-if="values.length == 6">1 колонка скрыта</span>
               <span v-if="!values.length">Все колонки скрыты</span>
             </span>
           </div>
         </template>
+        <template #option="{ option }">
+          <span>{{ option.label }}</span> <span v-if="option.caption" style="font-weight: 400; color: #999">({{ option.caption }})</span>
+        </template>
+        <template #beforeList>
+          <li class="multiselect__element custom-multiselect__element" @click="toggleFields">
+            <span class="multiselect__option" v-if="selectedFields.length != 7">Показать все колонки</span>
+            <span class="multiselect__option" v-else>Скрыть все колонки</span>
+          </li>
+        </template>
       </VueMultiselect>
-      <VueMultiselect
+      <!--<VueMultiselect
         v-model="dateMode"
         :options="['Последняя активность', 'Период']"
         :searchable="false"
@@ -261,7 +261,7 @@ onMounted(() => {
             <span>Выбрать вид активности</span>
           </div>
         </template>
-      </VueMultiselect>
+      </VueMultiselect>-->
     </div>
     <menu class="bonus-shop__tabs list-to-menu">
       <li
@@ -289,167 +289,128 @@ onMounted(() => {
     <AlertBlock type="warning" v-if="width < 768">
       Рекомендуется просматривать таблицу с&nbsp;компьютеров
     </AlertBlock>
-    <EasyDataTable
-      v-show="currentTab == 'coins'"
-      :headers="coinsHeaders"
-      :items="coinsItems?.data.rating || []"
-      header-text-direction="center"
-      body-text-direction="center"
-      border-cell
-      fixed-header
-      :rows-items="[15, 20, 25]"
-      theme-color="#67d2e9"
-      :rows-per-page="10"
-      rows-of-page-separator-message="из"
-      rows-per-page-message="Записей на странице:"
-      empty-message="Участники не найдены"
-      :loading="!coinsItems?.data.rating"
-      :buttons-pagination="width >= 570"
-      show-index
-      show-index-symbol="№"
-      :index-column-width="40"
-      sort-by="coins.received_coins_per_last_30_days"
-      sort-type="desc"
-      :table-min-height="100"
-      :prevent-context-menu-row="false"
-      search-field="profile.tg_username"
-      :search-value="searchValue"
-    >
-      <template #[`item-profile.tg_username`]="item">
-        <div class="account">
-          <img v-if="item.profile.tg_avatar" :src="item.profile.tg_avatar" class="avatar" />
-          <img v-else src="./../assets/icons/avatar-default.svg" class="avatar" />
-          <span v-if="item.profile.tg_username">
-            <a
-              :href="`https://t.me/${item.profile.tg_username}`"
-              class="external-link"
-              target="_blank"
-              rel="noopener"
-              >{{ item.profile.tg_username }}</a
-            >
-          </span>
-        </div>
-      </template>
-      <template #[`item-profile.impact-account`]="item">
-        {{ item.profile['impact-account'].split('.')[0] }}
-      </template>
-      <template #loading>
-        <div data-v-32683533="" class="vue3-easy-data-table__loading">
-          <div data-v-32683533="" class="vue3-easy-data-table__loading-mask"></div>
-          <div data-v-32683533="" class="loading-entity">
-            <div data-v-1fa3a520="" data-v-32683533="" class="lds-ring" style="--26774109: #67d2e9">
-              <div data-v-1fa3a520=""></div>
-              <div data-v-1fa3a520=""></div>
-              <div data-v-1fa3a520=""></div>
-              <div data-v-1fa3a520=""></div>
-            </div>
+    <div v-show="currentTab == 'coins'">
+      <EasyDataTable
+        :headers="coinsHeaders"
+        :items="coinsItems?.data.rating || []"
+        header-text-direction="center"
+        body-text-direction="center"
+        border-cell
+        fixed-header
+        :rows-items="[15, 20, 25]"
+        theme-color="#67d2e9"
+        :rows-per-page="10"
+        rows-of-page-separator-message="из"
+        rows-per-page-message="Записей на странице:"
+        empty-message="Участники не найдены"
+        :loading="!coinsItems?.data.rating"
+        :buttons-pagination="width >= 570"
+        show-index
+        show-index-symbol="№"
+        :index-column-width="40"
+        sort-by="coins.received_coins_per_last_30_days"
+        sort-type="desc"
+        :table-min-height="100"
+        :prevent-context-menu-row="false"
+        search-field="profile.tg_username"
+        :search-value="searchValue"
+      >
+        <template #[`item-profile.tg_username`]="item">
+          <div class="account">
+            <img v-if="item.profile.tg_avatar" :src="item.profile.tg_avatar" class="avatar" />
+            <img v-else src="./../assets/icons/avatar-default.svg" class="avatar" />
+            <span v-if="item.profile.tg_username">
+              <a
+                :href="`https://t.me/${item.profile.tg_username}`"
+                class="link"
+                target="_blank"
+                rel="noopener"
+                >{{ item.profile.tg_username }}</a
+              >
+            </span>
           </div>
-          <p style="margin-left: 10px">Загрузка данных занимает несколько секунд, подождите…</p>
-        </div>
-      </template>
-    </EasyDataTable>
-    <EasyDataTable
-      v-show="currentTab == 'rewards'"
-      :headers="rewardsHeaders"
-      :items="rewardsItems?.data.rating || []"
-      header-text-direction="center"
-      body-text-direction="center"
-      border-cell
-      fixed-header
-      :rows-items="[15, 20, 25]"
-      theme-color="#67d2e9"
-      :rows-per-page="10"
-      rows-of-page-separator-message="из"
-      rows-per-page-message="Записей на странице:"
-      empty-message="Участники не найдены"
-      :loading="!rewardsItems?.data.rating"
-      :buttons-pagination="width >= 570"
-      show-index
-      show-index-symbol="№"
-      :index-column-width="40"
-      sort-by="rewards.rewards_per_last_30_days"
-      sort-type="desc"
-      :table-min-height="100"
-      :prevent-context-menu-row="false"
-      search-field="profile.tg_username"
-      :search-value="searchValue"
-    >
-      <template #[`item-profile.tg_username`]="item">
-        <div class="account">
-          <img v-if="item.profile.tg_avatar" :src="item.profile.tg_avatar" class="avatar" />
-          <img v-else src="./../assets/icons/avatar-default.svg" class="avatar" />
-          <span v-if="item.profile.tg_username">
-            <a
-              :href="`https://t.me/${item.profile.tg_username}`"
-              class="external-link"
-              target="_blank"
-              rel="noopener"
-              >{{ item.profile.tg_username }}</a
-            >
-          </span>
-        </div>
-      </template>
-      <template #[`item-profile.impact-account`]="item">
-        {{ item.profile['impact-account'].split('.')[0] }}
-      </template>
-      <template #loading>
-        <div data-v-32683533="" class="vue3-easy-data-table__loading">
-          <div data-v-32683533="" class="vue3-easy-data-table__loading-mask"></div>
-          <div data-v-32683533="" class="loading-entity">
-            <div data-v-1fa3a520="" data-v-32683533="" class="lds-ring" style="--26774109: #67d2e9">
-              <div data-v-1fa3a520=""></div>
-              <div data-v-1fa3a520=""></div>
-              <div data-v-1fa3a520=""></div>
-              <div data-v-1fa3a520=""></div>
+        </template>
+        <template #[`item-profile.impact-account`]="item">
+          {{ item.profile['impact-account'].split('.')[0] }}
+        </template>
+        <template #loading>
+          <div data-v-32683533="" class="vue3-easy-data-table__loading">
+            <div data-v-32683533="" class="vue3-easy-data-table__loading-mask"></div>
+            <div data-v-32683533="" class="loading-entity">
+              <div data-v-1fa3a520="" data-v-32683533="" class="lds-ring" style="--26774109: #67d2e9">
+                <div data-v-1fa3a520=""></div>
+                <div data-v-1fa3a520=""></div>
+                <div data-v-1fa3a520=""></div>
+                <div data-v-1fa3a520=""></div>
+              </div>
             </div>
+            <p style="margin-left: 10px">Загрузка данных занимает несколько секунд, подождите…</p>
           </div>
-          <p style="margin-left: 10px">Загрузка данных занимает несколько секунд, подождите…</p>
-        </div>
-      </template>
-    </EasyDataTable>
-    <!--<EasyDataTable
-      v-show="currentTab == 'bonuses'"
-      :headers="bonusesHeaders"
-      :items="bonusesItems?.data.rating || []"
-      header-text-direction="center"
-      body-text-direction="center"
-      border-cell
-      :rows-items="[15, 20, 25]"
-      theme-color="#67d2e9"
-      :rows-per-page="10"
-      rows-of-page-separator-message="из"
-      rows-per-page-message="Записей на странице:"
-      empty-message="Нет данных"
-      :loading="!bonusesItems?.data.rating"
-      :buttons-pagination="width >= 570"
-      show-index
-      show-index-symbol="№"
-      sort-by="bonuses.bonuses_per_last_30_days"
-      sort-type="desc"
-    >
-      <template #[`item-profile.tg_username`]="item">
-        <div class="account">
-          <img v-if="item.profile.tg_avatar" :src="item.profile.tg_avatar" class="avatar" />
-          <img v-else src="./../assets/icons/avatar-default.svg" class="avatar" />
-          <span>{{ item.profile.tg_username }}</span>
-        </div>
-      </template>
-      <template #[`item-profile.impact-account`]="item">
-        {{ item.profile['impact-account'].split('.')[0] }}
-      </template>
-      <template #loading>
-        <div data-v-32683533="" class="vue3-easy-data-table__loading">
-          <div data-v-32683533="" class="vue3-easy-data-table__loading-mask"></div>
-          <div data-v-32683533="" class="loading-entity">
-            <div data-v-1fa3a520="" data-v-32683533="" class="lds-ring" style="--26774109: #67d2e9;">
-              <div data-v-1fa3a520=""></div><div data-v-1fa3a520=""></div>
-              <div data-v-1fa3a520=""></div><div data-v-1fa3a520=""></div>
+        </template>
+      </EasyDataTable>
+      <p style="margin-top: 25px">Рейтинг сформирован по количеству монет, полученных пользователями за соответствующий период.</p>
+    </div>
+    <div v-show="currentTab == 'rewards'">
+      <EasyDataTable
+        :headers="rewardsHeaders"
+        :items="rewardsItems?.data.rating || []"
+        header-text-direction="center"
+        body-text-direction="center"
+        border-cell
+        fixed-header
+        :rows-items="[15, 20, 25]"
+        theme-color="#67d2e9"
+        :rows-per-page="10"
+        rows-of-page-separator-message="из"
+        rows-per-page-message="Записей на странице:"
+        empty-message="Участники не найдены"
+        :loading="!rewardsItems?.data.rating"
+        :buttons-pagination="width >= 570"
+        show-index
+        show-index-symbol="№"
+        :index-column-width="40"
+        sort-by="rewards.rewards_per_last_30_days"
+        sort-type="desc"
+        :table-min-height="100"
+        :prevent-context-menu-row="false"
+        search-field="profile.tg_username"
+        :search-value="searchValue"
+      >
+        <template #[`item-profile.tg_username`]="item">
+          <div class="account">
+            <img v-if="item.profile.tg_avatar" :src="item.profile.tg_avatar" class="avatar" />
+            <img v-else src="./../assets/icons/avatar-default.svg" class="avatar" />
+            <span v-if="item.profile.tg_username">
+              <a
+                :href="`https://t.me/${item.profile.tg_username}`"
+                class="link"
+                target="_blank"
+                rel="noopener"
+                >{{ item.profile.tg_username }}</a
+              >
+            </span>
+          </div>
+        </template>
+        <template #[`item-profile.impact-account`]="item">
+          {{ item.profile['impact-account'].split('.')[0] }}
+        </template>
+        <template #loading>
+          <div data-v-32683533="" class="vue3-easy-data-table__loading">
+            <div data-v-32683533="" class="vue3-easy-data-table__loading-mask"></div>
+            <div data-v-32683533="" class="loading-entity">
+              <div data-v-1fa3a520="" data-v-32683533="" class="lds-ring" style="--26774109: #67d2e9">
+                <div data-v-1fa3a520=""></div>
+                <div data-v-1fa3a520=""></div>
+                <div data-v-1fa3a520=""></div>
+                <div data-v-1fa3a520=""></div>
+              </div>
             </div>
+            <p style="margin-left: 10px">Загрузка данных занимает несколько секунд, подождите…</p>
           </div>
-          <p style="margin-left: 10px">Загрузка данных занимает несколько секунд, подождите…</p>
-        </div>
-      </template>
-    </EasyDataTable>-->
+        </template>
+      </EasyDataTable>
+      <p style="margin-top: 25px">Рейтинг сформирован по количеству наград, полученных пользователями за соответствующий период.</p>
+    </div>
   </main>
 </template>
 
@@ -481,10 +442,10 @@ onMounted(() => {
   gap: 10px;
   border: 1px solid var(--brand-main-color);
   border-radius: 4px;
-  padding: 7px 10px;
+  padding: 7px 12px;
   cursor: text;
   user-select: none;
-  width: 300px;
+  width: 310px;
   box-sizing: border-box;
 }
 
@@ -495,23 +456,36 @@ onMounted(() => {
 }
 
 .multiselect-width {
-  width: fit-content;
+  width: 248px;
   box-sizing: border-box;
 }
 
-@media screen and (max-width: 1257px) {
+.custom-multiselect__element:hover {
+  background-color: #41b883;
+  color: #fff;
+}
+
+.clear-input-button {
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 980px) and (min-width: 769px) {
   .table-settings {
     margin-top: 25px;
   }
   .multiselect-width {
-    width: 300px;
+    width: 310px;
   }
 }
 
-@media screen and (max-width: 660px) {
+@media screen and (max-width: 624px) {
   .multiselect-width,
   .table-search {
     width: 100%;
+  }
+  .table-settings {
+    margin-top: 25px;
   }
 }
 </style>
@@ -521,9 +495,6 @@ onMounted(() => {
 .buttons-pagination > .button {
   all: unset;
 }
-/*.account {
-  overflow-x: auto;
-}*/
 
 .account::-webkit-scrollbar {
   width: 5px;
@@ -551,8 +522,20 @@ onMounted(() => {
   white-space: nowrap;
 }
 
+.vue3-easy-data-table__header th:nth-child(2) .direction-center {
+  justify-content: flex-start !important;
+}
+
+.vue3-easy-data-table__header th:nth-child(3) .direction-center {
+  justify-content: flex-start !important;
+}
+
+.vue3-easy-data-table__header th {
+  font-size: 14px !important;
+}
+
 .vue3-easy-data-table__body tr {
-  font-size: 13px !important;
+  font-size: 14px !important;
 }
 
 .multiselect-custom {
@@ -577,7 +560,11 @@ onMounted(() => {
   z-index: 4;
   background-color: white;
   border: 1px solid #e0e0e0;
-  font-size: 13px;
+  font-size: 14px;
   padding: 0 10px;
+}
+
+.main-margins {
+  max-width: 1300px;
 }
 </style>
