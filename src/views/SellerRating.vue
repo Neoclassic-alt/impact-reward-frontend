@@ -9,12 +9,12 @@ import AlertBlock from '@/components/AlertBlock.vue'
 import VueMultiselect from 'vue-multiselect'
 import { monthNC } from '@/constants/months'
 
-const currentMonth = monthNC[(new Date).getMonth()]
+const currentMonth = monthNC[new Date().getMonth()]
 
 const coinsHeaders = computed<Header[]>(() => {
   const columns: Header[] = [
     { text: 'Импакт-аккаунт', value: 'profile.impact-account', fixed: true },
-    { text: 'Участник', value: 'profile.tg_username', sortable: true, width: 115 },
+    { text: 'Участник', value: 'profile.tg_username', sortable: true },
   ]
   if (selectedFields.value.find((field) => field.type == '7_days')) {
     columns.push({
@@ -46,7 +46,7 @@ const coinsHeaders = computed<Header[]>(() => {
       sortable: true,
     })
   }
-  if (selectedFields.value.find((field) => field.type == 'money_spent')) {
+  if (selectedFields.value.find((field) => field.type == 'coins_spent')) {
     columns.push({ text: 'Всего монет', value: 'coins.total_received_coins', sortable: true })
   }
   if (selectedFields.value.find((field) => field.type == 'balance')) {
@@ -58,7 +58,7 @@ const coinsHeaders = computed<Header[]>(() => {
 const rewardsHeaders = computed<Header[]>(() => {
   const columns: Header[] = [
     { text: 'Импакт-аккаунт', value: 'profile.impact-account', fixed: true },
-    { text: 'Участник', value: 'profile.tg_username', sortable: true }
+    { text: 'Участник', value: 'profile.tg_username', sortable: true },
   ]
   if (selectedFields.value.find((field) => field.type == '7_days')) {
     columns.push({ text: `7 дней`, value: 'rewards.rewards_per_last_7_days', sortable: true })
@@ -120,7 +120,7 @@ const searchValue = ref('')
 const selectedFields = ref([
   { type: '7_days', label: '7 дней' },
   { type: '30_days', label: '30 дней' },
-  { type: 'money_spent', label: 'Всего монет', caption: 'Монеты' },
+  { type: 'coins_spent', label: 'Всего монет', caption: 'Монеты' },
   { type: 'balance', label: 'Баланс', caption: 'Монеты' },
   { type: 'total_rewards', label: 'Всего наград', caption: 'Награды' },
 ])
@@ -137,7 +137,7 @@ onMounted(() => {
   const mouseover = (event: Event) => {
     const td = (event.target as HTMLElement)?.closest('td')
     if (
-      width.value > 768 && td?.children[0] &&
+      td?.children[0] &&
       td.children[0].classList.contains('account') &&
       td.clientWidth < td.scrollWidth
     ) {
@@ -146,16 +146,36 @@ onMounted(() => {
       newTd.classList.add('td-over')
       newTd?.setAttribute(
         'style',
-        `top: ${Math.floor(top) + window.scrollY - 1}px; left: ${Math.floor(left) + window.scrollX - 1}px`,
+        `top: ${top + window.scrollY - 1}px; left: ${left + window.scrollX - 1}px`,
       )
+      newTd?.children[0].setAttribute('style', 'max-width: none')
+      newTd.dataset.clone = ''
       document.body.append(newTd)
-      newTd.addEventListener('pointerleave', () => {
-        newTd.remove()
-      })
-      }
+    }
   }
   tbody[0].addEventListener('pointerover', mouseover)
   tbody[1].addEventListener('pointerover', mouseover)
+
+  const removeClones = (event: Event) => {
+    const pointerEvent = event as PointerEvent
+    const newTds = document.querySelector('[data-clone]')
+    if (!newTds) return
+    const point = document.elementFromPoint(pointerEvent.clientX, pointerEvent.clientY)
+    const newTd2 = point?.closest('[data-clone]')
+    if (newTd2 != newTds) {
+      newTds.remove()
+    }
+  }
+
+  const removeClones2 = () => {
+    const newTds = document.querySelector('[data-clone]')
+    newTds?.remove()
+  }
+
+  document.addEventListener('pointermove', removeClones)
+  document.addEventListener('touchend', removeClones2)
+  document.addEventListener('touchmove', removeClones2)
+  document.addEventListener('scroll', removeClones2)
 })
 
 const allOptions = [
@@ -163,12 +183,18 @@ const allOptions = [
   { type: '30_days', label: '30 дней' },
   { type: 'current_week', label: 'Эта неделя' },
   { type: 'current_month', label: currentMonth },
-  { type: 'money_spent', label: 'Всего монет', caption: 'Монеты' },
-  { type: 'balance', label: 'Баланс', caption: 'Монеты' },
-  { type: 'total_rewards', label: 'Всего наград', caption: 'Награды' },
+  { type: 'coins_spent', label: 'Всего монет', rating: 'coins' },
+  { type: 'balance', label: 'Баланс', rating: 'coins' },
+  { type: 'total_rewards', label: 'Всего наград', rating: 'rewards' },
 ]
 
-function toggleFields () {
+const tableOptions = computed(() => {
+  return allOptions.filter(
+    (option) => option.rating === undefined || option.rating === currentTab.value,
+  )
+})
+
+function toggleFields() {
   if (selectedFields.value.length == 7) {
     selectedFields.value = []
   } else {
@@ -190,24 +216,16 @@ function toggleFields () {
           v-model="searchValue"
           maxlength="32"
         />
-        <img 
-          src="../assets/icons/close.svg" 
-          class="clear-input-button" 
-          v-show="searchValue" 
+        <img
+          src="../assets/icons/close.svg"
+          class="clear-input-button"
+          v-show="searchValue"
           @click="searchValue = ''"
         />
       </div>
       <VueMultiselect
         v-model="selectedFields"
-        :options="[
-          { type: '7_days', label: '7 дней' },
-          { type: '30_days', label: '30 дней' },
-          { type: 'current_week', label: 'Эта неделя' },
-          { type: 'current_month', label: currentMonth },
-          { type: 'money_spent', label: 'Всего монет', caption: 'Монеты' },
-          { type: 'balance', label: 'Баланс', caption: 'Монеты' },
-          { type: 'total_rewards', label: 'Всего наград', caption: 'Награды' },
-        ]"
+        :options="tableOptions"
         selectLabel="Показать"
         deselectLabel="Скрыть"
         selectedLabel=""
@@ -218,7 +236,6 @@ function toggleFields () {
         class="multiselect-custom multiselect-width"
         :multiple="true"
         :close-on-select="false"
-        :max-height="325"
       >
         <template #selection="{ values, isOpen }">
           <div style="display: flex; align-items: center; gap: 12px">
@@ -237,31 +254,15 @@ function toggleFields () {
             </span>
           </div>
         </template>
-        <template #option="{ option }">
-          <span>{{ option.label }}</span> <span v-if="option.caption" style="font-weight: 400; color: #999">({{ option.caption }})</span>
-        </template>
         <template #beforeList>
           <li class="multiselect__element custom-multiselect__element" @click="toggleFields">
-            <span class="multiselect__option" v-if="selectedFields.length != 7">Показать все колонки</span>
+            <span class="multiselect__option" v-if="selectedFields.length != 7"
+              >Показать все колонки</span
+            >
             <span class="multiselect__option" v-else>Скрыть все колонки</span>
           </li>
         </template>
       </VueMultiselect>
-      <!--<VueMultiselect
-        v-model="dateMode"
-        :options="['Последняя активность', 'Период']"
-        :searchable="false"
-        :showLabels="false"
-        :allow-empty="false"
-        class="multiselect-custom multiselect-only-one multiselect-mode multiselect-width"
-      >
-        <template #singleLabel>
-          <div style="display: inline-flex; align-items: center; gap: 12px">
-            <img src="../assets/icons/time-calendar.png" height="24" />
-            <span>Выбрать вид активности</span>
-          </div>
-        </template>
-      </VueMultiselect>-->
     </div>
     <menu class="bonus-shop__tabs list-to-menu">
       <li
@@ -271,13 +272,6 @@ function toggleFields () {
       >
         Монеты
       </li>
-      <!--<li
-        class="bonus-shop__tab"
-        :class="{ active: currentTab === 'bonuses' }"
-        @click="currentTab = 'bonuses'"
-      >
-        Бонусы
-      </li>-->
       <li
         class="bonus-shop__tab"
         :class="{ active: currentTab === 'rewards' }"
@@ -337,7 +331,12 @@ function toggleFields () {
           <div data-v-32683533="" class="vue3-easy-data-table__loading">
             <div data-v-32683533="" class="vue3-easy-data-table__loading-mask"></div>
             <div data-v-32683533="" class="loading-entity">
-              <div data-v-1fa3a520="" data-v-32683533="" class="lds-ring" style="--26774109: #67d2e9">
+              <div
+                data-v-1fa3a520=""
+                data-v-32683533=""
+                class="lds-ring"
+                style="--26774109: #67d2e9"
+              >
                 <div data-v-1fa3a520=""></div>
                 <div data-v-1fa3a520=""></div>
                 <div data-v-1fa3a520=""></div>
@@ -348,7 +347,10 @@ function toggleFields () {
           </div>
         </template>
       </EasyDataTable>
-      <p style="margin-top: 25px">Рейтинг сформирован по количеству монет, полученных пользователями за соответствующий период.</p>
+      <p style="margin-top: 25px">
+        Рейтинг сформирован по количеству монет, полученных пользователями за соответствующий
+        период.
+      </p>
     </div>
     <div v-show="currentTab == 'rewards'">
       <EasyDataTable
@@ -398,7 +400,12 @@ function toggleFields () {
           <div data-v-32683533="" class="vue3-easy-data-table__loading">
             <div data-v-32683533="" class="vue3-easy-data-table__loading-mask"></div>
             <div data-v-32683533="" class="loading-entity">
-              <div data-v-1fa3a520="" data-v-32683533="" class="lds-ring" style="--26774109: #67d2e9">
+              <div
+                data-v-1fa3a520=""
+                data-v-32683533=""
+                class="lds-ring"
+                style="--26774109: #67d2e9"
+              >
                 <div data-v-1fa3a520=""></div>
                 <div data-v-1fa3a520=""></div>
                 <div data-v-1fa3a520=""></div>
@@ -409,7 +416,10 @@ function toggleFields () {
           </div>
         </template>
       </EasyDataTable>
-      <p style="margin-top: 25px">Рейтинг сформирован по количеству наград, полученных пользователями за соответствующий период.</p>
+      <p style="margin-top: 25px">
+        Рейтинг сформирован по количеству наград, полученных пользователями за соответствующий
+        период.
+      </p>
     </div>
   </main>
 </template>
@@ -428,6 +438,7 @@ function toggleFields () {
   gap: 10px;
   padding: 5px 0;
   white-space: nowrap;
+  max-width: 145px;
 }
 .table-settings {
   display: flex;
@@ -456,7 +467,7 @@ function toggleFields () {
 }
 
 .multiselect-width {
-  width: 248px;
+  width: 260px;
   box-sizing: border-box;
 }
 
@@ -514,10 +525,6 @@ function toggleFields () {
   text-align: left !important;
 }
 
-.vue3-easy-data-table__main.table-fixed table {
-  table-layout: auto;
-}
-
 .vue3-easy-data-table__header th {
   white-space: nowrap;
 }
@@ -566,5 +573,9 @@ function toggleFields () {
 
 .main-margins {
   max-width: 1300px;
+}
+
+.table-fixed table {
+  table-layout: auto !important;
 }
 </style>
