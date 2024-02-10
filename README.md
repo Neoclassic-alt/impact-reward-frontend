@@ -6,22 +6,38 @@
 
 ### Функционал
 
-* Просмотр общей информации об аккаунте (Профиль, монетный двор, касса)
+* Просмотр общей информации об аккаунте (Профиль, Монетный двор, Касса)
 * Работа с бонусами
   * Просмотр информации о группах бонусов
   * Добавление групп бонусов
   * Удаление групп бонусов
   * Добавление бонусов в группу
+* Просмотр рейтинга участников сообщества
+  * Просмотр рейтинга по монетам и наградам
+  * Поиск участников
+  * Изменение видимости отдельных колонок
+  * Сортировка колонок
+  * Рейтинг составляется за 7 дней, 30 дней, текущий месяц и неделю
 
 ### Скриншоты системы
+***Кликните, чтобы увидеть полноразмерный скриншот***
 
-![](https://github.com/Neoclassic-alt/impact-reward-frontend/blob/main/screenshots/impact-reward1.png)
-
-![](https://github.com/Neoclassic-alt/impact-reward-frontend/blob/main/screenshots/impact-reward2.png)
+<div>
+ <img src="https://github.com/Neoclassic-alt/impact-reward-frontend/blob/main/screenshots/impact-reward1.png" width="54.5%" />
+ <img src="https://github.com/Neoclassic-alt/impact-reward-frontend/blob/main/screenshots/impact-reward2.png" width="44%"/>
+ <img src="https://github.com/Neoclassic-alt/impact-reward-frontend/blob/main/screenshots/impact-reward3.png" width="49%"/>
+ <img src="https://github.com/Neoclassic-alt/impact-reward-frontend/blob/main/screenshots/impact-reward4.png" width="49%"/>
+</div>
 
 ### Используемые технологии
 
 `Vue 3` (Composition API), `Vite`, `Vue Router`, `pinia`, `Vitest`, `TypeScript`, `axios`, `TanStack Query`, `eslint`, `prettier`
+
+### Используемые библиотеки
+
+- `vee-validate` (https://vee-validate.logaretm.com/v4)
+- `vue-multiselect` (https://vue-multiselect.js.org)
+- `vue3-easy-data-table` (https://hc200ok.github.io/vue3-easy-data-table-doc/)
 
 ## Дефолтная информация для запуска проекта
 
