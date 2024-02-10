@@ -291,7 +291,7 @@ function toggleFields() {
         body-text-direction="center"
         border-cell
         fixed-header
-        :rows-items="[15, 20, 25]"
+        :rows-items="[15, 20, 50, 100, 250]"
         theme-color="#67d2e9"
         :rows-per-page="10"
         rows-of-page-separator-message="из"
@@ -360,7 +360,7 @@ function toggleFields() {
         body-text-direction="center"
         border-cell
         fixed-header
-        :rows-items="[15, 20, 25]"
+        :rows-items="[15, 20, 50, 100, 250]"
         theme-color="#67d2e9"
         :rows-per-page="10"
         rows-of-page-separator-message="из"
