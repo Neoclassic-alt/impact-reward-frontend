@@ -93,6 +93,7 @@ watch(isMenuOpen, (isOpen) => {
   flex-direction: column;
   justify-content: space-between;
   position: relative; /* Для реализации прокрутки */
+  z-index: 4;
 }
 
 .nav__header {

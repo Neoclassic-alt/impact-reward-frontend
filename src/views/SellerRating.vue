@@ -466,8 +466,8 @@ onMounted(() => {
   padding: 0 10px;
 }
 
-.main-margins {
-  max-width: 1300px;
+.main {
+  max-width: 1100px;
 }
 
 .table-fixed table {
