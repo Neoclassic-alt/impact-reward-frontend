@@ -71,7 +71,7 @@ const { setAccountData, fetchLogin } = useAuthStore()
       <template #text>Причина: {{ errorMessage }}</template>
     </AlertBlock>
     <form @submit="onSubmit">
-      <label class="label">Импакт-аккаунт</label>
+      <label class="label" for="account">Импакт-аккаунт</label>
       <input
         type="text"
         class="input"
@@ -79,11 +79,12 @@ const { setAccountData, fetchLogin } = useAuthStore()
         autofocus
         v-model.trim="account"
         v-bind="accountAttrs"
+        id="account"
       />
       <span class="field-error" :class="{ 'error-show': errors.account }"
         >{{ errors.account }}&nbsp;</span
       >
-      <label class="label">Ключ активов</label>
+      <label class="label" for="password">Ключ активов</label>
       <input
         type="password"
         class="input"
@@ -91,6 +92,7 @@ const { setAccountData, fetchLogin } = useAuthStore()
         autofocus
         v-model="key"
         v-bind="keyAttrs"
+        id="password"
       />
       <span class="field-error" :class="{ 'error-show': errors.key }">{{ errors.key }}&nbsp;</span>
       <button class="button main-button" :disabled="isPending">

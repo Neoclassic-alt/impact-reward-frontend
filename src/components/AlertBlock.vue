@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import CloseIcon from 'vue-material-design-icons/Close.vue'
 
 const closed = ref(false)
 
 withDefaults(
   defineProps<{
     type?: 'error' | 'warning' | 'success' | 'info'
-    closable: boolean
+    closable?: boolean
     onClose?: () => void
   }>(),
   {
@@ -42,7 +43,7 @@ defineSlots<{
       </div>
     </div>
     <a href="#" @click="(closed = true), onClose?.()" v-if="closable">
-      <img src="../assets/icons/close.svg" />
+      <CloseIcon class="icon" />
     </a>
   </div>
 </template>

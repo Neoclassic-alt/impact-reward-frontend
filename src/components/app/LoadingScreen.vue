@@ -1,6 +1,6 @@
 <template>
   <div class="loading-screen">
-    <img src="../assets/icons/loading.svg" />
+    <img src="../../assets/icons/loading.svg" />
   </div>
 </template>
 

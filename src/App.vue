@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
-import NavigationMenu from '@/components/NavigationMenu.vue'
-import LoadingScreen from './components/LoadingScreen.vue'
+import NavigationMenu from '@/components/app/NavigationMenu.vue'
+import LoadingScreen from '@/components/app/LoadingScreen.vue'
 
 const router = useRouter()
 const isLoaded = ref(false)

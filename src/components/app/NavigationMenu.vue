@@ -6,6 +6,13 @@ import type { menuStates } from '@/types/pages'
 import { capitalizeFirstLetter } from '@/functions'
 import { useAuthStore, useMenuStore, useUserStore } from '@/stores'
 import { useWindowSize } from '@vueuse/core'
+import InformationOutlineIcon from 'vue-material-design-icons/InformationOutline.vue'
+import StoreIcon from 'vue-material-design-icons/Store.vue'
+import ChartBarIcon from 'vue-material-design-icons/ChartBar.vue'
+import TrophyAwardIcon from 'vue-material-design-icons/TrophyAward.vue'
+import LogoutIcon from 'vue-material-design-icons/Logout.vue'
+import MenuIcon from 'vue-material-design-icons/Menu.vue'
+import CloseIcon from 'vue-material-design-icons/Close.vue'
 
 const router = useRouter()
 
@@ -30,33 +37,6 @@ function GoToPageFromMenu(newItem: menuStates) {
   router.push({ name: capitalizeFirstLetter(newItem) })
 }
 
-// сделаем меню непрокручиваемым после шапки
-/*onMounted(() => {
-  const header = document.getElementById('header')! as HTMLDivElement
-  const nav = document.querySelector('.nav')! as HTMLDivElement
-  const footer = document.querySelector('.footer')! as HTMLDivElement
-  document.addEventListener('scroll', () => {
-    if (document.documentElement.clientWidth < 768) {
-      return
-    }
-    if (window.scrollY > header.offsetHeight) {
-      nav.style.top = window.scrollY - header.offsetHeight + 'px'
-      if (
-        document.documentElement.scrollHeight -
-          document.documentElement.clientHeight -
-          window.scrollY <
-        footer.offsetHeight
-      ) {
-        nav.style.height = document.documentElement.clientHeight - footer.offsetHeight + 'px'
-      } else {
-        nav.style.height = document.documentElement.clientHeight + 'px'
-      }
-    } else {
-      nav.style.top = '0'
-    }
-  })
-})*/
-
 const { width } = useWindowSize()
 
 watch(isMenuOpen, (isOpen) => {
@@ -73,17 +53,17 @@ watch(isMenuOpen, (isOpen) => {
         :class="{ active: activeItem === 'generalInfo' }"
         @click="GoToPageFromMenu('generalInfo')"
       >
-        <img src="../assets/icons/menu/info.svg" /><span class="nav__text">Информация</span>
+        <InformationOutlineIcon class="nav__icon" /><span class="nav__text">Информация</span>
       </li>
       <li
         class="nav__item"
         :class="{ active: activeItem === 'bonusShop' }"
         @click="GoToPageFromMenu('bonusShop')"
       >
-        <img src="../assets/icons/menu/shop.svg" /> <span class="nav__text">Магазин бонусов</span>
+        <StoreIcon class="nav__icon" /> <span class="nav__text">Магазин бонусов</span>
       </li>
       <li class="nav__item nav_in-development" :class="{ active: activeItem === 'stats' }">
-        <img src="../assets/icons/menu/stats.svg" /> <span class="nav__text">Статистика</span>
+        <ChartBarIcon /> <span class="nav__text">Статистика</span>
         <span class="soon-label">скоро</span>
       </li>
       <li
@@ -91,19 +71,18 @@ watch(isMenuOpen, (isOpen) => {
         :class="{ active: activeItem === 'rating' }"
         @click="GoToPageFromMenu('rating')"
       >
-        <img src="../assets/icons/menu/cup_with_star.svg" /> <span class="nav__text">Рейтинг</span>
+        <TrophyAwardIcon class="nav__icon" /> <span class="nav__text">Рейтинг</span>
       </li>
     </menu>
     <ul class="list-to-menu">
-      <li class="nav__item nav_danger" @click="logout">
-        <img src="../assets/icons/menu/logout.svg" style="display: block" />
-        <span class="nav__text" style="color: var(--danger-color)">Выйти</span>
+      <li class="nav__item nav_danger" @click="logout" style="color: var(--danger-color)">
+        <LogoutIcon class="nav__icon" /> <span class="nav__text">Выйти</span>
       </li>
     </ul>
   </nav>
   <a class="float-menu" href="#" @click="isMenuOpen = !isMenuOpen">
-    <img src="../assets/icons/menu-hamburger.svg" style="display: block" v-if="!isMenuOpen" />
-    <img src="../assets/icons/menu-close.svg" style="display: block" v-else />
+    <MenuIcon style="display: block" v-if="!isMenuOpen" fillColor="white" />
+    <CloseIcon style="display: block" v-else fillColor="white" />
   </a>
 </template>
 
@@ -148,6 +127,10 @@ watch(isMenuOpen, (isOpen) => {
   font-weight: 500;
   text-wrap: nowrap;
   user-select: none;
+}
+
+.nav__icon {
+  height: 24px;
 }
 
 .active {
