@@ -89,119 +89,121 @@ const onSubmit = handleSubmit((values) => {
 </script>
 
 <template>
-  <main class="main add-bonus-form">
-    <h2 class="page-header">Добавить группу бонусов</h2>
-    <a
-      href="#"
-      class="link flex-center"
-      @click.prevent="$router.back()"
-      style="margin-bottom: var(--base-margin)"
-    >
-      <img src="./../../assets/icons/arrow-left.svg" style="margin-right: 8px" />
-      <span>Назад к магазину бонусов</span>
-    </a>
-    <form @submit="onSubmit" autocomplete="off">
-      <h3 class="form-fieldset-title">Что увидит покупатель до оплаты</h3>
-      <p class="label" style="margin-bottom: 1em; font-size: 1em">
-        Номинал: <b>{{ price }}</b>
-      </p>
-      <p class="complex-label">
-        <label class="label">Название</label>
-        <span class="symbols-count">{{ title.length }}/40</span>
-      </p>
-      <input
-        type="text"
-        class="input"
-        :class="{ 'input-error': errors.title }"
-        autofocus
-        v-model.trim="title"
-        v-bind="titleAttrs"
-      />
-      <!-- Неразрывный пробел добавляется лишь, чтобы браузер не думал, что field-error - пустой элемент -->
-      <span class="field-error" :class="{ 'error-show': errors.title }"
-        >{{ errors.title }}&nbsp;</span
+  <main class="main">
+    <div class="add-bonus-form">
+      <h2 class="page-header">Добавить группу бонусов</h2>
+      <a
+        href="#"
+        class="link flex-center"
+        @click.prevent="$router.back()"
+        style="margin-bottom: var(--base-margin)"
       >
-      <p class="complex-label">
-        <label class="label">Описание</label>
-        <span class="symbols-count">{{ description.length }}/100</span>
-      </p>
-      <textarea
-        class="textarea"
-        rows="3"
-        :class="{ 'input-error': errors.description }"
-        v-model="description"
-        v-bind="descriptionAttrs"
-      ></textarea>
-      <span class="field-error" :class="{ 'error-show': errors.description }"
-        >{{ errors.description }}&nbsp;</span
-      >
-      <h3 class="form-fieldset-title">Что увидит покупатель после оплаты</h3>
-      <p class="complex-label">
-        <label class="label">Инструкция</label>
-        <span class="symbols-count">{{ instruction.length }}/150</span>
-      </p>
-      <textarea
-        class="textarea"
-        rows="3"
-        v-model.trim="instruction"
-        v-bind="instructionAttrs"
-        :class="{ 'input-error': errors.instruction }"
-      ></textarea>
-      <span class="field-error" :class="{ 'error-show': errors.instruction }"
-        >{{ errors.instruction }}&nbsp;</span
-      >
-      <div class="flex-center" style="margin-bottom: 1em">
-        <label class="label" style="margin-bottom: 2px">Тип</label>
-        <VueMultiselect
-          v-model.trim="bonusType"
-          :options="[
-            { type: 'link', russianLabel: 'Ссылка' },
-            { type: 'promocode', russianLabel: 'Промокод' },
-          ]"
-          :searchable="false"
-          :allow-empty="false"
-          :showLabels="false"
-          label="russianLabel"
-          track-by="type"
-          placeholder="Выберите значение"
-          style="width: 150px"
-          class="multiselect-custom multiselect-only-one"
+        <img src="./../../assets/icons/arrow-left.svg" style="margin-right: 8px" />
+        <span>Назад к магазину бонусов</span>
+      </a>
+      <form @submit="onSubmit" autocomplete="off">
+        <h3 class="form-fieldset-title">Что увидит покупатель до оплаты</h3>
+        <p class="label" style="margin-bottom: 1em; font-size: 1em">
+          Номинал: <b>{{ price }}</b>
+        </p>
+        <p class="complex-label">
+          <label class="label">Название</label>
+          <span class="symbols-count">{{ title.length }}/40</span>
+        </p>
+        <input
+          type="text"
+          class="input"
+          :class="{ 'input-error': errors.title }"
+          autofocus
+          v-model.trim="title"
+          v-bind="titleAttrs"
         />
-      </div>
-      <label class="label">
-        {{ bonusType.type == 'link' ? 'Ссылки' : '' }}
-        {{ bonusType.type == 'promocode' ? 'Промокоды' : '' }} через пробел
-      </label>
-      <textarea
-        class="textarea"
-        rows="5"
-        spellcheck="false"
-        v-model.trim="bonuses"
-        v-bind="bonusesAttrs"
-        :class="{ 'input-error': errors.bonuses }"
-      ></textarea>
-      <p class="field-description" v-show="!errors?.bonuses">{{ words }}/20 слов</p>
-      <span class="field-error" :class="{ 'error-show': errors.bonuses }">{{ errors.bonuses }}</span
-      ><!-- Неразрывный пробел убран -->
-      <AlertBlock type="error" style="width: 450px; box-sizing: border-box" v-if="isError"
-        >Ошибка при добавлении группы бонусов. Попробуйте добавить заново</AlertBlock
-      >
-      <button class="button main-button" :disabled="isPending || isSuccess">
-        <img
-          src="./../../assets/icons/button-loading.svg"
-          style="margin-right: 5px"
-          v-show="isPending"
-        />
-        <span>{{ isPending ? 'Добавляем…' : 'Добавить группу бонусов' }}</span>
-      </button>
-    </form>
+        <!-- Неразрывный пробел добавляется лишь, чтобы браузер не думал, что field-error - пустой элемент -->
+        <span class="field-error" :class="{ 'error-show': errors.title }"
+          >{{ errors.title }}&nbsp;</span
+        >
+        <p class="complex-label">
+          <label class="label">Описание</label>
+          <span class="symbols-count">{{ description.length }}/100</span>
+        </p>
+        <textarea
+          class="textarea"
+          rows="3"
+          :class="{ 'input-error': errors.description }"
+          v-model="description"
+          v-bind="descriptionAttrs"
+        ></textarea>
+        <span class="field-error" :class="{ 'error-show': errors.description }"
+          >{{ errors.description }}&nbsp;</span
+        >
+        <h3 class="form-fieldset-title">Что увидит покупатель после оплаты</h3>
+        <p class="complex-label">
+          <label class="label">Инструкция</label>
+          <span class="symbols-count">{{ instruction.length }}/150</span>
+        </p>
+        <textarea
+          class="textarea"
+          rows="3"
+          v-model.trim="instruction"
+          v-bind="instructionAttrs"
+          :class="{ 'input-error': errors.instruction }"
+        ></textarea>
+        <span class="field-error" :class="{ 'error-show': errors.instruction }"
+          >{{ errors.instruction }}&nbsp;</span
+        >
+        <div class="flex-center" style="margin-bottom: 1em">
+          <label class="label" style="margin-bottom: 2px">Тип</label>
+          <VueMultiselect
+            v-model.trim="bonusType"
+            :options="[
+              { type: 'link', russianLabel: 'Ссылка' },
+              { type: 'promocode', russianLabel: 'Промокод' },
+            ]"
+            :searchable="false"
+            :allow-empty="false"
+            :showLabels="false"
+            label="russianLabel"
+            track-by="type"
+            placeholder="Выберите значение"
+            style="width: 150px"
+            class="multiselect-custom multiselect-only-one"
+          />
+        </div>
+        <label class="label">
+          {{ bonusType.type == 'link' ? 'Ссылки' : '' }}
+          {{ bonusType.type == 'promocode' ? 'Промокоды' : '' }} через пробел
+        </label>
+        <textarea
+          class="textarea"
+          rows="5"
+          spellcheck="false"
+          v-model.trim="bonuses"
+          v-bind="bonusesAttrs"
+          :class="{ 'input-error': errors.bonuses }"
+        ></textarea>
+        <p class="field-description" v-show="!errors?.bonuses">{{ words }}/20 слов</p>
+        <span class="field-error" :class="{ 'error-show': errors.bonuses }">{{ errors.bonuses }}</span
+        ><!-- Неразрывный пробел убран -->
+        <AlertBlock type="error" style="width: 450px; box-sizing: border-box" v-if="isError"
+          >Ошибка при добавлении группы бонусов. Попробуйте добавить заново</AlertBlock
+        >
+        <button class="button main-button" :disabled="isPending || isSuccess">
+          <img
+            src="./../../assets/icons/button-loading.svg"
+            style="margin-right: 5px"
+            v-show="isPending"
+          />
+          <span>{{ isPending ? 'Добавляем…' : 'Добавить группу бонусов' }}</span>
+        </button>
+      </form>
+    </div>
   </main>
 </template>
 
 <style scoped>
 .add-bonus-form {
-  margin: var(--base-margin) 0;
   max-width: 450px;
+  z-index: 3;
 }
 .form-fieldset-title {
   margin-block-end: 1.3em;

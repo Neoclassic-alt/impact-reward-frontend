@@ -22,8 +22,12 @@ onMounted(async () => {
   </header>
   <div class="container">
     <NavigationMenu v-if="$route.meta.requiresAuth === true" />
-    <div class="main-margins">
-      <RouterView />
+    <div class="wrapper">
+      <router-view v-slot="{ Component, route }">
+        <transition :name="route.meta.transition || 'fade'" :mode="route.meta.transition == 'slide' ? 'default' : 'out-in'">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </div>
   </div>
   <footer class="footer">
@@ -69,6 +73,11 @@ onMounted(async () => {
   display: flex;
   min-height: calc(100vh - 160px);
 }
+
+.wrapper {
+  width: 100%;
+  position: relative;
+}
 .footer {
   background: rgb(44, 49, 50);
   padding-top: 100px;
@@ -104,5 +113,47 @@ onMounted(async () => {
   .header__logo {
     height: 40px;
   }
+}
+
+/* Transition */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 1s ease-out;
+}
+
+.slide-enter-to {
+  position: absolute;
+  left: 0;
+}
+
+.slide-enter-from {
+  position: absolute;
+  left: 100%;
+}
+
+.slide-leave-to {
+  position: absolute;
+  left: -100%;
+}
+
+.slide-leave-from {
+  position: absolute;
+  left: 0;
+}
+</style>
+
+<style>
+.wrapper:has(.slide-leave-to) {
+  height: 920px;
 }
 </style>

@@ -7,6 +7,12 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/',
+      redirect: () => {
+        return { name: 'GeneralInfo' }
+      }
+    },
+    {
       path: '/account',
       name: 'GeneralInfo',
       component: GeneralInfo,
@@ -41,6 +47,11 @@ const router = createRouter({
         menuItem: 'BonusShop',
         requiresAuth: true,
       },
+      beforeEnter: (to, from) => {
+        if (from.name === 'BonusShop') {
+          to.meta.transition = 'slide'
+        }
+      }
     },
     {
       path: '/login',
@@ -77,9 +88,6 @@ const nonSeller = {
 }
 
 router.beforeEach(async (to) => {
-  if (to.path === '/') {
-    return { name: 'GeneralInfo' }
-  }
   const authStore = useAuthStore()
   const userInfoStore = useUserStore()
   const { userInfo } = storeToRefs(userInfoStore)
