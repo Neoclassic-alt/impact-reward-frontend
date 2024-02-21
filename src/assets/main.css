@@ -10,6 +10,10 @@
   margin-bottom: var(--base-margin);
 }
 
+.icon {
+  height: 24px;
+}
+
 @media screen and (min-width: 768px) {
   .main-margins {
     width: calc(100vw - var(--menu-width));

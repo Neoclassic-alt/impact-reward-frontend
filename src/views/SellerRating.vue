@@ -4,12 +4,35 @@ import type { Header } from 'vue3-easy-data-table'
 import axios from 'axios'
 import { useQuery } from '@tanstack/vue-query'
 import './../assets/tabs.css'
-import { useWindowSize } from '@vueuse/core'
 import AlertBlock from '@/components/AlertBlock.vue'
 import VueMultiselect from 'vue-multiselect'
 import { monthNC } from '@/constants/months'
+import RatingTable from '@/components/rating/RatingTable.vue'
+import expandCell from '@/functions/rating/expandCell'
+
+import MagnifyIcon from 'vue-material-design-icons/Magnify.vue'
+import EyeOffIcon from 'vue-material-design-icons/EyeOff.vue'
+import CloseIcon from 'vue-material-design-icons/Close.vue'
 
 const currentMonth = monthNC[new Date().getMonth()]
+
+/* Разработка API для такой функции, возвращающей computed<Header[]> */
+/* generateColumns({
+    '7_days': 'bonuses.spent_per_last_7_days',
+    current_week: 'bonuses.spent_per_current_week',
+    current_month: 'rewards.spent_per_current_month',
+    '30_days': 'bonuses.spent_per_last_30_days',
+    total_spent: {
+      label: 'Потрачено монет',
+      value: 'bonuses.total_spent',
+      sortable: true
+    }
+})
+ */
+
+/*interface IGeneratorOptions {
+  [key: string]: string | Header;
+}*/
 
 const coinsHeaders = computed<Header[]>(() => {
   const columns: Header[] = [
@@ -31,13 +54,11 @@ const coinsHeaders = computed<Header[]>(() => {
     })
   }
   if (selectedFields.value.find((field) => field.type == '30_days')) {
-    if (dateMode.value == 'Последняя активность') {
-      columns.push({
-        text: '30 дней',
-        value: 'coins.received_coins_per_last_30_days',
-        sortable: true,
-      })
-    }
+    columns.push({
+      text: '30 дней',
+      value: 'coins.received_coins_per_last_30_days',
+      sortable: true,
+    })
   }
   if (selectedFields.value.find((field) => field.type == 'current_month')) {
     columns.push({
@@ -82,6 +103,29 @@ const rewardsHeaders = computed<Header[]>(() => {
   return columns
 })
 
+const bonusesHeaders = computed<Header[]>(() => {
+  const columns: Header[] = [
+    { text: 'Импакт-аккаунт', value: 'profile.impact-account', fixed: true },
+    { text: 'Участник', value: 'profile.tg_username', sortable: true },
+  ]
+  if (selectedFields.value.find((field) => field.type == '7_days')) {
+    columns.push({ text: `7 дней`, value: 'bonuses.spent_per_last_7_days', sortable: true })
+  }
+  if (selectedFields.value.find((field) => field.type == 'current_week')) {
+    columns.push({ text: 'Эта неделя', value: 'bonuses.spent_per_current_week', sortable: true })
+  }
+  if (selectedFields.value.find((field) => field.type == 'current_month')) {
+    columns.push({ text: currentMonth, value: 'rewards.spent_per_current_month', sortable: true })
+  }
+  if (selectedFields.value.find((field) => field.type == '30_days')) {
+    columns.push({ text: '30 дней', value: 'bonuses.spent_per_last_30_days', sortable: true })
+  }
+  if (selectedFields.value.find((field) => field.type == 'total_spent')) {
+    columns.push({ text: 'Потрачено монет', value: 'bonuses.total_spent', sortable: true })
+  }
+  return columns
+})
+
 const { data: coinsItems } = useQuery({
   queryKey: ['rating', 'rating_by_coins'],
   queryFn: async () => {
@@ -108,11 +152,22 @@ const { data: rewardsItems } = useQuery({
   refetchOnReconnect: false,
 })
 
+const { data: bonusesItems } = useQuery({
+  queryKey: ['rating', 'rating_by_bonuses'],
+  queryFn: async () => {
+    const start = performance.now()
+    const res = await axios.get('/seller/rating_by_bonuses')
+    const time = performance.now() - start
+    console.log('Rating by bonuses', (time / 1000).toFixed(2), 's')
+    return res
+  },
+  refetchOnWindowFocus: false,
+  refetchOnReconnect: false,
+})
+
 type RatingTabs = 'bonuses' | 'coins' | 'rewards'
 
 const currentTab = ref<RatingTabs>('coins')
-
-const { width } = useWindowSize()
 
 const searchInput = ref<HTMLInputElement | null>(null)
 const searchValue = ref('')
@@ -123,60 +178,8 @@ const selectedFields = ref([
   { type: 'coins_spent', label: 'Всего монет', caption: 'Монеты' },
   { type: 'balance', label: 'Баланс', caption: 'Монеты' },
   { type: 'total_rewards', label: 'Всего наград', caption: 'Награды' },
+  { type: 'total_spent', label: 'Потрачено монет', rating: 'bonuses' },
 ])
-
-type dateModes = 'Период' | 'Последняя активность'
-
-const dateMode = ref<dateModes>('Последняя активность')
-
-// Увеличение ячейки пользоавателя при наведении на неё
-
-onMounted(() => {
-  const tbody = document.querySelectorAll('.vue3-easy-data-table__body')
-
-  const mouseover = (event: Event) => {
-    const td = (event.target as HTMLElement)?.closest('td')
-    if (
-      td?.children[0] &&
-      td.children[0].classList.contains('account') &&
-      td.clientWidth < td.scrollWidth
-    ) {
-      const { top, left } = td.getBoundingClientRect()
-      const newTd = td.cloneNode(true) as HTMLElement
-      newTd.classList.add('td-over')
-      newTd?.setAttribute(
-        'style',
-        `top: ${top + window.scrollY - 1}px; left: ${left + window.scrollX - 1}px`,
-      )
-      newTd?.children[0].setAttribute('style', 'max-width: none')
-      newTd.dataset.clone = ''
-      document.body.append(newTd)
-    }
-  }
-  tbody[0].addEventListener('pointerover', mouseover)
-  tbody[1].addEventListener('pointerover', mouseover)
-
-  const removeClones = (event: Event) => {
-    const pointerEvent = event as PointerEvent
-    const newTds = document.querySelector('[data-clone]')
-    if (!newTds) return
-    const point = document.elementFromPoint(pointerEvent.clientX, pointerEvent.clientY)
-    const newTd2 = point?.closest('[data-clone]')
-    if (newTd2 != newTds) {
-      newTds.remove()
-    }
-  }
-
-  const removeClones2 = () => {
-    const newTds = document.querySelector('[data-clone]')
-    newTds?.remove()
-  }
-
-  document.addEventListener('pointermove', removeClones)
-  document.addEventListener('touchend', removeClones2)
-  document.addEventListener('touchmove', removeClones2)
-  document.addEventListener('scroll', removeClones2)
-})
 
 const allOptions = [
   { type: '7_days', label: '7 дней' },
@@ -186,6 +189,7 @@ const allOptions = [
   { type: 'coins_spent', label: 'Всего монет', rating: 'coins' },
   { type: 'balance', label: 'Баланс', rating: 'coins' },
   { type: 'total_rewards', label: 'Всего наград', rating: 'rewards' },
+  { type: 'total_spent', label: 'Потрачено монет', rating: 'bonuses' },
 ]
 
 const tableOptions = computed(() => {
@@ -195,12 +199,16 @@ const tableOptions = computed(() => {
 })
 
 function toggleFields() {
-  if (selectedFields.value.length == 7) {
+  if (selectedFields.value.length == allOptions.length) {
     selectedFields.value = []
   } else {
     selectedFields.value = allOptions
   }
 }
+
+onMounted(() => {
+  expandCell()
+})
 </script>
 
 <template>
@@ -208,7 +216,7 @@ function toggleFields() {
     <h2 class="page-header">Рейтинг участников сообщества</h2>
     <div class="table-settings">
       <div class="table-search" @click="searchInput?.focus()">
-        <img src="../assets/icons/search.svg" />
+        <MagnifyIcon fillColor="#999999" style="height: 24px" />
         <input
           class="table-search__input"
           placeholder="Поиск участников в таблице"
@@ -216,9 +224,8 @@ function toggleFields() {
           v-model="searchValue"
           maxlength="32"
         />
-        <img
-          src="../assets/icons/close.svg"
-          class="clear-input-button"
+        <CloseIcon 
+          class="clear-input-button icon"
           v-show="searchValue"
           @click="searchValue = ''"
         />
@@ -239,24 +246,24 @@ function toggleFields() {
       >
         <template #selection="{ values, isOpen }">
           <div style="display: flex; align-items: center; gap: 12px">
-            <img src="../assets/icons/eye-slash.svg" height="20" />
+            <EyeOffIcon fillColor="#999999" style="height: 24px" />
             <span v-if="!isOpen">Показать/скрыть колонки</span>
             <span v-else>
-              <span v-if="values.length && values.length != 6">
+              <span v-if="values.length && values.length !== allOptions.length - 1">
                 {{
-                  values.length == 7
+                  values.length == allOptions.length
                     ? 'Все колонки показаны'
-                    : `${7 - values.length} колонки скрыты`
+                    : `${allOptions.length - values.length} ${allOptions.length - values.length < 5 ? 'колонки' : 'колонок'} ${allOptions.length - values.length < 5 ? 'скрыты' : 'скрыто'}`
                 }}
               </span>
-              <span v-if="values.length == 6">1 колонка скрыта</span>
+              <span v-if="values.length == allOptions.length - 1">1 колонка скрыта</span>
               <span v-if="!values.length">Все колонки скрыты</span>
             </span>
           </div>
         </template>
         <template #beforeList>
           <li class="multiselect__element custom-multiselect__element" @click="toggleFields">
-            <span class="multiselect__option" v-if="selectedFields.length != 7"
+            <span class="multiselect__option" v-if="selectedFields.length != allOptions.length"
               >Показать все колонки</span
             >
             <span class="multiselect__option" v-else>Скрыть все колонки</span>
@@ -274,172 +281,56 @@ function toggleFields() {
       </li>
       <li
         class="bonus-shop__tab"
+        :class="{ active: currentTab === 'bonuses' }"
+        @click="currentTab = 'bonuses'"
+      >
+        Бонусы
+      </li>
+      <li
+        class="bonus-shop__tab"
         :class="{ active: currentTab === 'rewards' }"
         @click="currentTab = 'rewards'"
       >
         Награды
       </li>
     </menu>
-    <AlertBlock type="warning" v-if="width < 768">
+    <AlertBlock type="warning" class="warn">
       Рекомендуется просматривать таблицу с&nbsp;компьютеров
     </AlertBlock>
     <div v-show="currentTab == 'coins'">
-      <EasyDataTable
+      <RatingTable
         :headers="coinsHeaders"
-        :items="coinsItems?.data.rating || []"
-        header-text-direction="center"
-        body-text-direction="center"
-        border-cell
-        fixed-header
-        :rows-items="[15, 20, 50, 100, 250]"
-        theme-color="#67d2e9"
-        :rows-per-page="10"
-        rows-of-page-separator-message="из"
-        rows-per-page-message="Записей на странице:"
-        empty-message="Участники не найдены"
-        :loading="!coinsItems?.data.rating"
-        :buttons-pagination="width >= 570"
-        show-index
-        show-index-symbol="№"
-        :index-column-width="40"
-        sort-by="coins.received_coins_per_last_30_days"
-        sort-type="desc"
-        :table-min-height="100"
-        :prevent-context-menu-row="false"
-        search-field="profile.tg_username"
+        :items="coinsItems"
         :search-value="searchValue"
-      >
-        <template #[`item-profile.tg_username`]="item">
-          <div class="account">
-            <img v-if="item.profile.tg_avatar" :src="item.profile.tg_avatar" class="avatar" />
-            <img v-else src="./../assets/icons/avatar-default.svg" class="avatar" />
-            <span v-if="item.profile.tg_username">
-              <a
-                :href="`https://t.me/${item.profile.tg_username}`"
-                class="link"
-                target="_blank"
-                rel="noopener"
-                >{{ item.profile.tg_username }}</a
-              >
-            </span>
-          </div>
-        </template>
-        <template #[`item-profile.impact-account`]="item">
-          {{ item.profile['impact-account'].split('.')[0] }}
-        </template>
-        <template #loading>
-          <div data-v-32683533="" class="vue3-easy-data-table__loading">
-            <div data-v-32683533="" class="vue3-easy-data-table__loading-mask"></div>
-            <div data-v-32683533="" class="loading-entity">
-              <div
-                data-v-1fa3a520=""
-                data-v-32683533=""
-                class="lds-ring"
-                style="--26774109: #67d2e9"
-              >
-                <div data-v-1fa3a520=""></div>
-                <div data-v-1fa3a520=""></div>
-                <div data-v-1fa3a520=""></div>
-                <div data-v-1fa3a520=""></div>
-              </div>
-            </div>
-            <p style="margin-left: 10px">Загрузка данных занимает несколько секунд, подождите…</p>
-          </div>
-        </template>
-      </EasyDataTable>
+      />
       <p style="margin-top: 25px">
-        Рейтинг сформирован по количеству монет, полученных пользователями за соответствующий
-        период.
+        Рейтинг сформирован по количеству монет, полученных пользователями за соответствующий период.
+      </p>
+    </div>
+    <div v-show="currentTab == 'bonuses'">
+      <RatingTable
+        :headers="bonusesHeaders"
+        :items="bonusesItems"
+        :search-value="searchValue"
+      />
+      <p style="margin-top: 25px">
+        Рейтинг сформирован по количеству монет, потраченных пользователями на покупку бонусов сообщества за соответствующий период.
       </p>
     </div>
     <div v-show="currentTab == 'rewards'">
-      <EasyDataTable
+      <RatingTable
         :headers="rewardsHeaders"
-        :items="rewardsItems?.data.rating || []"
-        header-text-direction="center"
-        body-text-direction="center"
-        border-cell
-        fixed-header
-        :rows-items="[15, 20, 50, 100, 250]"
-        theme-color="#67d2e9"
-        :rows-per-page="10"
-        rows-of-page-separator-message="из"
-        rows-per-page-message="Записей на странице:"
-        empty-message="Участники не найдены"
-        :loading="!rewardsItems?.data.rating"
-        :buttons-pagination="width >= 570"
-        show-index
-        show-index-symbol="№"
-        :index-column-width="40"
-        sort-by="rewards.rewards_per_last_30_days"
-        sort-type="desc"
-        :table-min-height="100"
-        :prevent-context-menu-row="false"
-        search-field="profile.tg_username"
+        :items="rewardsItems"
         :search-value="searchValue"
-      >
-        <template #[`item-profile.tg_username`]="item">
-          <div class="account">
-            <img v-if="item.profile.tg_avatar" :src="item.profile.tg_avatar" class="avatar" />
-            <img v-else src="./../assets/icons/avatar-default.svg" class="avatar" />
-            <span v-if="item.profile.tg_username">
-              <a
-                :href="`https://t.me/${item.profile.tg_username}`"
-                class="link"
-                target="_blank"
-                rel="noopener"
-                >{{ item.profile.tg_username }}</a
-              >
-            </span>
-          </div>
-        </template>
-        <template #[`item-profile.impact-account`]="item">
-          {{ item.profile['impact-account'].split('.')[0] }}
-        </template>
-        <template #loading>
-          <div data-v-32683533="" class="vue3-easy-data-table__loading">
-            <div data-v-32683533="" class="vue3-easy-data-table__loading-mask"></div>
-            <div data-v-32683533="" class="loading-entity">
-              <div
-                data-v-1fa3a520=""
-                data-v-32683533=""
-                class="lds-ring"
-                style="--26774109: #67d2e9"
-              >
-                <div data-v-1fa3a520=""></div>
-                <div data-v-1fa3a520=""></div>
-                <div data-v-1fa3a520=""></div>
-                <div data-v-1fa3a520=""></div>
-              </div>
-            </div>
-            <p style="margin-left: 10px">Загрузка данных занимает несколько секунд, подождите…</p>
-          </div>
-        </template>
-      </EasyDataTable>
+      />
       <p style="margin-top: 25px">
-        Рейтинг сформирован по количеству наград, полученных пользователями за соответствующий
-        период.
+        Рейтинг сформирован по количеству наград, полученных пользователями за соответствующий период.
       </p>
     </div>
   </main>
 </template>
 
 <style scoped>
-.avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 25%;
-  background-color: aliceblue;
-  user-select: none;
-}
-.account {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 5px 0;
-  white-space: nowrap;
-  max-width: 145px;
-}
 .table-settings {
   display: flex;
   flex-wrap: wrap;
@@ -479,6 +370,16 @@ function toggleFields() {
 .clear-input-button {
   opacity: 0.5;
   cursor: pointer;
+}
+
+.warn {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .warn {
+    display: block;
+  }
 }
 
 @media screen and (max-width: 980px) and (min-width: 769px) {
@@ -551,14 +452,8 @@ function toggleFields() {
 
 .multiselect.multiselect-custom > .multiselect__tags {
   font-size: 13px !important;
-  padding: 9px 40px 0 12px !important;
+  padding: 7px 40px 0 12px !important;
   height: 40px;
-}
-
-.multiselect-mode.multiselect > .multiselect__tags > .multiselect__single {
-  position: relative;
-  left: -6px;
-  top: -2px;
 }
 
 .td-over {
