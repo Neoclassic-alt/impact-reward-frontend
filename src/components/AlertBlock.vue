@@ -43,7 +43,7 @@ defineSlots<{
       </div>
     </div>
     <a href="#" @click="(closed = true), onClose?.()" v-if="closable">
-      <CloseIcon class="icon" />
+      <CloseIcon />
     </a>
   </div>
 </template>
