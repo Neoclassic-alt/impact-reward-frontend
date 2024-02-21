@@ -2,7 +2,7 @@ import { type Mock, beforeEach, describe, expect, test, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import AlertBlock from '../AlertBlock.vue'
 import { useRoute, useRouter } from 'vue-router'
-import NavigationMenu from '../NavigationMenu.vue'
+import NavigationMenu from '../app/NavigationMenu.vue'
 import { createTestingPinia } from '@pinia/testing'
 
 describe.concurrent('AlertBlock', () => {
