@@ -64,7 +64,7 @@ const router = createRouter({
     {
       path: '/account/rating',
       name: 'Rating',
-      component: () => import('../views/SellerRating.vue'),
+      component: () => import('../views/BuyerRating.vue'),
       meta: {
         menuItem: 'Rating',
         requiresAuth: true,

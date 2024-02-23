@@ -22,7 +22,7 @@ const communityLink = computed(() => userInfo.value?.community.username.slice(1)
         <span class="block-info__prop">Адрес</span>
         <a
           :href="'http://t.me/' + communityLink"
-          class="external-link"
+          class="telegram-link"
           v-if="userInfo?.community.username !== 'Закрытая группа'"
           ><span>{{ communityLink }}</span>
         </a>

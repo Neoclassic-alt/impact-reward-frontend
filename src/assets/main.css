@@ -12,11 +12,11 @@
   height: 24px;
 }
 
-@media screen and (min-width: 768px) {
+/*@media screen and (min-width: 768px) {
   .main {
-    width: calc(100vw - var(--menu-width) - 200px);
+    width: calc(100vw - var(--menu-width) - 220px);
   }
-}
+}*/
 
 @media screen and (max-width: 768px) {
   .main {
@@ -25,12 +25,28 @@
 }
 
 .link,
-.external-link {
+.external-link,
+.telegram-link {
   color: #40a5ee;
   font-weight: 600;
   text-decoration: none;
   width: fit-content;
 }
+
+.telegram-link {
+  margin-left: 4px;
+}
+
+.telegram-link::before {
+  content: url('../assets/icons/telegram2.svg');
+  position: relative;
+  top: 2px;
+  right: 4px;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+}
+
 
 .external-link::after {
   content: url('../assets/icons/external-link.svg');

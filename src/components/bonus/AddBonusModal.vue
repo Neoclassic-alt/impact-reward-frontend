@@ -5,7 +5,7 @@ import axios from 'axios'
 import * as yup from 'yup'
 import { useForm } from 'vee-validate'
 import { useMutation } from '@tanstack/vue-query'
-import AlertBlock from '@/components/AlertBlock.vue'
+import AlertBlock from '@/components/common/AlertBlock.vue'
 import { useUserStore } from '@/stores'
 import { getRussianBonusType } from '@/constants/bonuses'
 

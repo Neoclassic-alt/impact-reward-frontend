@@ -7,7 +7,7 @@ import { useUserStore } from '@/stores/user'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import { useMutation } from '@tanstack/vue-query'
-import AlertBlock from '@/components/AlertBlock.vue'
+import AlertBlock from '@/components/common/AlertBlock.vue'
 import type { typeOfBonus } from '@/types/bonuses'
 import type { request as bonusesRequest } from '@/types/api/bonuses'
 

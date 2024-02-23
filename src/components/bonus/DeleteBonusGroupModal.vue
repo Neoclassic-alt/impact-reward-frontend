@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { vOnClickOutside } from '@vueuse/components'
 import axios from 'axios'
 import { useMutation } from '@tanstack/vue-query'
-import AlertBlock from '@/components/AlertBlock.vue'
+import AlertBlock from '@/components/common/AlertBlock.vue'
 import { plural } from '@/functions'
 import { useUserStore } from '@/stores'
 

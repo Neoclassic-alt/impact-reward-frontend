@@ -4,7 +4,7 @@ import type { Header } from 'vue3-easy-data-table'
 import axios from 'axios'
 import { useQuery } from '@tanstack/vue-query'
 import './../assets/tabs.css'
-import AlertBlock from '@/components/AlertBlock.vue'
+import AlertBlock from '@/components/common/AlertBlock.vue'
 import VueMultiselect from 'vue-multiselect'
 import { monthNC } from '@/constants/months'
 import RatingTable from '@/components/rating/RatingTable.vue'
@@ -15,24 +15,6 @@ import EyeOffIcon from 'vue-material-design-icons/EyeOff.vue'
 import CloseIcon from 'vue-material-design-icons/Close.vue'
 
 const currentMonth = monthNC[new Date().getMonth()]
-
-/* Разработка API для такой функции, возвращающей computed<Header[]> */
-/* generateColumns({
-    '7_days': 'bonuses.spent_per_last_7_days',
-    current_week: 'bonuses.spent_per_current_week',
-    current_month: 'rewards.spent_per_current_month',
-    '30_days': 'bonuses.spent_per_last_30_days',
-    total_spent: {
-      label: 'Потрачено монет',
-      value: 'bonuses.total_spent',
-      sortable: true
-    }
-})
- */
-
-/*interface IGeneratorOptions {
-  [key: string]: string | Header;
-}*/
 
 const coinsHeaders = computed<Header[]>(() => {
   const columns: Header[] = [
@@ -115,7 +97,7 @@ const bonusesHeaders = computed<Header[]>(() => {
     columns.push({ text: 'Эта неделя', value: 'bonuses.spent_per_current_week', sortable: true })
   }
   if (selectedFields.value.find((field) => field.type == 'current_month')) {
-    columns.push({ text: currentMonth, value: 'rewards.spent_per_current_month', sortable: true })
+    columns.push({ text: currentMonth, value: 'bonuses.spent_per_current_month', sortable: true })
   }
   if (selectedFields.value.find((field) => field.type == '30_days')) {
     columns.push({ text: '30 дней', value: 'bonuses.spent_per_last_30_days', sortable: true })
@@ -168,6 +150,12 @@ const { data: bonusesItems } = useQuery({
 type RatingTabs = 'bonuses' | 'coins' | 'rewards'
 
 const currentTab = ref<RatingTabs>('coins')
+
+const tabs: { tab: RatingTabs, label: string }[] = [
+  { tab: "coins", label: "Монеты" },
+  { tab: "rewards", label: "Награды" },
+  { tab: "bonuses", label: "Бонусы" },
+]
 
 const searchInput = ref<HTMLInputElement | null>(null)
 const searchValue = ref('')
@@ -272,26 +260,13 @@ onMounted(() => {
       </VueMultiselect>
     </div>
     <menu class="bonus-shop__tabs list-to-menu">
-      <li
+      <li 
+        v-for="tab in tabs" :key="tab.tab"
         class="bonus-shop__tab"
-        :class="{ active: currentTab === 'coins' }"
-        @click="currentTab = 'coins'"
+        :class="{ active: currentTab === tab.tab }"
+        @click="currentTab = tab.tab"
       >
-        Монеты
-      </li>
-      <li
-        class="bonus-shop__tab"
-        :class="{ active: currentTab === 'bonuses' }"
-        @click="currentTab = 'bonuses'"
-      >
-        Бонусы
-      </li>
-      <li
-        class="bonus-shop__tab"
-        :class="{ active: currentTab === 'rewards' }"
-        @click="currentTab = 'rewards'"
-      >
-        Награды
+        {{ tab.label }}
       </li>
     </menu>
     <AlertBlock type="warning" class="warn">
