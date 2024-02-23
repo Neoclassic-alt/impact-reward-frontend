@@ -47,11 +47,6 @@ const router = createRouter({
         menuItem: 'BonusShop',
         requiresAuth: true,
       },
-      beforeEnter: (to, from) => {
-        if (from.name === 'BonusShop') {
-          to.meta.transition = 'slide'
-        }
-      }
     },
     {
       path: '/login',
@@ -67,6 +62,15 @@ const router = createRouter({
       component: () => import('../views/BuyerRating.vue'),
       meta: {
         menuItem: 'Rating',
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/account/stats',
+      name: 'Stats',
+      component: () => import('../views/SellerStats.vue'),
+      meta: {
+        menuItem: 'Stats',
         requiresAuth: true,
       },
     },

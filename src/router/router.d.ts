@@ -6,7 +6,7 @@ export {}
 declare module 'vue-router' {
   interface RouteMeta {
     requiresAuth: boolean
-    menuItem?: 'GeneralInfo' | 'BonusShop' | 'Rating'
+    menuItem?: 'GeneralInfo' | 'BonusShop' | 'Rating' | 'Stats'
     redirected?: boolean,
     transition?: string
   }
