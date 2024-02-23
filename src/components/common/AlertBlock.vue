@@ -26,15 +26,15 @@ defineSlots<{
 <template>
   <div class="alert" :class="`alert-${type}`" v-if="!closed">
     <div class="alert__main">
-      <img src="../assets/icons/alert/error.svg" alt="Error icon" v-if="type == 'error'" />
+      <img src="../../assets/icons/alert/error.svg" alt="Error icon" v-if="type == 'error'" />
       <img
-        src="../assets/icons/alert/warning.png"
+        src="../../assets/icons/alert/warning.png"
         alt="Warning icon"
         v-if="type == 'warning'"
         width="32"
       />
-      <img src="../assets/icons/alert/success.svg" alt="Success icon" v-if="type == 'success'" />
-      <img src="../assets/icons/alert/info.svg" alt="Info icon" v-if="type == 'info'" />
+      <img src="../../assets/icons/alert/success.svg" alt="Success icon" v-if="type == 'success'" />
+      <img src="../../assets/icons/alert/info.svg" alt="Info icon" v-if="type == 'info'" />
       <div>
         <h3 style="margin-bottom: 5px" v-if="$slots.title"><slot name="title"></slot></h3>
         <p>
