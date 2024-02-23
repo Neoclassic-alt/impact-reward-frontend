@@ -4,7 +4,7 @@ import { computed, reactive, ref } from 'vue'
 import { useUserStore } from '@/stores/user'
 import AddBonusModal from '@/components/bonus/AddBonusModal.vue'
 import DeleteBonusGroupModal from '@/components/bonus/DeleteBonusGroupModal.vue'
-import AlertBlock from '@/components/AlertBlock.vue'
+import AlertBlock from '@/components/common/AlertBlock.vue'
 import { getRussianBonusType } from '@/constants/bonuses'
 
 const { getBonusGroups: bonuses, bonusAvaliableCosts } = storeToRefs(useUserStore())
@@ -72,16 +72,17 @@ const currentBonus = computed(() =>
   <div class="bonus-group">
     <div class="bonus" v-for="bonus in bonuses" :key="bonus.id">
       <p class="bonus__title">{{ bonus.name }}</p>
-      <p class="bonus__description">
+      <p class="bonus__nothing" v-if="bonus.available_bonuses === 0">Бонусов нет в наличии</p>
+      <div class="bonus__description">
         {{ bonus.caption }}
-        <a
-          href="#"
-          class="link"
-          @click.prevent="bonusesFullShown.add(bonus.id)"
-          v-if="!bonusesFullShown.has(bonus.id)"
-          >Полное описание</a
-        >
-      </p>
+        <p style="margin-top: 0.5em" v-if="!bonusesFullShown.has(bonus.id)">
+          <a
+            href="#"
+            class="link"
+            @click.prevent="bonusesFullShown.add(bonus.id)"
+          >Полное описание</a>
+        </p>
+      </div>
       <template v-if="bonusesFullShown.has(bonus.id)">
         <div class="block-info__item">
           <span class="block-info__prop">Тип:&nbsp;</span>
@@ -160,15 +161,18 @@ const currentBonus = computed(() =>
   border: 1px var(--brand-main-color) solid;
   cursor: pointer;
 }
+
 .bonus__title {
   font-size: 1.25em;
   font-weight: 500;
   margin-bottom: var(--base-margin);
 }
-.bonus__title {
-  font-size: 1.25em;
-  font-weight: 500;
-  margin-bottom: var(--base-margin);
+
+.bonus__nothing {
+  color: var(--danger-color);
+  font-size: 0.9em;
+  margin-bottom: 0.6em;
+  margin-top: -1.9em;
 }
 
 .bonus__description {
@@ -224,7 +228,7 @@ const currentBonus = computed(() =>
   width: fit-content;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1100px) {
   .bonus-group {
     flex-direction: column;
   }

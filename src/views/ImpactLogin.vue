@@ -5,7 +5,7 @@ import * as yup from 'yup'
 import { useMutation } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import AlertBlock from '@/components/AlertBlock.vue'
+import AlertBlock from '@/components/common/AlertBlock.vue'
 import type { AxiosError } from 'axios'
 import type { error as loginError } from '@/types/api/login'
 
@@ -56,7 +56,7 @@ const { setAccountData, fetchLogin } = useAuthStore()
 </script>
 
 <template>
-  <main style="margin: 0 auto; max-width: 450px; padding: 0 20px">
+  <main class="login-main">
     <h2 class="page-header">Вход в систему</h2>
     <AlertBlock type="error" v-if="$route.query.message == 'non-auth'">
       <template #title>Ошибка доступа</template>
@@ -108,6 +108,11 @@ const { setAccountData, fetchLogin } = useAuthStore()
 </template>
 
 <style scoped>
+.login-main {
+  margin: var(--base-margin) auto;
+  max-width: 450px;
+  padding: 0 20px
+}
 .login-form {
   width: 100%;
   padding: 0 20px;
