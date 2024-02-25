@@ -127,6 +127,9 @@ router.beforeEach(async (to) => {
   if (to.meta.menuItem == 'Rating') {
     changeItem('rating')
   }
+  if (to.meta.menuItem == 'Stats') {
+    changeItem('stats')
+  }
 })
 
 export default router
