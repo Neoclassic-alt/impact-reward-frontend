@@ -111,7 +111,7 @@ const { setAccountData, fetchLogin } = useAuthStore()
 .login-main {
   margin: var(--base-margin) auto;
   max-width: 450px;
-  padding: 0 20px
+  padding: 0 20px;
 }
 .login-form {
   width: 100%;

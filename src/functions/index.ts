@@ -21,3 +21,10 @@ export function plural(number: number, one: string, two: string, five: string): 
   }
   return five
 }
+
+// Date in format "2024-01-04"
+const format = /(\d{4}).(\d{2}).(\d{2})/
+
+export function convertDate(date: string): string {
+  return date.replace(format, '$3.$2')
+}

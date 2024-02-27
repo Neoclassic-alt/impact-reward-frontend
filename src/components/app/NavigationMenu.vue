@@ -62,9 +62,12 @@ watch(isMenuOpen, (isOpen) => {
       >
         <StoreIcon class="nav__icon" /> <span class="nav__text">Магазин бонусов</span>
       </li>
-      <li class="nav__item nav_in-development" :class="{ active: activeItem === 'stats' }">
+      <li
+        class="nav__item"
+        :class="{ active: activeItem === 'stats' }"
+        @click="GoToPageFromMenu('stats')"
+      >
         <ChartBarIcon /> <span class="nav__text">Статистика</span>
-        <span class="soon-label">скоро</span>
       </li>
       <li
         class="nav__item"

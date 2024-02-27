@@ -10,7 +10,7 @@ const router = createRouter({
       path: '/',
       redirect: () => {
         return { name: 'GeneralInfo' }
-      }
+      },
     },
     {
       path: '/account',
@@ -70,6 +70,15 @@ const router = createRouter({
         requiresAuth: true,
       },
     },
+    {
+      path: '/account/stats',
+      name: 'Stats',
+      component: () => import('../views/SellerStats.vue'),
+      meta: {
+        menuItem: 'Stats',
+        requiresAuth: true,
+      },
+    },
   ],
 })
 
@@ -122,6 +131,9 @@ router.beforeEach(async (to) => {
   }
   if (to.meta.menuItem == 'Rating') {
     changeItem('rating')
+  }
+  if (to.meta.menuItem == 'Stats') {
+    changeItem('stats')
   }
 })
 

@@ -164,10 +164,10 @@ type RatingTabs = 'bonuses' | 'coins' | 'rewards'
 
 const currentTab = ref<RatingTabs>('coins')
 
-const tabs: { tab: RatingTabs, label: string }[] = [
-  { tab: "coins", label: "Монеты" },
-  { tab: "rewards", label: "Награды" },
-  { tab: "bonuses", label: "Бонусы" },
+const tabs: { tab: RatingTabs; label: string }[] = [
+  { tab: 'coins', label: 'Монеты' },
+  { tab: 'rewards', label: 'Награды' },
+  { tab: 'bonuses', label: 'Бонусы' },
 ]
 
 const searchInput = ref<HTMLInputElement | null>(null)
@@ -273,8 +273,9 @@ onMounted(() => {
       </VueMultiselect>
     </div>
     <menu class="bonus-shop__tabs list-to-menu">
-      <li 
-        v-for="tab in tabs" :key="tab.tab"
+      <li
+        v-for="tab in tabs"
+        :key="tab.tab"
         class="bonus-shop__tab"
         :class="{ active: currentTab === tab.tab }"
         @click="currentTab = tab.tab"
