@@ -47,6 +47,11 @@ const router = createRouter({
         menuItem: 'BonusShop',
         requiresAuth: true,
       },
+      beforeEnter: (to, from) => {
+        if (from.name === 'BonusShop') {
+          to.meta.transition = 'slide'
+        }
+      }
     },
     {
       path: '/login',
