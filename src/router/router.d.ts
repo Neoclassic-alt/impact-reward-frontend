@@ -7,7 +7,7 @@ declare module 'vue-router' {
   interface RouteMeta {
     requiresAuth: boolean
     menuItem?: 'GeneralInfo' | 'BonusShop' | 'Rating' | 'Stats'
-    redirected?: boolean,
+    redirected?: boolean
     transition?: string
   }
 }

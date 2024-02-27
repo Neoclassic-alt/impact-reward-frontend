@@ -76,11 +76,9 @@ const currentBonus = computed(() =>
       <div class="bonus__description">
         {{ bonus.caption }}
         <p style="margin-top: 0.5em" v-if="!bonusesFullShown.has(bonus.id)">
-          <a
-            href="#"
-            class="link"
-            @click.prevent="bonusesFullShown.add(bonus.id)"
-          >Полное описание</a>
+          <a href="#" class="link" @click.prevent="bonusesFullShown.add(bonus.id)"
+            >Полное описание</a
+          >
         </p>
       </div>
       <template v-if="bonusesFullShown.has(bonus.id)">

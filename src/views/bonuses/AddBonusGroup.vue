@@ -182,7 +182,9 @@ const onSubmit = handleSubmit((values) => {
           :class="{ 'input-error': errors.bonuses }"
         ></textarea>
         <p class="field-description" v-show="!errors?.bonuses">{{ words }}/20 слов</p>
-        <span class="field-error" :class="{ 'error-show': errors.bonuses }">{{ errors.bonuses }}</span
+        <span class="field-error" :class="{ 'error-show': errors.bonuses }">{{
+          errors.bonuses
+        }}</span
         ><!-- Неразрывный пробел убран -->
         <AlertBlock type="error" style="width: 450px; box-sizing: border-box" v-if="isError"
           >Ошибка при добавлении группы бонусов. Попробуйте добавить заново</AlertBlock

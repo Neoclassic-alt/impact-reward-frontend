@@ -10,7 +10,7 @@ const router = createRouter({
       path: '/',
       redirect: () => {
         return { name: 'GeneralInfo' }
-      }
+      },
     },
     {
       path: '/account',

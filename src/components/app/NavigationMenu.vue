@@ -62,8 +62,8 @@ watch(isMenuOpen, (isOpen) => {
       >
         <StoreIcon class="nav__icon" /> <span class="nav__text">Магазин бонусов</span>
       </li>
-      <li 
-        class="nav__item" 
+      <li
+        class="nav__item"
         :class="{ active: activeItem === 'stats' }"
         @click="GoToPageFromMenu('stats')"
       >

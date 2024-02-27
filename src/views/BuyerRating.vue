@@ -151,10 +151,10 @@ type RatingTabs = 'bonuses' | 'coins' | 'rewards'
 
 const currentTab = ref<RatingTabs>('coins')
 
-const tabs: { tab: RatingTabs, label: string }[] = [
-  { tab: "coins", label: "Монеты" },
-  { tab: "rewards", label: "Награды" },
-  { tab: "bonuses", label: "Бонусы" },
+const tabs: { tab: RatingTabs; label: string }[] = [
+  { tab: 'coins', label: 'Монеты' },
+  { tab: 'rewards', label: 'Награды' },
+  { tab: 'bonuses', label: 'Бонусы' },
 ]
 
 const searchInput = ref<HTMLInputElement | null>(null)
@@ -212,11 +212,7 @@ onMounted(() => {
           v-model="searchValue"
           maxlength="32"
         />
-        <CloseIcon 
-          class="clear-input-button icon"
-          v-show="searchValue"
-          @click="searchValue = ''"
-        />
+        <CloseIcon class="clear-input-button icon" v-show="searchValue" @click="searchValue = ''" />
       </div>
       <VueMultiselect
         v-model="selectedFields"
@@ -260,8 +256,9 @@ onMounted(() => {
       </VueMultiselect>
     </div>
     <menu class="bonus-shop__tabs list-to-menu">
-      <li 
-        v-for="tab in tabs" :key="tab.tab"
+      <li
+        v-for="tab in tabs"
+        :key="tab.tab"
         class="bonus-shop__tab"
         :class="{ active: currentTab === tab.tab }"
         @click="currentTab = tab.tab"
@@ -273,33 +270,24 @@ onMounted(() => {
       Рекомендуется просматривать таблицу с&nbsp;компьютеров
     </AlertBlock>
     <div v-show="currentTab == 'coins'">
-      <RatingTable
-        :headers="coinsHeaders"
-        :items="coinsItems"
-        :search-value="searchValue"
-      />
+      <RatingTable :headers="coinsHeaders" :items="coinsItems" :search-value="searchValue" />
       <p style="margin-top: 25px">
-        Рейтинг сформирован по количеству монет, полученных пользователями за соответствующий период.
+        Рейтинг сформирован по количеству монет, полученных пользователями за соответствующий
+        период.
       </p>
     </div>
     <div v-show="currentTab == 'bonuses'">
-      <RatingTable
-        :headers="bonusesHeaders"
-        :items="bonusesItems"
-        :search-value="searchValue"
-      />
+      <RatingTable :headers="bonusesHeaders" :items="bonusesItems" :search-value="searchValue" />
       <p style="margin-top: 25px">
-        Рейтинг сформирован по количеству монет, потраченных пользователями на покупку бонусов сообщества за соответствующий период.
+        Рейтинг сформирован по количеству монет, потраченных пользователями на покупку бонусов
+        сообщества за соответствующий период.
       </p>
     </div>
     <div v-show="currentTab == 'rewards'">
-      <RatingTable
-        :headers="rewardsHeaders"
-        :items="rewardsItems"
-        :search-value="searchValue"
-      />
+      <RatingTable :headers="rewardsHeaders" :items="rewardsItems" :search-value="searchValue" />
       <p style="margin-top: 25px">
-        Рейтинг сформирован по количеству наград, полученных пользователями за соответствующий период.
+        Рейтинг сформирован по количеству наград, полученных пользователями за соответствующий
+        период.
       </p>
     </div>
   </main>

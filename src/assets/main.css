@@ -47,7 +47,6 @@
   display: inline-block;
 }
 
-
 .external-link::after {
   content: url('../assets/icons/external-link.svg');
   position: relative;

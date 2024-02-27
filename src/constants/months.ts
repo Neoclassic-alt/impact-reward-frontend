@@ -12,4 +12,4 @@ export const monthNC = [
   'Октябрь',
   'Ноябрь',
   'Декабрь',
-]
+] as const

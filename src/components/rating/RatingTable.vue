@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import EasyDataTable, { type Header } from 'vue3-easy-data-table'
-import type { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios'
 import { useWindowSize } from '@vueuse/core'
 
 const { width } = useWindowSize()
 
 defineProps<{
-  headers: Header[],
-  items: AxiosResponse['data'],
+  headers: Header[]
+  items: AxiosResponse['data']
   searchValue: string
 }>()
 </script>
@@ -63,12 +63,7 @@ defineProps<{
       <div data-v-32683533="" class="vue3-easy-data-table__loading">
         <div data-v-32683533="" class="vue3-easy-data-table__loading-mask"></div>
         <div data-v-32683533="" class="loading-entity">
-          <div
-            data-v-1fa3a520=""
-            data-v-32683533=""
-            class="lds-ring"
-            style="--26774109: #67d2e9"
-          >
+          <div data-v-1fa3a520="" data-v-32683533="" class="lds-ring" style="--26774109: #67d2e9">
             <div data-v-1fa3a520=""></div>
             <div data-v-1fa3a520=""></div>
             <div data-v-1fa3a520=""></div>

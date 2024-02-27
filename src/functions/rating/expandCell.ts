@@ -1,4 +1,4 @@
-export default function() {
+export default function () {
   const tbody = document.querySelectorAll('.vue3-easy-data-table__body')
 
   const mouseover = (event: Event) => {
