@@ -9,6 +9,7 @@ import VueMultiselect from 'vue-multiselect'
 import { monthNC } from '@/constants/months'
 import RatingTable from '@/components/rating/RatingTable.vue'
 import expandCell from '@/functions/rating/expandCell'
+import type { Profile } from '@/types/api/rating'
 
 import MagnifyIcon from 'vue-material-design-icons/Magnify.vue'
 import EyeOffIcon from 'vue-material-design-icons/EyeOff.vue'
@@ -115,6 +116,10 @@ const { data: coinsItems } = useQuery({
     const res = await axios.get('/seller/rating_by_coins')
     const time = performance.now() - start
     console.log('Rating by coins', (time / 1000).toFixed(2), 's')
+    res.data.rating.forEach(({ profile }: { profile: Profile }) => {
+      const searchItem = `${profile.tg_username ?? ''} ${profile.tg_nickname}`
+      profile.tg_search = searchItem
+    })
     return res
   },
   refetchOnWindowFocus: false,
@@ -128,6 +133,10 @@ const { data: rewardsItems } = useQuery({
     const res = await axios.get('/seller/rating_by_rewards')
     const time = performance.now() - start
     console.log('Rating by rewards', (time / 1000).toFixed(2), 's')
+    res.data.rating.forEach(({ profile }: { profile: Profile }) => {
+      const searchItem = `${profile.tg_username ?? ''} ${profile.tg_nickname}`
+      profile.tg_search = searchItem
+    })
     return res
   },
   refetchOnWindowFocus: false,
@@ -141,6 +150,10 @@ const { data: bonusesItems } = useQuery({
     const res = await axios.get('/seller/rating_by_bonuses')
     const time = performance.now() - start
     console.log('Rating by bonuses', (time / 1000).toFixed(2), 's')
+    res.data.rating.forEach(({ profile }: { profile: Profile }) => {
+      const searchItem = `${profile.tg_username ?? ''} ${profile.tg_nickname}`
+      profile.tg_search = searchItem
+    })
     return res
   },
   refetchOnWindowFocus: false,
@@ -209,8 +222,8 @@ onMounted(() => {
           class="table-search__input"
           placeholder="Поиск участников в таблице"
           ref="searchInput"
-          v-model="searchValue"
-          maxlength="32"
+          v-model.trim="searchValue"
+          maxlength="100"
         />
         <CloseIcon 
           class="clear-input-button icon"

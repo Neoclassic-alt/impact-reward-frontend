@@ -35,7 +35,7 @@ defineProps<{
     sort-type="desc"
     :table-min-height="100"
     :prevent-context-menu-row="false"
-    search-field="profile.tg_username"
+    search-field="profile.tg_search"
     :search-value="searchValue"
   >
     <template #[`item-profile.tg_username`]="item">
