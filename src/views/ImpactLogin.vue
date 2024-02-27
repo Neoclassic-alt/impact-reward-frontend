@@ -34,9 +34,7 @@ const { mutate, isPending, isError } = useMutation({
   onSuccess: (data) => {
     if (data.data.access_token) {
       setAccountData(data.data.access_token)
-      router.push({ name: 'GeneralInfo' }).then(() => {
-        router.go(0) // reload
-      })
+      router.push({ name: 'GeneralInfo' })
     }
   },
   onError: (error) => {

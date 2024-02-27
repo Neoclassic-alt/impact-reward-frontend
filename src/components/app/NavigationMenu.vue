@@ -20,12 +20,12 @@ const store = useMenuStore()
 const { activeItem } = storeToRefs(store) // деконструкция параметра с storeToRefs()
 const { changeItem } = store // действия деконструируются без функций
 const { clearAccountData } = useAuthStore()
-const { clearUserInfo } = useUserStore()
 
 function logout() {
-  router.push({ name: 'Login' })
-  clearAccountData()
-  clearUserInfo()
+  router.push({ name: 'Login' }).then(() => {
+    clearAccountData()
+    router.go(0) // reload
+  })
 }
 
 const isMenuOpen = ref(false)
