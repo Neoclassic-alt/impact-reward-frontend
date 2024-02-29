@@ -81,7 +81,7 @@ const headers: Header[] = [
   { text: '', value: 'date' },
   { text: 'Монеты', value: 'coins', sortable: true },
   { text: 'Награды', value: 'rewards', sortable: true },
-  { text: 'Получатели', value: 'users', sortable: true },
+  { text: 'Участники', value: 'users', sortable: true },
 ]
 
 interface OrderedData {
@@ -192,7 +192,7 @@ watchEffect(() => {
         data: statData.value.rewards,
       },
       {
-        label: 'Пользователи',
+        label: 'Участники',
         backgroundColor: '#da5707',
         data: statData.value.users,
       },
