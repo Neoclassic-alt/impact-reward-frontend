@@ -187,7 +187,7 @@ watchEffect(() => {
         data: statData.value.coins,
       },
       {
-        label: 'Бонусы',
+        label: 'Награды',
         backgroundColor: '#00a453',
         data: statData.value.rewards,
       },
