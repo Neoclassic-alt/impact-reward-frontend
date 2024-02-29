@@ -96,7 +96,6 @@ onMounted(() => {
         >
         <div class="modal-button-group">
           <button
-            href="#"
             class="button add-main-button"
             style="border-color: transparent; margin-right: 16px"
             :disabled="isPending"

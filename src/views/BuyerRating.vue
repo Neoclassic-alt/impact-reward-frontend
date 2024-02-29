@@ -164,7 +164,7 @@ type RatingTabs = 'bonuses' | 'coins' | 'rewards'
 
 const currentTab = ref<RatingTabs>('coins')
 
-const tabs: { tab: RatingTabs; label: string }[] = [
+const tabs: ReadonlyArray<{ tab: RatingTabs; label: string }> = [
   { tab: 'coins', label: 'Монеты' },
   { tab: 'rewards', label: 'Награды' },
   { tab: 'bonuses', label: 'Бонусы' },

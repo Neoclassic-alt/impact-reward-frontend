@@ -28,3 +28,32 @@ const format = /(\d{4}).(\d{2}).(\d{2})/
 export function convertDate(date: string): string {
   return date.replace(format, '$3.$2')
 }
+
+export function standartDate(date: Date, showYear: boolean = true): string {
+  let day = date.getDate().toString()
+  if (day.length == 1) {
+    day = "0" + day
+  }
+  let month = (date.getMonth() + 1).toString()
+  if (month.length == 1) {
+    month = "0" + month
+  }
+  if (showYear) {
+    return `${day}.${month}.${date.getFullYear()}`
+  } else {
+    return `${day}.${month}`
+  }
+}
+
+export const compareDates = (d1: string | Date, d2: string | Date) => {
+  const date1 = new Date(d1).getTime()
+  const date2 = new Date(d2).getTime()
+
+  if (date1 < date2) {
+    return '<'
+  } else if (date1 > date2) {
+    return '>'
+  } else {
+    return '=='
+  }
+};
