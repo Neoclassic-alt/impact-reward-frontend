@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed, toValue, watchEffect, watch } from 'vue'
+import { ref, computed, toValue, watchEffect } from 'vue'
 import EasyDataTable, { type Header } from 'vue3-easy-data-table'
 import './../assets/tabs.css'
 import axios from 'axios'
@@ -103,9 +103,13 @@ const intervalOptions: ReadonlyArray<OptionInterval> = [
 
 const interval = ref<OptionInterval>(intervalOptions[0])
 
+let start = new Date()
+start.setDate(start.getDate() - 7)
+start.setUTCHours(0,0,0,0)
+
 const customInterval = ref({
-  start: new Date((new Date()).setDate((new Date()).getDate() - 7)).setUTCHours(0,0,0,0),
-  end: new Date().setUTCHours(0,0,1,0),
+  start: start,
+  end: new Date(new Date().setUTCHours(0,0,1,0)),
 })
 
 const isModalOpened = ref(false)
