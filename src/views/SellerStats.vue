@@ -104,8 +104,8 @@ const intervalOptions: ReadonlyArray<OptionInterval> = [
 const interval = ref<OptionInterval>(intervalOptions[0])
 
 const customInterval = ref({
-  start: new Date(),
-  end: new Date((new Date()).setDate((new Date()).getDate() - 7))
+  start: new Date((new Date()).setDate((new Date()).getDate() - 7)).setUTCHours(0,0,0,0),
+  end: new Date().setUTCHours(0,0,1,0),
 })
 
 const isModalOpened = ref(false)
@@ -223,7 +223,7 @@ const viewMode = ref<ViewMode>('all')
 const tableData = computed(() => {
   if (currentTab.value === 'days') {
     if (last_days.value !== 'custom') {
-      return statsPerDays.value?.data.statistics.toReversed().slice(-last_days.value)
+      return statsPerDays.value?.data.statistics.slice(-last_days.value).toReversed()
     }
     else {
       return statsPerDays.value?.data.statistics.filter(filterInterval).toReversed()
