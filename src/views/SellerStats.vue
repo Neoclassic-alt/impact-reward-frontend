@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, toValue, watchEffect } from 'vue'
+import { ref, reactive, computed, toValue, watchEffect, watch } from 'vue'
 import EasyDataTable, { type Header } from 'vue3-easy-data-table'
 import './../assets/tabs.css'
 import axios from 'axios'
@@ -21,10 +21,11 @@ import {
 import { DatePicker } from 'v-calendar';
 import 'v-calendar/style.css';
 import { vOnClickOutside } from '@vueuse/components'
+import { useWindowSize } from '@vueuse/core'
 
 import ChartBoxOutlineIcon from 'vue-material-design-icons/ChartBoxOutline.vue'
-import BorderAllIcon from 'vue-material-design-icons/BorderAll.vue'
 import ViewAgendaOutlineIcon from 'vue-material-design-icons/ViewAgendaOutline.vue'
+import TableIcon from '@/assets/icons/table.svg?raw'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -200,9 +201,21 @@ watchEffect(() => {
   }
 })
 
+const { width } = useWindowSize()
+
+const barOptions = {
+  plugins: {
+    legend: {
+      labels: {
+        boxWidth: width.value > 450 ? 40 : 20
+      }
+    }
+  }
+}
+
 type ViewMode = 'chart' | 'table' | 'all'
 
-const viewMode = ref<ViewMode>('chart')
+const viewMode = ref<ViewMode>('all')
 
 const tableData = computed(() => {
   if (currentTab.value === 'days') {
@@ -233,38 +246,40 @@ function showLabel() {
     <h2>Статистика сообщества</h2>
     <menu
       class="bonus-shop__tabs list-to-menu"
-      style="margin-top: 25px; justify-content: space-between"
+      style="margin-top: 25px;"
     >
-      <div style="display: flex">
-        <li
-          v-for="tab in tabs"
-          :key="tab.tab"
-          class="bonus-shop__tab"
-          :class="{ active: currentTab === tab.tab }"
-          @click="currentTab = tab.tab"
-        >
-          {{ tab.label }}
-        </li>
-      </div>
-      <div style="display: flex; gap: 10px">
-        <ChartBoxOutlineIcon
-          class="view-mode-icon"
-          :class="{ 'view-active': viewMode == 'chart' }"
-          @click="viewMode = 'chart'"
-          title="График"
-        />
-        <BorderAllIcon
-          class="view-mode-icon"
-          :class="{ 'view-active': viewMode == 'table' }"
-          @click="viewMode = 'table'"
-          title="Таблица"
-        />
+      <li
+        v-for="tab in tabs"
+        :key="tab.tab"
+        class="bonus-shop__tab"
+        :class="{ active: currentTab === tab.tab }"
+        @click="currentTab = tab.tab"
+      >
+        {{ tab.label }}
+      </li>
+      <div style="flex: 1"></div>
+      <div class="view-mode-icon-group">
         <ViewAgendaOutlineIcon
           class="view-mode-icon"
           :class="{ 'view-active': viewMode == 'all' }"
           @click="viewMode = 'all'"
           title="График + таблица"
         />
+        <ChartBoxOutlineIcon
+          class="view-mode-icon"
+          :class="{ 'view-active': viewMode == 'chart' }"
+          @click="viewMode = 'chart'"
+          title="График"
+        />
+        <span class="material-design-icon table-icon">
+          <div 
+            v-html="TableIcon"
+            class="view-mode-icon"
+            :class="{ 'view-active': viewMode == 'table' }"
+            @click="viewMode = 'table'"
+            title="Таблица"
+          ></div>
+        </span>
       </div>
     </menu>
     <div>
@@ -299,12 +314,15 @@ function showLabel() {
         v-show="viewMode == 'chart' || viewMode == 'all'"
         :data="chartData"
         style="margin-bottom: 1em"
+        :options="barOptions"
         >К сожалению, ваш браузер не поддерживает отрисовку графиков.</Bar
       >
       <EasyDataTable
         v-show="viewMode == 'table' || viewMode == 'all'"
         :headers="headers"
         :items="tableData || []"
+        header-text-direction="center"
+        body-text-direction="center"
         :prevent-context-menu-row="false"
         theme-color="#67d2e9"
         :table-min-height="0"
@@ -312,6 +330,8 @@ function showLabel() {
         rows-per-page-message="Записей на странице:"
         :rows-per-page="10"
         :rows-items="[15, 20, 50, 100, 250]"
+        alternating
+        border-cell
       />
     </div>
   </main>
@@ -343,6 +363,11 @@ function showLabel() {
 </template>
 
 <style scoped>
+.view-mode-icon-group {
+  display: flex; 
+  gap: 10px; 
+  align-items: center;
+}
 .view-mode-icon {
   cursor: pointer;
 }

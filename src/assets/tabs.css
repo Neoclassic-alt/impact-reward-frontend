@@ -33,19 +33,17 @@
 
 @media screen and (max-width: 450px) {
   .bonus-shop__tabs {
-    margin-left: -25px;
     border-bottom: none;
-    width: 100vw;
-    gap: 20px;
+    gap: 1.2em;
   }
-  .bonus-shop__tab:first-child {
+  /*.bonus-shop__tab:first-child {
     margin-left: 25px;
   }
   .bonus-shop__tab:last-child {
     margin-right: 25px;
-  }
+  }*/
   .bonus-shop__tab {
-    padding: 8px 0;
+    padding: 7px 0;
   }
   .page-header {
     margin-bottom: 0;

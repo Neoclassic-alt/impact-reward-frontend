@@ -129,7 +129,7 @@ watch(isMenuOpen, (isOpen) => {
 .nav__text {
   margin-left: 12px;
   font-weight: 500;
-  text-wrap: nowrap;
+  white-space: nowrap;
   user-select: none;
 }
 
