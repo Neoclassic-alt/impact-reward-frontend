@@ -207,7 +207,10 @@ const barOptions = {
   plugins: {
     legend: {
       labels: {
-        boxWidth: width.value > 450 ? 40 : 20
+        boxWidth: width.value >= 425 ? 40 : 20,
+        font: {
+          size: 14
+        }
       }
     }
   }
@@ -408,5 +411,17 @@ function showLabel() {
   --vc-accent-700: #1D7682;
   --vc-accent-800: #066370;
   --vc-accent-900: #004851;
+}
+
+.vue3-easy-data-table__body td:nth-child(1) {
+  text-align: left !important;
+}
+
+.vue3-easy-data-table__header th {
+  font-size: 14px !important;
+}
+
+.vue3-easy-data-table__body tr {
+  font-size: 14px !important;
 }
 </style>
