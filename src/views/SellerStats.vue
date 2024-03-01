@@ -105,11 +105,10 @@ const interval = ref<OptionInterval>(intervalOptions[0])
 
 let start = new Date()
 start.setDate(start.getDate() - 7)
-start.setUTCHours(0,0,0,0)
 
 const customInterval = ref({
   start: start,
-  end: new Date(new Date().setUTCHours(0,0,1,0)),
+  end: new Date(),
 })
 
 const isModalOpened = ref(false)

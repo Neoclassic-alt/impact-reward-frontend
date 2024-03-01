@@ -46,8 +46,8 @@ export function standartDate(date: Date, showYear: boolean = true): string {
 }
 
 export const compareDates = (d1: string | Date, d2: string | Date) => {
-  const date1 = new Date(d1).getTime()
-  const date2 = new Date(d2).getTime()
+  const date1 = (new Date(d1)).setUTCHours(0,0,0,0)
+  const date2 = (new Date(d2)).setUTCHours(0,0,0,0)
 
   if (date1 < date2) {
     return '<'
