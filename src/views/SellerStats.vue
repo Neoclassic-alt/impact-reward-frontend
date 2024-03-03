@@ -290,7 +290,7 @@ function showLabel() {
     </menu>
     <div>
       <div class="dropdown" v-show="currentTab == 'days'">
-        <p>Отображать статистику </p>
+        <p>Отображать </p>
         <VueMultiselect
           v-model="interval"
           deselect-label="Нельзя удалить"

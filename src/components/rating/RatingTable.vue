@@ -2,6 +2,7 @@
 import EasyDataTable, { type Header } from 'vue3-easy-data-table'
 import type { AxiosResponse } from 'axios'
 import { useWindowSize } from '@vueuse/core'
+import avatarDefault from '@/assets/icons/avatar-default.svg?url'
 
 const { width } = useWindowSize()
 
@@ -39,9 +40,8 @@ defineProps<{
     :search-value="searchValue"
   >
     <template #[`item-profile.tg_username`]="item">
-      <div class="account">
-        <img v-if="item.profile.tg_avatar" :src="item.profile.tg_avatar" class="avatar" />
-        <img v-else src="../../assets/icons/avatar-default.svg" class="avatar" />
+      <div class="account" :class="{'green-over-ball': item.profile.wallet_bot_status}">
+        <img :src="item.profile.tg_avatar ?? avatarDefault" class="avatar" />
         <span v-if="item.profile.tg_username">
           <a
             :href="`https://t.me/${item.profile.tg_username}`"
@@ -91,5 +91,21 @@ defineProps<{
   padding: 5px 0;
   white-space: nowrap;
   max-width: 145px;
+}
+
+.account.green-over-ball {
+  padding-top: 7px;
+}
+
+.account.green-over-ball::before {
+  content: "";
+  min-width: 7px;
+  height: 7px;
+  border-radius: 10px;
+  background-color: #00a452;
+  border: 2px solid #ffffff;
+  position: absolute;
+  left: 36px;
+  bottom: 30px;
 }
 </style>
