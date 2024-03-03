@@ -2,7 +2,7 @@
 
 ## Общая информация о проекте
 
-Фронтенд сайта управления *импакт-аккаунтом* [системы Impact](https://impact-reward.com/).
+Фронтенд сайта управления *импакт-аккаунтом* [системы Impact](https://impact-reward.com/). Магазин бонусов расположен по адресу https://market.impact-reard.com
 
 ### Функционал
 
@@ -12,12 +12,26 @@
   * Добавление групп бонусов
   * Удаление групп бонусов
   * Добавление бонусов в группу
-* Просмотр рейтинга участников сообщества
-  * Просмотр рейтинга по монетам и наградам
+  * *Золотые бонусы (планируется)*
+* Рейтинг участников сообщества
+  * Просмотр рейтинга по монетам, наградам и бонусам
   * Поиск участников
   * Изменение видимости отдельных колонок
-  * Сортировка колонок
+  * Сортировка данных по колонкам
   * Рейтинг составляется за 7 дней, 30 дней, текущий месяц и неделю
+  * *Скачивание таблицы в формате csv (планируется)*
+* Статистика сообщества
+  * Статистика составляется по монетам, наградам и участникам
+  * Выбор вида: таблица, диаграмма, диаграмма + таблица (по умолчанию последнее)
+  * Выбор отображаемых диаграмм по нажатию на легенду
+  * Просмотр статистики по дням, неделям и месяцам
+  * Выбор статистики за последние: 7 дней, 30 дней, 3 месяца, 12 месяцев. Также можно выбрать собственный интервал.
+    * Пока что только для статистики по дням
+  * Сортировка данных в таблице
+  * Скачивание диаграммы в формате png
+  * *Скачивание таблицы в формате csv (планируется)*
+ 
+Все страницы адаптированы под мобильные устройства.
 
 ### Скриншоты системы
 ***Кликните, чтобы увидеть полноразмерный скриншот***
@@ -29,15 +43,15 @@
  <img src="https://github.com/Neoclassic-alt/impact-reward-frontend/blob/main/screenshots/impact-reward4.png" width="49%"/>
 </div>
 
+Больше скриншотов: https://drive.google.com/drive/folders/1QhxL6V2BPtsOjRS-DaSaneO0uEBavvct
+
 ### Используемые технологии
 
-`Vue 3` (Composition API), `Vite`, `Vue Router`, `pinia`, `Vitest`, `TypeScript`, `axios`, `TanStack Query`, `eslint`, `prettier`
+`Vue 3` (Composition API), `Vite`, `Vue Router`, `pinia`, `Vitest`, `TypeScript`, `eslint`, `prettier`
 
 ### Используемые библиотеки
 
-- `vee-validate` (https://vee-validate.logaretm.com/v4)
-- `vue-multiselect` (https://vue-multiselect.js.org)
-- `vue3-easy-data-table` (https://hc200ok.github.io/vue3-easy-data-table-doc/)
+`axios`, [`VueUse`](https://vueuse.org), [`TanStack Query`](https://tanstack.com/query/latest/docs/framework/vue/overview), [`vee-validate`](https://vee-validate.logaretm.com/v4), [`vue-multiselect`](https://vue-multiselect.js.org), [`vue3-easy-data-table`](https://hc200ok.github.io/vue3-easy-data-table-doc/), [`chart.js`](https://www.chartjs.org), [`VCalendar`](https://vcalendar.io)
 
 ## Дефолтная информация для запуска проекта
 
