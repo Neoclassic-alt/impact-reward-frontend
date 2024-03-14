@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import EasyDataTable, { type Header } from 'vue3-easy-data-table'
+import { computed, ref } from 'vue'
+import EasyDataTable, { type Header, type FilterOption } from 'vue3-easy-data-table'
 import type { AxiosResponse } from 'axios'
 import { useWindowSize } from '@vueuse/core'
 import avatarDefault from '@/assets/icons/avatar-default.svg?url'
+import FilterMenuOutlineIcon from '@/assets/icons/filter-16.png?url'
+import FilterMenuOutlineAcivatedIcon from '@/assets/icons/filter-16-activated.png?url'
+import VueMultiselect from 'vue-multiselect'
+import { vOnClickOutside } from '@vueuse/components'
 
 const { width } = useWindowSize()
 
@@ -11,6 +16,39 @@ defineProps<{
   items: AxiosResponse['data'],
   searchValue: string
 }>()
+
+enum UserBotStates {all, botOn, botOff}
+type BotItemCriteria = {state: UserBotStates, label: string}
+
+const botItemsCriteria: BotItemCriteria[] = [
+  {state: UserBotStates.all, label: 'Всех участников'},
+  {state: UserBotStates.botOn, label: 'Только включавших бота'},
+  {state: UserBotStates.botOff, label: 'Только не включавших бота'},
+]
+const userBotFilter = ref<BotItemCriteria>(botItemsCriteria[0])
+const showBotFilter = ref(false)
+
+const filterOptions = computed((): FilterOption[] => {
+  const filterOptionsArray: FilterOption[] = []
+  if (userBotFilter.value.state === UserBotStates.botOff){
+    filterOptionsArray.push({
+      field: 'profile.wallet_bot_status',
+      comparison: '=',
+      criteria: 0,
+    })
+  }
+  if (userBotFilter.value.state === UserBotStates.botOn){
+    filterOptionsArray.push({
+      field: 'profile.wallet_bot_status',
+      comparison: '=',
+      criteria: 1,
+    })
+  }
+
+  return filterOptionsArray
+})
+
+const multiselect = ref<HTMLElement | null>(null)
 </script>
 
 <template>
@@ -38,6 +76,7 @@ defineProps<{
     :prevent-context-menu-row="false"
     search-field="profile.tg_search"
     :search-value="searchValue"
+    :filter-options="filterOptions"
   >
     <template #[`item-profile.tg_username`]="item">
       <div class="account" :class="{'green-over-ball': item.profile.wallet_bot_status}">
@@ -58,6 +97,26 @@ defineProps<{
     </template>
     <template #[`item-profile.impact-account`]="item">
       {{ item.profile['impact-account'].split('.')[0] }}
+    </template>
+    <template #[`header-profile.tg_username`]="header">
+      <img :src="userBotFilter.state === UserBotStates.all ? FilterMenuOutlineIcon : FilterMenuOutlineAcivatedIcon" 
+      @click.stop="() => {showBotFilter = true; multiselect.activate() }" class="filter-icon" />{{ header.text }}
+      <div class="filter-menu" v-show="showBotFilter" v-on-click-outside="() => showBotFilter = false">
+        <p style="margin-bottom: 0.5em">Показывать</p>
+        <VueMultiselect
+          v-model="userBotFilter"
+          :options="botItemsCriteria"
+          :searchable="false"
+          label="label"
+          track-by="state"
+          style="width: 255px"
+          selectLabel=""
+          deselectLabel=""
+          selectedLabel=""
+          @select="() => showBotFilter = false"
+          ref="multiselect"
+        />
+      </div>
     </template>
     <template #loading>
       <div data-v-32683533="" class="vue3-easy-data-table__loading">
@@ -108,5 +167,21 @@ defineProps<{
   position: absolute;
   left: 36px;
   bottom: 30px;
+}
+
+.filter-icon {
+  margin-right: 7px;
+}
+
+.filter-menu {
+  position: absolute;
+  top: 40px;
+  padding: 10px 12px;
+  background-color: white;
+  font-weight: 400;
+  border: 1px solid #cacaca;
+  border-radius: 4px;
+  text-align: left;
+  box-shadow: 0 7px 20px 0px rgba(0, 0, 0, 0.1);
 }
 </style>
