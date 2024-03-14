@@ -6,7 +6,7 @@ import { useWindowSize } from '@vueuse/core'
 import avatarDefault from '@/assets/icons/avatar-default.svg?url'
 import FilterMenuOutlineIcon from '@/assets/icons/filter-16.png?url'
 import FilterMenuOutlineAcivatedIcon from '@/assets/icons/filter-16-activated.png?url'
-import VueMultiselect from 'vue-multiselect'
+import VueMultiselect, { type Multiselect } from 'vue-multiselect'
 import { vOnClickOutside } from '@vueuse/components'
 
 const { width } = useWindowSize()
@@ -48,7 +48,7 @@ const filterOptions = computed((): FilterOption[] => {
   return filterOptionsArray
 })
 
-const multiselect = ref<HTMLElement | null>(null)
+const multiselect = ref<Multiselect | null>(null)
 </script>
 
 <template>
@@ -100,7 +100,7 @@ const multiselect = ref<HTMLElement | null>(null)
     </template>
     <template #[`header-profile.tg_username`]="header">
       <img :src="userBotFilter.state === UserBotStates.all ? FilterMenuOutlineIcon : FilterMenuOutlineAcivatedIcon" 
-      @click.stop="() => {showBotFilter = true; multiselect.activate() }" class="filter-icon" />{{ header.text }}
+      @click.stop="() => {showBotFilter = true; multiselect?.activate() }" class="filter-icon" />{{ header.text }}
       <div class="filter-menu" v-show="showBotFilter" v-on-click-outside="() => showBotFilter = false">
         <p style="margin-bottom: 0.5em">Показывать</p>
         <VueMultiselect
