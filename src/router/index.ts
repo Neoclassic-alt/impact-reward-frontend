@@ -51,7 +51,7 @@ const router = createRouter({
         if (from.name === 'BonusShop') {
           to.meta.transition = 'slide'
         }
-      }
+      },
     },
     {
       path: '/login',

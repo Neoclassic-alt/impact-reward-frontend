@@ -32,11 +32,11 @@ export function convertDate(date: string): string {
 export function standartDate(date: Date, showYear: boolean = true): string {
   let day = date.getDate().toString()
   if (day.length == 1) {
-    day = "0" + day
+    day = '0' + day
   }
   let month = (date.getMonth() + 1).toString()
   if (month.length == 1) {
-    month = "0" + month
+    month = '0' + month
   }
   if (showYear) {
     return `${day}.${month}.${date.getFullYear()}`
@@ -46,8 +46,8 @@ export function standartDate(date: Date, showYear: boolean = true): string {
 }
 
 export const compareDates = (d1: string | Date, d2: string | Date) => {
-  const date1 = (new Date(d1)).setUTCHours(0,0,0,0)
-  const date2 = (new Date(d2)).setUTCHours(0,0,0,0)
+  const date1 = new Date(d1).setUTCHours(0, 0, 0, 0)
+  const date2 = new Date(d2).setUTCHours(0, 0, 0, 0)
 
   if (date1 < date2) {
     return '<'
@@ -56,4 +56,9 @@ export const compareDates = (d1: string | Date, d2: string | Date) => {
   } else {
     return '=='
   }
-};
+}
+
+export const getEntries: (o: any, prefix?: string) => any = (o, prefix = '') => 
+  Object.entries(o).flatMap(([k, v]) => 
+    Object(v) === v ? getEntries(v, `${prefix}${k}.`) : [ [`${prefix}${k}`, v] ]
+  )

@@ -1,5 +1,5 @@
 export default function () {
-  const tbody = document.querySelectorAll('.vue3-easy-data-table__body')
+  const tbody = document.querySelector('.vue3-easy-data-table__body')
 
   const mouseover = (event: Event) => {
     const td = (event.target as HTMLElement)?.closest('td')
@@ -20,8 +20,7 @@ export default function () {
       document.body.append(newTd)
     }
   }
-  tbody[0].addEventListener('pointerover', mouseover)
-  tbody[1].addEventListener('pointerover', mouseover)
+  tbody?.addEventListener('pointerover', mouseover)
 
   const removeClones = (event: Event) => {
     const pointerEvent = event as PointerEvent

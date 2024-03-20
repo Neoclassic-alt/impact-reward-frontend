@@ -6,7 +6,7 @@ import 'vue3-easy-data-table/dist/style.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { VueQueryPlugin } from '@tanstack/vue-query'
-import { setupCalendar } from 'v-calendar';
+import { setupCalendar } from 'v-calendar'
 
 import App from './App.vue'
 import router from './router'

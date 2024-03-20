@@ -18,8 +18,8 @@ import {
   LinearScale,
   type ChartData,
 } from 'chart.js'
-import { DatePicker } from 'v-calendar';
-import 'v-calendar/style.css';
+import { DatePicker } from 'v-calendar'
+import 'v-calendar/style.css'
 import { vOnClickOutside } from '@vueuse/components'
 import { useWindowSize } from '@vueuse/core'
 
@@ -92,7 +92,7 @@ interface OrderedData {
 }
 
 type Interval = '7 days' | '30 days' | '3 months' | 'last year' | 'custom'
-type OptionInterval = { interval: Interval, label: string, days?: number }
+type OptionInterval = { interval: Interval; label: string; days?: number }
 
 const intervalOptions: ReadonlyArray<OptionInterval> = [
   { interval: '7 days', label: '7 дней', days: 7 },
@@ -114,19 +114,18 @@ const customInterval = ref({
 const isModalOpened = ref(false)
 
 function applyInterval() {
-  interval.value = {interval: 'custom', label: 'Выбрать интервал'}
+  interval.value = { interval: 'custom', label: 'Выбрать интервал' }
   isModalOpened.value = false
   /* Костыль, чтобы не отображался заголовок */
-  const multiselectLabel = document.querySelector(".multiselect__single")
-  multiselectLabel?.setAttribute('style', "display: none")
+  const multiselectLabel = document.querySelector('.multiselect__single')
+  multiselectLabel?.setAttribute('style', 'display: none')
 }
 
 const last_days = computed(() => {
   let last_days: number | 'custom' = 'custom'
   if (currentTab.value === 'days' && interval.value.interval !== 'custom' && interval.value.days) {
     last_days = interval.value.days
-  }
-  else if (currentTab.value !== 'days') {
+  } else if (currentTab.value !== 'days') {
     last_days = Infinity
   }
   return last_days
@@ -165,9 +164,13 @@ const statData = computed<OrderedData>(() => {
 const labels = computed(() => {
   if (currentTab.value === 'days') {
     if (last_days.value !== 'custom') {
-      return statsPerDays.value?.data.statistics.slice(-last_days.value).map((item: DayStat) => convertDate(item.date))
+      return statsPerDays.value?.data.statistics
+        .slice(-last_days.value)
+        .map((item: DayStat) => convertDate(item.date))
     } else {
-      return statsPerDays.value?.data.statistics.filter(filterInterval).map((item: DayStat) => convertDate(item.date))
+      return statsPerDays.value?.data.statistics
+        .filter(filterInterval)
+        .map((item: DayStat) => convertDate(item.date))
     }
   }
   if (currentTab.value === 'weeks') {
@@ -212,11 +215,11 @@ const barOptions = {
       labels: {
         boxWidth: width.value >= 425 ? 40 : 20,
         font: {
-          size: 14
-        }
-      }
-    }
-  }
+          size: 14,
+        },
+      },
+    },
+  },
 }
 
 type ViewMode = 'chart' | 'table' | 'all'
@@ -227,8 +230,7 @@ const tableData = computed(() => {
   if (currentTab.value === 'days') {
     if (last_days.value !== 'custom') {
       return statsPerDays.value?.data.statistics.slice(-last_days.value).toReversed()
-    }
-    else {
+    } else {
       return statsPerDays.value?.data.statistics.filter(filterInterval).toReversed()
     }
   }
@@ -242,18 +244,15 @@ const tableData = computed(() => {
 })
 
 function showLabel() {
-  const multiselectLabel = document.querySelector(".multiselect__single")
-  multiselectLabel?.removeAttribute("style")
+  const multiselectLabel = document.querySelector('.multiselect__single')
+  multiselectLabel?.removeAttribute('style')
 }
 </script>
 
 <template>
   <main class="main">
     <h2>Статистика сообщества</h2>
-    <menu
-      class="bonus-shop__tabs list-to-menu"
-      style="margin-top: 25px;"
-    >
+    <menu class="bonus-shop__tabs list-to-menu" style="margin-top: 25px">
       <li
         v-for="tab in tabs"
         :key="tab.tab"
@@ -278,7 +277,7 @@ function showLabel() {
           title="График"
         />
         <span class="material-design-icon table-icon">
-          <div 
+          <div
             v-html="TableIcon"
             class="view-mode-icon"
             :class="{ 'view-active': viewMode == 'table' }"
@@ -290,7 +289,7 @@ function showLabel() {
     </menu>
     <div>
       <div class="dropdown" v-show="currentTab == 'days'">
-        <p>Отображать </p>
+        <p>Отображать</p>
         <VueMultiselect
           v-model="interval"
           deselect-label="Нельзя удалить"
@@ -305,12 +304,19 @@ function showLabel() {
           @select="showLabel"
         >
           <template #afterList>
-            <li class="multiselect__element custom-multiselect__element" @click="isModalOpened = true">
+            <li
+              class="multiselect__element custom-multiselect__element"
+              @click="isModalOpened = true"
+            >
               <span class="multiselect__option">Выбрать интервал</span>
             </li>
           </template>
           <template #selection="{ values }">
-            {{ interval.interval !== 'custom' ? values.label : `${ standartDate(customInterval.start) }-${ standartDate(customInterval.end) }` }}
+            {{
+              interval.interval !== 'custom'
+                ? values.label
+                : `${standartDate(customInterval.start)}-${standartDate(customInterval.end)}`
+            }}
           </template>
           <template #singleLabel></template>
         </VueMultiselect>
@@ -342,10 +348,16 @@ function showLabel() {
     </div>
   </main>
   <div class="modal" v-show="isModalOpened">
-    <div v-on-click-outside="() => { isModalOpened = false }">
+    <div
+      v-on-click-outside="
+        () => {
+          isModalOpened = false
+        }
+      "
+    >
       <h2 class="modal__title">Выбрать интервал</h2>
-      <DatePicker 
-        v-model.range="customInterval" 
+      <DatePicker
+        v-model.range="customInterval"
         :min-date="statsPerDays?.data.statistics[0].date"
         :max-date="new Date()"
         color="cyan"
@@ -356,13 +368,16 @@ function showLabel() {
           class="button main-button"
           style="border-color: transparent; margin-right: 16px"
           @click="applyInterval"
-        >Применить</button>
+        >
+          Применить
+        </button>
         <a
           href="#"
           class="button"
           style="border-color: var(--brand-main-color)"
           @click.prevent="isModalOpened = false"
-        >Закрыть</a>
+          >Закрыть</a
+        >
       </div>
     </div>
   </div>
@@ -370,18 +385,18 @@ function showLabel() {
 
 <style scoped>
 .view-mode-icon-group {
-  display: flex; 
-  gap: 10px; 
+  display: flex;
+  gap: 10px;
   align-items: center;
 }
 .view-mode-icon {
   cursor: pointer;
 }
 .dropdown {
-  display: flex; 
-  align-items: center; 
-  gap: 10px; 
-  margin-bottom: 1em
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1em;
 }
 .modal__title {
   font-size: 1.25em;
@@ -404,14 +419,14 @@ function showLabel() {
 }
 
 .vc-cyan {
-  --vc-accent-50: #D6F9FF;
+  --vc-accent-50: #d6f9ff;
   --vc-accent-100: #b8ebf3;
   --vc-accent-200: #a3eaf8;
   --vc-accent-300: #67d2e9;
-  --vc-accent-400: #5FC0D3;
+  --vc-accent-400: #5fc0d3;
   --vc-accent-500: #4ea3b5;
   --vc-accent-600: #2e8896;
-  --vc-accent-700: #1D7682;
+  --vc-accent-700: #1d7682;
   --vc-accent-800: #066370;
   --vc-accent-900: #004851;
 }

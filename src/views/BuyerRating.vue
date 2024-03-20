@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import type { Header } from 'vue3-easy-data-table'
 import axios from 'axios'
-import { useQuery } from '@tanstack/vue-query'
+import { useQueries } from '@tanstack/vue-query'
 import './../assets/tabs.css'
 import AlertBlock from '@/components/common/AlertBlock.vue'
 import VueMultiselect from 'vue-multiselect'
@@ -10,154 +10,116 @@ import { monthNC } from '@/constants/months'
 import RatingTable from '@/components/rating/RatingTable.vue'
 import expandCell from '@/functions/rating/expandCell'
 import type { Profile } from '@/types/api/rating'
+import { vOnClickOutside } from '@vueuse/components'
+import { getEntries } from '@/functions'
 
 import MagnifyIcon from 'vue-material-design-icons/Magnify.vue'
 import EyeOffIcon from 'vue-material-design-icons/EyeOff.vue'
 import CloseIcon from 'vue-material-design-icons/Close.vue'
+import DownloadIcon from 'vue-material-design-icons/Download.vue'
+import FilterOffIcon from 'vue-material-design-icons/FilterOff.vue'
 
 const currentMonth = monthNC[new Date().getMonth()]
 
-const coinsHeaders = computed<Header[]>(() => {
-  const columns: Header[] = [
-    { text: 'Импакт-аккаунт', value: 'profile.impact-account', fixed: true },
-    { text: 'Участник', value: 'profile.tg_username', sortable: true },
-  ]
-  if (selectedFields.value.find((field) => field.type == '7_days')) {
-    columns.push({
-      text: `7 дней`,
-      value: 'coins.received_coins_per_last_7_days',
-      sortable: true,
-    })
-  }
-  if (selectedFields.value.find((field) => field.type == 'current_week')) {
-    columns.push({
-      text: 'Эта неделя',
-      value: 'coins.received_coins_per_current_week',
-      sortable: true,
-    })
-  }
-  if (selectedFields.value.find((field) => field.type == '30_days')) {
-    columns.push({
-      text: '30 дней',
-      value: 'coins.received_coins_per_last_30_days',
-      sortable: true,
-    })
-  }
-  if (selectedFields.value.find((field) => field.type == 'current_month')) {
-    columns.push({
-      text: currentMonth,
-      value: 'coins.received_coins_per_current_month',
-      sortable: true,
-    })
-  }
-  if (selectedFields.value.find((field) => field.type == 'coins_spent')) {
-    columns.push({ text: 'Всего монет', value: 'coins.total_received_coins', sortable: true })
-  }
-  if (selectedFields.value.find((field) => field.type == 'balance')) {
-    columns.push({ text: 'Баланс', value: 'profile.current_balance', sortable: true })
-  }
+const commonHeaders = [
+  { text: 'Импакт-аккаунт', value: 'profile.impact-account', fixed: true },
+  { text: 'Участник', value: 'profile.tg_username', sortable: true },
+]
+
+type Column = {
+  label: string,
+  type: string
+  coins?: string
+  bonuses?: string
+  rewards?: string
+  sortable?: boolean
+}
+
+const differentHeaders: Column[] = [
+  {
+    label: '7 дней',
+    type: '7_days',
+    coins: 'coins.received_coins_per_last_7_days',
+    bonuses: 'bonuses.spent_per_last_7_days',
+    rewards: 'rewards.rewards_per_last_7_days',
+    sortable: true,
+  },
+  {
+    label: 'Эта неделя',
+    type: 'current_week',
+    coins: 'coins.received_coins_per_current_week',
+    bonuses: 'bonuses.spent_per_current_week',
+    rewards: 'rewards.rewards_per_current_week',
+    sortable: true,
+  },
+  {
+    label: currentMonth,
+    type: 'current_month',
+    coins: 'coins.received_coins_per_current_month',
+    bonuses: 'bonuses.spent_per_current_month',
+    rewards: 'rewards.rewards_per_current_month',
+    sortable: true,
+  },
+  {
+    label: '30 дней',
+    type: '30_days',
+    coins: 'coins.received_coins_per_last_30_days',
+    bonuses: 'bonuses.spent_per_last_30_days',
+    rewards: 'rewards.rewards_per_last_30_days',
+    sortable: true,
+  },
+  { label: 'Всего монет', type: 'coins_spent', coins: 'coins.total_received_coins', sortable: true },
+  { label: 'Баланс', type: 'balance', coins: 'profile.current_balance', sortable: true },
+  { label: 'Всего наград', type: 'total_rewards', rewards: 'rewards.total_rewards', sortable: true },
+  { label: 'Потрачено монет', type: 'total_spent', bonuses: 'bonuses.total_spent', sortable: true },
+]
+
+const currentHeaders = computed<Header[]>(() => {
+  const columns: Header[] = structuredClone(commonHeaders)
+  selectedFields.value.forEach((field) => {
+    const header = differentHeaders.find((header) => header.type == field.type)
+    const headerValue = header?.[currentTab.value]
+    if (headerValue) {
+      columns.push({ text: field.label, value: headerValue, sortable: true })
+    }
+  })
   return columns
 })
 
-const rewardsHeaders = computed<Header[]>(() => {
-  const columns: Header[] = [
-    { text: 'Импакт-аккаунт', value: 'profile.impact-account', fixed: true },
-    { text: 'Участник', value: 'profile.tg_username', sortable: true },
-  ]
-  if (selectedFields.value.find((field) => field.type == '7_days')) {
-    columns.push({ text: `7 дней`, value: 'rewards.rewards_per_last_7_days', sortable: true })
-  }
-  if (selectedFields.value.find((field) => field.type == 'current_week')) {
-    columns.push({ text: 'Эта неделя', value: 'rewards.rewards_per_current_week', sortable: true })
-  }
-  if (selectedFields.value.find((field) => field.type == 'current_month')) {
-    columns.push({
-      text: currentMonth,
-      value: 'rewards.rewards_per_current_month',
-      sortable: true,
-    })
-  }
-  if (selectedFields.value.find((field) => field.type == '30_days')) {
-    columns.push({ text: '30 дней', value: 'rewards.rewards_per_last_30_days', sortable: true })
-  }
-  if (selectedFields.value.find((field) => field.type == 'total_rewards')) {
-    columns.push({ text: 'Всего наград', value: 'rewards.total_rewards', sortable: true })
-  }
-  return columns
-})
+const fetches = [
+  { key: 'rating_by_coins', tab: 'coins', url: '/seller/rating_by_coins' },
+  { key: 'rating_by_bonuses', tab: 'bonuses', url: '/seller/rating_by_bonuses' },
+  { key: 'rating_by_rewards', tab: 'rewards', url: '/seller/rating_by_rewards' },
+]
 
-const bonusesHeaders = computed<Header[]>(() => {
-  const columns: Header[] = [
-    { text: 'Импакт-аккаунт', value: 'profile.impact-account', fixed: true },
-    { text: 'Участник', value: 'profile.tg_username', sortable: true },
-  ]
-  if (selectedFields.value.find((field) => field.type == '7_days')) {
-    columns.push({ text: `7 дней`, value: 'bonuses.spent_per_last_7_days', sortable: true })
-  }
-  if (selectedFields.value.find((field) => field.type == 'current_week')) {
-    columns.push({ text: 'Эта неделя', value: 'bonuses.spent_per_current_week', sortable: true })
-  }
-  if (selectedFields.value.find((field) => field.type == 'current_month')) {
-    columns.push({ text: currentMonth, value: 'bonuses.spent_per_current_month', sortable: true })
-  }
-  if (selectedFields.value.find((field) => field.type == '30_days')) {
-    columns.push({ text: '30 дней', value: 'bonuses.spent_per_last_30_days', sortable: true })
-  }
-  if (selectedFields.value.find((field) => field.type == 'total_spent')) {
-    columns.push({ text: 'Потрачено монет', value: 'bonuses.total_spent', sortable: true })
-  }
-  return columns
-})
-
-const { data: coinsItems } = useQuery({
-  queryKey: ['rating', 'rating_by_coins'],
-  queryFn: async () => {
-    const start = performance.now()
-    const res = await axios.get('/seller/rating_by_coins')
-    const time = performance.now() - start
-    console.log('Rating by coins', (time / 1000).toFixed(2), 's')
-    res.data.rating.forEach(({ profile }: { profile: Profile }) => {
-      const searchItem = `${profile.tg_username ?? ''} ${profile.tg_nickname}`
-      profile.tg_search = searchItem
-    })
-    return res
+const allItems = useQueries({
+  queries: fetches.map((fetch) => ({
+    queryKey: ['rating', fetch.key],
+    queryFn: async () => {
+      const res = await axios.get(fetch.url)
+      // для целей поиска
+      res.data.rating.forEach(({ profile }: { profile: Profile }) => {
+        const searchItem = `${profile.tg_username ?? ''} ${profile.tg_nickname}`
+        profile.tg_search = searchItem
+      })
+      return res
+    },
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  })),
+  combine: (results) => {
+    return {
+      data: results.map((result) => result.data),
+    }
   },
-  refetchOnWindowFocus: false,
-  refetchOnReconnect: false,
 })
 
-const { data: rewardsItems } = useQuery({
-  queryKey: ['rating', 'rating_by_rewards'],
-  queryFn: async () => {
-    const start = performance.now()
-    const res = await axios.get('/seller/rating_by_rewards')
-    const time = performance.now() - start
-    console.log('Rating by rewards', (time / 1000).toFixed(2), 's')
-    res.data.rating.forEach(({ profile }: { profile: Profile }) => {
-      const searchItem = `${profile.tg_username ?? ''} ${profile.tg_nickname}`
-      profile.tg_search = searchItem
-    })
-    return res
-  },
-  refetchOnWindowFocus: false,
-  refetchOnReconnect: false,
-})
-
-const { data: bonusesItems } = useQuery({
-  queryKey: ['rating', 'rating_by_bonuses'],
-  queryFn: async () => {
-    const start = performance.now()
-    const res = await axios.get('/seller/rating_by_bonuses')
-    const time = performance.now() - start
-    console.log('Rating by bonuses', (time / 1000).toFixed(2), 's')
-    res.data.rating.forEach(({ profile }: { profile: Profile }) => {
-      const searchItem = `${profile.tg_username ?? ''} ${profile.tg_nickname}`
-      profile.tg_search = searchItem
-    })
-    return res
-  },
-  refetchOnWindowFocus: false,
-  refetchOnReconnect: false,
+const currentItems = computed(() => {
+  const ratingTabIndex = fetches.findIndex((fetchInfo) => fetchInfo.tab == currentTab.value)
+  if (ratingTabIndex !== -1) {
+    return allItems.value.data[ratingTabIndex]
+  }
+  return []
 })
 
 type RatingTabs = 'bonuses' | 'coins' | 'rewards'
@@ -210,6 +172,94 @@ function toggleFields() {
 onMounted(() => {
   expandCell()
 })
+
+const appliedFilters = [] // TODO
+
+const isDownloadModalOpen = ref(true)
+
+const downloadSettings = ref({
+  types: {
+    bonuses: true,
+    rewards: true,
+    coins: true,
+  },
+})
+
+// те колонки, что не вошли в таблицу
+const downloadColumns = [
+  {type: 'profile.tg_nickname', label: 'Никнейм'},
+  /*{type: 'profile.tg_avatar', label: 'URL аватара'},*/
+  {type: 'profile.wallet_bot_status', label: 'Бот включён'},
+]
+
+function downloadRatings() {
+  const entries = Object.entries(downloadSettings.value.types)
+  entries.map((entry) => {
+    if (entry[1]) {
+      const itemsIndex = fetches.findIndex((fetch) => fetch.tab == entry[0])
+      const data = allItems.value.data[itemsIndex]
+      dataToCSV(data.data.rating, entry[0])
+    }
+  })
+}
+
+function dataToCSV(rating: any, tab: string) {
+  let csv_data = []
+  const rawHeaders = getEntries(rating[0]).map((entry) => entry[0])
+  const namedHeaders = rawHeaders.map(nameColumn, {tab})
+  const nullNumbers = namedHeaders.map((el, index) => el === null ? index : null).filter((el) => el)
+  csv_data.push(namedHeaders.filter((el) => el).join(";"))
+
+  for (let i = 0; i < rating.length; i++) {
+    const entries = getEntries(rating[i])
+    const row = entries.map((entry) => entry[1] ?? 'N/A')
+    csv_data.push(row.filter((el, index) => !nullNumbers.includes(index)).join(";"))
+  }
+
+  csv_data = csv_data.join('\n')
+
+  downloadCSVFile(csv_data, tab)
+}
+
+function nameColumn(header) {
+  const commonColumn = commonHeaders.find((_header) => _header.value == header)
+  if (commonColumn) {
+    return commonColumn.text
+  }
+  const diffColumn = differentHeaders.find((_header) => _header[this.tab] == header)
+  if (diffColumn) {
+    return diffColumn.label
+  } 
+  const downloadColumn = downloadColumns.find((_header) => _header.type == header)
+  if (downloadColumn) {
+    return downloadColumn.label
+  }
+  return null
+}
+
+function downloadCSVFile(csv_data, tab) {
+ 
+ // Create CSV file object and feed our
+ // csv_data into it
+ const CSVFile = new Blob([csv_data], { type: "text/csv" });
+
+ // Create to temporary link to initiate
+ // download process
+ let temp_link = document.createElement('a');
+
+ // Download csv file
+ temp_link.download = `${tab}.csv`;
+ let url = window.URL.createObjectURL(CSVFile);
+ temp_link.href = url;
+
+ // This link should not be displayed
+ temp_link.style.display = "none";
+ document.body.appendChild(temp_link);
+
+ // Automatically click the link to trigger download 
+ temp_link.click();
+ document.body.removeChild(temp_link);
+}
 </script>
 
 <template>
@@ -225,11 +275,7 @@ onMounted(() => {
           v-model.trim="searchValue"
           maxlength="100"
         />
-        <CloseIcon 
-          class="clear-input-button icon"
-          v-show="searchValue"
-          @click="searchValue = ''"
-        />
+        <CloseIcon class="clear-input-button icon" v-show="searchValue" @click="searchValue = ''" />
       </div>
       <VueMultiselect
         v-model="selectedFields"
@@ -271,6 +317,16 @@ onMounted(() => {
           </li>
         </template>
       </VueMultiselect>
+      <div style="flex: 1"></div>
+      <a
+        class="button bonus-add__button download-button"
+        href="#"
+        @click="isDownloadModalOpen = true"
+        ><DownloadIcon style="height: 20px" fillColor="#999999"
+      /></a>
+      <a class="button bonus-add__button download-button button-disabled" href="#"
+        ><FilterOffIcon style="height: 22px" fillColor="#999999"
+      /></a>
     </div>
     <menu class="bonus-shop__tabs list-to-menu">
       <li
@@ -286,37 +342,59 @@ onMounted(() => {
     <AlertBlock type="warning" class="warn">
       Рекомендуется просматривать таблицу с&nbsp;компьютеров
     </AlertBlock>
-    <div v-show="currentTab == 'coins'">
-      <RatingTable
-        :headers="coinsHeaders"
-        :items="coinsItems"
-        :search-value="searchValue"
-      />
-      <p style="margin-top: 25px">
-        Рейтинг сформирован по количеству монет, полученных пользователями за соответствующий период.
-      </p>
-    </div>
-    <div v-show="currentTab == 'bonuses'">
-      <RatingTable
-        :headers="bonusesHeaders"
-        :items="bonusesItems"
-        :search-value="searchValue"
-      />
-      <p style="margin-top: 25px">
-        Рейтинг сформирован по количеству монет, потраченных пользователями на покупку бонусов сообщества за соответствующий период.
-      </p>
-    </div>
-    <div v-show="currentTab == 'rewards'">
-      <RatingTable
-        :headers="rewardsHeaders"
-        :items="rewardsItems"
-        :search-value="searchValue"
-      />
-      <p style="margin-top: 25px">
-        Рейтинг сформирован по количеству наград, полученных пользователями за соответствующий период.
-      </p>
-    </div>
+    <RatingTable :headers="currentHeaders" :items="currentItems" :search-value="searchValue" />
+    <p v-show="currentTab == 'coins'" style="margin-top: 25px">
+      Рейтинг сформирован по количеству монет, полученных пользователями за соответствующий период.
+    </p>
+    <p v-show="currentTab == 'bonuses'" style="margin-top: 25px">
+      Рейтинг сформирован по количеству монет, потраченных пользователями на покупку бонусов
+      сообщества за соответствующий период.
+    </p>
+    <p v-show="currentTab == 'rewards'" style="margin-top: 25px">
+      Рейтинг сформирован по количеству наград, полученных пользователями за соответствующий период.
+    </p>
   </main>
+  <div class="modal" v-show="isDownloadModalOpen">
+    <div v-on-click-outside="() => (isDownloadModalOpen = false)">
+      <h2 class="bonus__title">Скачать в формате <em>csv</em></h2>
+      <form style="width: 100%">
+        <ul class="list-to-menu">
+          <li>
+            <input type="checkbox" id="checkbox-coins" v-model="downloadSettings.types.coins" class="custom-checkbox" />
+            <label for="checkbox-coins">Монеты</label>
+          </li>
+          <li>
+            <input type="checkbox" id="checkbox-rewards" v-model="downloadSettings.types.rewards" class="custom-checkbox" />
+            <label for="checkbox-rewards">Награды</label>
+          </li>
+          <li>
+            <input type="checkbox" id="checkbox-bonuses" v-model="downloadSettings.types.bonuses" class="custom-checkbox" />
+            <label for="checkbox-bonuses">Бонусы</label>
+          </li>
+        </ul>
+        <!--<div style="margin-bottom: 20px">
+          <h3 style="margin-bottom: 10px">Фильтры</h3>
+          <input type="checkbox" id="checkbox-apply-filters" disabled />
+          <label for="checkbox-apply-filters">Применять фильтры</label>
+        </div>-->
+        <div class="modal-button-group">
+          <button class="button main-button" style="border-color: transparent; margin-right: 16px" 
+          :disabled="!(downloadSettings.types.coins || downloadSettings.types.rewards || downloadSettings.types.bonuses)"
+          @click.prevent="() => {downloadRatings(); isDownloadModalOpen = false}"
+          >
+            <span>Скачать</span>
+          </button>
+          <a
+            href="#"
+            class="button"
+            style="border-color: var(--brand-main-color)"
+            @click.prevent="isDownloadModalOpen = false"
+            >Отмена</a
+          >
+        </div>
+      </form>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -365,6 +443,33 @@ onMounted(() => {
   display: none;
 }
 
+.button {
+  /*font-size: 0.9em;*/
+  /*padding: 8px 16px 10px 11px;*/
+  padding: 8px 11px 10px 11px;
+  border: 1px solid var(--brand-main-color);
+}
+
+.download-button {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  gap: 11px;
+  border-radius: 5px;
+}
+
+.button-disabled {
+  opacity: 60%;
+  cursor: not-allowed;
+}
+
+.button-disabled:hover {
+  background-color: unset;
+}
+
+.modal > div {
+  align-items: flex-start;
+}
 @media screen and (max-width: 768px) {
   .warn {
     display: block;
@@ -441,8 +546,8 @@ onMounted(() => {
 
 .multiselect.multiselect-custom > .multiselect__tags {
   font-size: 13px !important;
-  padding: 7px 40px 0 12px !important;
-  height: 40px;
+  padding: 8px 40px 0 12px !important;
+  height: 42px;
 }
 
 .td-over {
