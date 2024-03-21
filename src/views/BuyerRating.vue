@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import type { Header } from 'vue3-easy-data-table'
 import axios from 'axios'
 import { useQueries } from '@tanstack/vue-query'
@@ -27,7 +27,7 @@ const commonHeaders = [
 ]
 
 type Column = {
-  label: string,
+  label: string
   type: string
   coins?: string
   bonuses?: string
@@ -68,9 +68,19 @@ const differentHeaders: Column[] = [
     rewards: 'rewards.rewards_per_last_30_days',
     sortable: true,
   },
-  { label: 'Всего монет', type: 'coins_spent', coins: 'coins.total_received_coins', sortable: true },
+  {
+    label: 'Всего монет',
+    type: 'coins_spent',
+    coins: 'coins.total_received_coins',
+    sortable: true,
+  },
   { label: 'Баланс', type: 'balance', coins: 'profile.current_balance', sortable: true },
-  { label: 'Всего наград', type: 'total_rewards', rewards: 'rewards.total_rewards', sortable: true },
+  {
+    label: 'Всего наград',
+    type: 'total_rewards',
+    rewards: 'rewards.total_rewards',
+    sortable: true,
+  },
   { label: 'Потрачено монет', type: 'total_spent', bonuses: 'bonuses.total_spent', sortable: true },
 ]
 
@@ -177,51 +187,68 @@ const appliedFilters = [] // TODO
 
 const isDownloadModalOpen = ref(true)
 
-const downloadSettings = ref({
+const downloadSettings = reactive({
   types: {
     bonuses: true,
     rewards: true,
     coins: true,
   },
+  separator: {
+    symbol: ';',
+    label: 'Точка с запятой',
+  },
 })
+
+const separators = [
+  { symbol: ';', label: 'Точка с запятой' },
+  { symbol: ',', label: 'Запятая' },
+  { symbol: '\t', label: 'Табуляция' },
+]
 
 // те колонки, что не вошли в таблицу
 const downloadColumns = [
-  {type: 'profile.tg_nickname', label: 'Никнейм'},
+  { type: 'profile.tg_nickname', label: 'Никнейм' },
   /*{type: 'profile.tg_avatar', label: 'URL аватара'},*/
-  {type: 'profile.wallet_bot_status', label: 'Бот включён'},
+  { type: 'profile.wallet_bot_status', label: 'Бот включён' },
 ]
 
 function downloadRatings() {
-  const entries = Object.entries(downloadSettings.value.types)
+  const entries = Object.entries(downloadSettings.types)
   entries.map((entry) => {
     if (entry[1]) {
       const itemsIndex = fetches.findIndex((fetch) => fetch.tab == entry[0])
       const data = allItems.value.data[itemsIndex]
-      dataToCSV(data.data.rating, entry[0])
+      dataToCSV(data?.data.rating, entry[0])
     }
   })
 }
 
 function dataToCSV(rating: any, tab: string) {
-  let csv_data = []
-  const rawHeaders = getEntries(rating[0]).map((entry) => entry[0])
-  const namedHeaders = rawHeaders.map(nameColumn, {tab})
-  const nullNumbers = namedHeaders.map((el, index) => el === null ? index : null).filter((el) => el)
-  csv_data.push(namedHeaders.filter((el) => el).join(";"))
+  const csv_data = []
+  const separator = downloadSettings.separator.symbol
+  const rawHeaders = getEntries(rating[0]).map((entry: any[]) => entry[0])
+  const namedHeaders = rawHeaders.map(nameColumn, { tab })
+  const nullNumbers = namedHeaders
+    .map((el: string | null, index: number) => (el === null ? index : null))
+    .filter((el: number | null) => el !== null)
+  csv_data.push(namedHeaders.filter((el: string | null) => el !== null).join(separator))
 
   for (let i = 0; i < rating.length; i++) {
     const entries = getEntries(rating[i])
-    const row = entries.map((entry) => entry[1] ?? 'N/A')
-    csv_data.push(row.filter((el, index) => !nullNumbers.includes(index)).join(";"))
+    const row = entries.map((entry: [string, string | number | null]) => entry[1] ?? 'N/A')
+    csv_data.push(
+      row
+        .filter((el: string | number, index: number) => !nullNumbers.includes(index))
+        .join(separator),
+    )
   }
 
-  csv_data = csv_data.join('\n')
+  const csv_ready_data = csv_data.join('\n')
 
-  downloadCSVFile(csv_data, tab)
+  downloadCSVFile(csv_ready_data, tab)
 }
 
-function nameColumn(header) {
+function nameColumn(this: { tab: RatingTabs }, header: string) {
   const commonColumn = commonHeaders.find((_header) => _header.value == header)
   if (commonColumn) {
     return commonColumn.text
@@ -229,7 +256,7 @@ function nameColumn(header) {
   const diffColumn = differentHeaders.find((_header) => _header[this.tab] == header)
   if (diffColumn) {
     return diffColumn.label
-  } 
+  }
   const downloadColumn = downloadColumns.find((_header) => _header.type == header)
   if (downloadColumn) {
     return downloadColumn.label
@@ -237,28 +264,20 @@ function nameColumn(header) {
   return null
 }
 
-function downloadCSVFile(csv_data, tab) {
- 
- // Create CSV file object and feed our
- // csv_data into it
- const CSVFile = new Blob([csv_data], { type: "text/csv" });
+function downloadCSVFile(csv_data: string, tab: string) {
+  const CSVFile = new Blob([csv_data], { type: 'text/csv' })
 
- // Create to temporary link to initiate
- // download process
- let temp_link = document.createElement('a');
+  let temp_link = document.createElement('a')
 
- // Download csv file
- temp_link.download = `${tab}.csv`;
- let url = window.URL.createObjectURL(CSVFile);
- temp_link.href = url;
+  temp_link.download = `${tab}.csv`
+  let url = window.URL.createObjectURL(CSVFile)
+  temp_link.href = url
 
- // This link should not be displayed
- temp_link.style.display = "none";
- document.body.appendChild(temp_link);
+  temp_link.style.display = 'none'
+  document.body.appendChild(temp_link)
 
- // Automatically click the link to trigger download 
- temp_link.click();
- document.body.removeChild(temp_link);
+  temp_link.click()
+  document.body.removeChild(temp_link)
 }
 </script>
 
@@ -360,27 +379,68 @@ function downloadCSVFile(csv_data, tab) {
       <form style="width: 100%">
         <ul class="list-to-menu">
           <li>
-            <input type="checkbox" id="checkbox-coins" v-model="downloadSettings.types.coins" class="custom-checkbox" />
+            <input
+              type="checkbox"
+              id="checkbox-coins"
+              v-model="downloadSettings.types.coins"
+              class="custom-checkbox"
+            />
             <label for="checkbox-coins">Монеты</label>
           </li>
           <li>
-            <input type="checkbox" id="checkbox-rewards" v-model="downloadSettings.types.rewards" class="custom-checkbox" />
+            <input
+              type="checkbox"
+              id="checkbox-rewards"
+              v-model="downloadSettings.types.rewards"
+              class="custom-checkbox"
+            />
             <label for="checkbox-rewards">Награды</label>
           </li>
           <li>
-            <input type="checkbox" id="checkbox-bonuses" v-model="downloadSettings.types.bonuses" class="custom-checkbox" />
+            <input
+              type="checkbox"
+              id="checkbox-bonuses"
+              v-model="downloadSettings.types.bonuses"
+              class="custom-checkbox"
+            />
             <label for="checkbox-bonuses">Бонусы</label>
           </li>
+          <li style="margin-top: 0.5em" v-show="!(downloadSettings.types.coins || 
+          downloadSettings.types.rewards || 
+          downloadSettings.types.bonuses)"><em>Вы должны выбрать хотя бы один<br/> тип рейтинга</em></li>
         </ul>
-        <!--<div style="margin-bottom: 20px">
-          <h3 style="margin-bottom: 10px">Фильтры</h3>
-          <input type="checkbox" id="checkbox-apply-filters" disabled />
-          <label for="checkbox-apply-filters">Применять фильтры</label>
-        </div>-->
+        <p style="margin-block-end: 0.5em">Разделитель</p>
+        <VueMultiselect
+          v-model="downloadSettings.separator"
+          :options="separators"
+          selectLabel=""
+          deselectLabel=""
+          selectedLabel=""
+          :searchable="false"
+          label="label"
+          track-by="symbol"
+          placeholder="Разделитель"
+          :allow-empty="false"
+          class="multiselect-custom multiselect-width"
+          style="margin-bottom: 20px"
+        />
         <div class="modal-button-group">
-          <button class="button main-button" style="border-color: transparent; margin-right: 16px" 
-          :disabled="!(downloadSettings.types.coins || downloadSettings.types.rewards || downloadSettings.types.bonuses)"
-          @click.prevent="() => {downloadRatings(); isDownloadModalOpen = false}"
+          <button
+            class="button main-button"
+            style="border-color: transparent; margin-right: 16px"
+            :disabled="
+              !(
+                downloadSettings.types.coins ||
+                downloadSettings.types.rewards ||
+                downloadSettings.types.bonuses
+              )
+            "
+            @click.prevent="
+              () => {
+                downloadRatings()
+                isDownloadModalOpen = false
+              }
+            "
           >
             <span>Скачать</span>
           </button>

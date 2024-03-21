@@ -58,7 +58,7 @@ export const compareDates = (d1: string | Date, d2: string | Date) => {
   }
 }
 
-export const getEntries: (o: any, prefix?: string) => any = (o, prefix = '') => 
-  Object.entries(o).flatMap(([k, v]) => 
-    Object(v) === v ? getEntries(v, `${prefix}${k}.`) : [ [`${prefix}${k}`, v] ]
+export const getEntries: (o: any, prefix?: string) => Array<[string, any]> = (o, prefix = '') =>
+  Object.entries(o).flatMap(([k, v]) =>
+    Object(v) === v ? getEntries(v, `${prefix}${k}.`) : [[`${prefix}${k}`, v]],
   )
