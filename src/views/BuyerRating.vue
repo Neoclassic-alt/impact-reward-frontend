@@ -185,7 +185,7 @@ onMounted(() => {
 
 const appliedFilters = [] // TODO
 
-const isDownloadModalOpen = ref(true)
+const isDownloadModalOpen = ref(fixes)
 
 const downloadSettings = reactive({
   types: {
@@ -343,9 +343,9 @@ function downloadCSVFile(csv_data: string, tab: string) {
         @click="isDownloadModalOpen = true"
         ><DownloadIcon style="height: 20px" fillColor="#999999"
       /></a>
-      <a class="button bonus-add__button download-button button-disabled" href="#"
+      <!--<a class="button bonus-add__button download-button button-disabled" href="#"
         ><FilterOffIcon style="height: 22px" fillColor="#999999"
-      /></a>
+      /></a>-->
     </div>
     <menu class="bonus-shop__tabs list-to-menu">
       <li
