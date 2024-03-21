@@ -185,7 +185,7 @@ onMounted(() => {
 
 const appliedFilters = [] // TODO
 
-const isDownloadModalOpen = ref(fixes)
+const isDownloadModalOpen = ref(false)
 
 const downloadSettings = reactive({
   types: {
