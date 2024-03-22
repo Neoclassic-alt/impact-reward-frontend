@@ -10,14 +10,14 @@ import { monthNC } from '@/constants/months'
 import RatingTable from '@/components/rating/RatingTable.vue'
 import expandCell from '@/functions/rating/expandCell'
 import type { Profile } from '@/types/api/rating'
-import { vOnClickOutside } from '@vueuse/components'
 import { getEntries } from '@/functions'
+import { downloadCSVFile } from '@/functions/csv'
+import DownloadModal from '@/components/rating/DownloadModal.vue'
 
 import MagnifyIcon from 'vue-material-design-icons/Magnify.vue'
 import EyeOffIcon from 'vue-material-design-icons/EyeOff.vue'
 import CloseIcon from 'vue-material-design-icons/Close.vue'
 import DownloadIcon from 'vue-material-design-icons/Download.vue'
-import FilterOffIcon from 'vue-material-design-icons/FilterOff.vue'
 
 const currentMonth = monthNC[new Date().getMonth()]
 
@@ -183,11 +183,11 @@ onMounted(() => {
   expandCell()
 })
 
-const appliedFilters = [] // TODO
+//const appliedFilters = [] // TODO
 
 const isDownloadModalOpen = ref(false)
 
-const downloadSettings = reactive({
+let downloadSettings = reactive({
   types: {
     bonuses: true,
     rewards: true,
@@ -198,12 +198,6 @@ const downloadSettings = reactive({
     label: 'Точка с запятой',
   },
 })
-
-const separators = [
-  { symbol: ';', label: 'Точка с запятой' },
-  { symbol: ',', label: 'Запятая' },
-  { symbol: '\t', label: 'Табуляция' },
-]
 
 // те колонки, что не вошли в таблицу
 const downloadColumns = [
@@ -263,22 +257,6 @@ function nameColumn(this: { tab: RatingTabs }, header: string) {
   }
   return null
 }
-
-function downloadCSVFile(csv_data: string, tab: string) {
-  const CSVFile = new Blob([csv_data], { type: 'text/csv' })
-
-  let temp_link = document.createElement('a')
-
-  temp_link.download = `${tab}.csv`
-  let url = window.URL.createObjectURL(CSVFile)
-  temp_link.href = url
-
-  temp_link.style.display = 'none'
-  document.body.appendChild(temp_link)
-
-  temp_link.click()
-  document.body.removeChild(temp_link)
-}
 </script>
 
 <template>
@@ -337,10 +315,7 @@ function downloadCSVFile(csv_data: string, tab: string) {
         </template>
       </VueMultiselect>
       <div style="flex: 1"></div>
-      <a
-        class="button bonus-add__button download-button"
-        href="#"
-        @click="isDownloadModalOpen = true"
+      <a class="button bonus-add__button mini-button" href="#" @click="isDownloadModalOpen = true"
         ><DownloadIcon style="height: 20px" fillColor="#999999"
       /></a>
       <!--<a class="button bonus-add__button download-button button-disabled" href="#"
@@ -373,88 +348,13 @@ function downloadCSVFile(csv_data: string, tab: string) {
       Рейтинг сформирован по количеству наград, полученных пользователями за соответствующий период.
     </p>
   </main>
-  <div class="modal" v-show="isDownloadModalOpen">
-    <div v-on-click-outside="() => (isDownloadModalOpen = false)">
-      <h2 class="bonus__title">Скачать в формате <em>csv</em></h2>
-      <form style="width: 100%">
-        <ul class="list-to-menu">
-          <li>
-            <input
-              type="checkbox"
-              id="checkbox-coins"
-              v-model="downloadSettings.types.coins"
-              class="custom-checkbox"
-            />
-            <label for="checkbox-coins">Монеты</label>
-          </li>
-          <li>
-            <input
-              type="checkbox"
-              id="checkbox-rewards"
-              v-model="downloadSettings.types.rewards"
-              class="custom-checkbox"
-            />
-            <label for="checkbox-rewards">Награды</label>
-          </li>
-          <li>
-            <input
-              type="checkbox"
-              id="checkbox-bonuses"
-              v-model="downloadSettings.types.bonuses"
-              class="custom-checkbox"
-            />
-            <label for="checkbox-bonuses">Бонусы</label>
-          </li>
-          <li style="margin-top: 0.5em" v-show="!(downloadSettings.types.coins || 
-          downloadSettings.types.rewards || 
-          downloadSettings.types.bonuses)"><em>Вы должны выбрать хотя бы один<br/> тип рейтинга</em></li>
-        </ul>
-        <p style="margin-block-end: 0.5em">Разделитель</p>
-        <VueMultiselect
-          v-model="downloadSettings.separator"
-          :options="separators"
-          selectLabel=""
-          deselectLabel=""
-          selectedLabel=""
-          :searchable="false"
-          label="label"
-          track-by="symbol"
-          placeholder="Разделитель"
-          :allow-empty="false"
-          class="multiselect-custom multiselect-width"
-          style="margin-bottom: 20px"
-        />
-        <div class="modal-button-group">
-          <button
-            class="button main-button"
-            style="border-color: transparent; margin-right: 16px"
-            :disabled="
-              !(
-                downloadSettings.types.coins ||
-                downloadSettings.types.rewards ||
-                downloadSettings.types.bonuses
-              )
-            "
-            @click.prevent="
-              () => {
-                downloadRatings()
-                isDownloadModalOpen = false
-              }
-            "
-          >
-            <span>Скачать</span>
-          </button>
-          <a
-            href="#"
-            class="button"
-            style="border-color: var(--brand-main-color)"
-            @click.prevent="isDownloadModalOpen = false"
-            >Отмена</a
-          >
-        </div>
-      </form>
-    </div>
-  </div>
+  <DownloadModal
+    v-show="isDownloadModalOpen"
+    :closeModal="() => (isDownloadModalOpen = false)"
+    @click="downloadRatings"
+    :types="tabs"
+    v-model="downloadSettings"
+  />
 </template>
 
 <style scoped>
@@ -501,21 +401,6 @@ function downloadCSVFile(csv_data: string, tab: string) {
 
 .warn {
   display: none;
-}
-
-.button {
-  /*font-size: 0.9em;*/
-  /*padding: 8px 16px 10px 11px;*/
-  padding: 8px 11px 10px 11px;
-  border: 1px solid var(--brand-main-color);
-}
-
-.download-button {
-  display: flex;
-  align-items: center;
-  width: fit-content;
-  gap: 11px;
-  border-radius: 5px;
 }
 
 .button-disabled {

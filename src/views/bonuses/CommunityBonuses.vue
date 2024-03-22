@@ -125,14 +125,14 @@ const currentBonus = computed(() =>
     </div>
   </div>
   <teleport to="body">
-    <add-bonus-modal
+    <AddBonusModal
       v-if="modal.state == 'add'"
       :bonus-group-name="currentBonus?.name"
       :name-variable-content="currentBonus?.name_variable_content"
       :close-modal="closeModal"
       :bonus-group-id="currentBonus?.id"
     />
-    <delete-bonus-group-modal
+    <DeleteBonusGroupModal
       v-if="modal.state == 'delete'"
       :close-modal="closeModal"
       :bonus-group-name="currentBonus?.name"

@@ -106,6 +106,16 @@
   color: #000000;
 }
 
+.mini-button {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  gap: 11px;
+  border-radius: 5px;
+  padding: 8px 11px 10px 11px;
+  border: 1px solid var(--brand-main-color);
+}
+
 .nav_in-development {
   display: flex;
   align-items: center;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, toValue, watchEffect } from 'vue'
+import { ref, computed, reactive, toValue, watchEffect } from 'vue'
 import EasyDataTable, { type Header } from 'vue3-easy-data-table'
 import './../assets/tabs.css'
 import axios from 'axios'
@@ -17,15 +17,19 @@ import {
   CategoryScale,
   LinearScale,
   type ChartData,
+  type Plugin,
 } from 'chart.js'
 import { DatePicker } from 'v-calendar'
 import 'v-calendar/style.css'
 import { vOnClickOutside } from '@vueuse/components'
 import { useWindowSize } from '@vueuse/core'
+import DownloadModal from '@/components/rating/DownloadModal.vue'
+import { downloadCSVFile } from '@/functions/csv'
 
 import ChartBoxOutlineIcon from 'vue-material-design-icons/ChartBoxOutline.vue'
 import ViewAgendaOutlineIcon from 'vue-material-design-icons/ViewAgendaOutline.vue'
 import TableIcon from '@/assets/icons/table.svg?raw'
+import DownloadIcon from 'vue-material-design-icons/Download.vue'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -116,7 +120,7 @@ const isModalOpened = ref(false)
 function applyInterval() {
   interval.value = { interval: 'custom', label: 'Выбрать интервал' }
   isModalOpened.value = false
-  /* Костыль, чтобы не отображался заголовок */
+  /* Костыль, чтобы не отображался заголовок выпадающего списка */
   const multiselectLabel = document.querySelector('.multiselect__single')
   multiselectLabel?.setAttribute('style', 'display: none')
 }
@@ -209,6 +213,18 @@ watchEffect(() => {
 
 const { width } = useWindowSize()
 
+const plugin: Plugin<'bar'> = {
+  id: 'customCanvasBackgroundColor',
+  beforeDraw: (chart, args, options) => {
+    const { ctx } = chart
+    ctx.save()
+    ctx.globalCompositeOperation = 'destination-over'
+    ctx.fillStyle = options.color || '#99ffff'
+    ctx.fillRect(0, 0, chart.width, chart.height)
+    ctx.restore()
+  },
+}
+
 const barOptions = {
   plugins: {
     legend: {
@@ -218,6 +234,9 @@ const barOptions = {
           size: 14,
         },
       },
+    },
+    customCanvasBackgroundColor: {
+      color: 'white',
     },
   },
 }
@@ -246,6 +265,60 @@ const tableData = computed(() => {
 function showLabel() {
   const multiselectLabel = document.querySelector('.multiselect__single')
   multiselectLabel?.removeAttribute('style')
+}
+
+const isDownloadModalOpen = ref(false)
+
+let downloadSettings = reactive({
+  types: {
+    days: true,
+    weeks: true,
+    months: true,
+  },
+  separator: {
+    symbol: ';',
+    label: 'Точка с запятой',
+  },
+})
+
+function downloadStats() {
+  if (downloadSettings.types.days) {
+    dataToCSV(statsPerDays.value?.data.statistics, 'daily')
+  }
+  if (downloadSettings.types.weeks) {
+    dataToCSV(statsPerWeeks.value?.data.statistics, 'weekly')
+  }
+  if (downloadSettings.types.months) {
+    dataToCSV(statsPerMonths.value?.data.statistics, 'monthly')
+  }
+}
+
+function dataToCSV(stat: any, tab: string) {
+  const csv_data = []
+  const separator = downloadSettings.separator.symbol
+  if (tab == 'daily' || tab == 'weekly') {
+    const headers = Object.keys(stat[0])
+    csv_data.push(headers.join(separator))
+
+    for (let i = 0; i < stat.length; i++) {
+      const row = Object.values(stat[i])
+      csv_data.push(row.join(separator))
+    }
+  }
+
+  if (tab == 'monthly') {
+    const headers = Object.keys(stat[0]).slice(0, -1)
+    csv_data.push(headers.join(separator))
+
+    for (let i = 0; i < stat.length; i++) {
+      const row = Object.values(stat[i]).slice(0, -1)
+      csv_data.push(row.join(separator))
+    }
+  }
+
+  const csv_ready_data = csv_data.join('\n')
+
+  downloadCSVFile(csv_ready_data, tab)
 }
 </script>
 
@@ -288,38 +361,44 @@ function showLabel() {
       </div>
     </menu>
     <div>
-      <div class="dropdown" v-show="currentTab == 'days'">
-        <p>Отображать</p>
-        <VueMultiselect
-          v-model="interval"
-          deselect-label="Нельзя удалить"
-          select-label="Выбрать"
-          selected-label=""
-          track-by="interval"
-          label="label"
-          :options="intervalOptions"
-          :searchable="false"
-          :allow-empty="false"
-          style="width: 250px"
-          @select="showLabel"
-        >
-          <template #afterList>
-            <li
-              class="multiselect__element custom-multiselect__element"
-              @click="isModalOpened = true"
-            >
-              <span class="multiselect__option">Выбрать интервал</span>
-            </li>
-          </template>
-          <template #selection="{ values }">
-            {{
-              interval.interval !== 'custom'
-                ? values.label
-                : `${standartDate(customInterval.start)}-${standartDate(customInterval.end)}`
-            }}
-          </template>
-          <template #singleLabel></template>
-        </VueMultiselect>
+      <div class="stats-menu">
+        <div class="dropdown" v-show="currentTab == 'days'">
+          <p>Отображать</p>
+          <VueMultiselect
+            v-model="interval"
+            deselect-label="Нельзя удалить"
+            select-label="Выбрать"
+            selected-label=""
+            track-by="interval"
+            label="label"
+            :options="intervalOptions"
+            :searchable="false"
+            :allow-empty="false"
+            style="width: 250px"
+            @select="showLabel"
+          >
+            <template #afterList>
+              <li
+                class="multiselect__element custom-multiselect__element"
+                @click="isModalOpened = true"
+              >
+                <span class="multiselect__option">Выбрать интервал</span>
+              </li>
+            </template>
+            <template #selection="{ values }">
+              {{
+                interval.interval !== 'custom'
+                  ? values.label
+                  : `${standartDate(customInterval.start)}-${standartDate(customInterval.end)}`
+              }}
+            </template>
+            <template #singleLabel></template>
+          </VueMultiselect>
+        </div>
+        <div style="flex: 1"></div>
+        <a class="button bonus-add__button mini-button" href="#" @click="isDownloadModalOpen = true"
+          ><DownloadIcon style="height: 20px" fillColor="#999999"
+        /></a>
       </div>
       <Bar
         v-if="chartData"
@@ -327,6 +406,7 @@ function showLabel() {
         :data="chartData"
         style="margin-bottom: 1em"
         :options="barOptions"
+        :plugins="[plugin]"
         >К сожалению, ваш браузер не поддерживает отрисовку графиков.</Bar
       >
       <EasyDataTable
@@ -381,6 +461,20 @@ function showLabel() {
       </div>
     </div>
   </div>
+  <DownloadModal
+    v-show="isDownloadModalOpen"
+    :closeModal="() => (isDownloadModalOpen = false)"
+    @click="downloadStats"
+    :types="tabs"
+    v-model="downloadSettings"
+  >
+    <slot>
+      <em
+        >Вы должны выбрать хотя бы один<br />
+        тип статистики</em
+      >
+    </slot>
+  </DownloadModal>
 </template>
 
 <style scoped>
@@ -396,12 +490,17 @@ function showLabel() {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 1em;
 }
+
 .modal__title {
   font-size: 1.25em;
   font-weight: 500;
   margin-bottom: var(--base-margin);
+}
+
+.stats-menu {
+  display: flex;
+  margin-bottom: 1em;
 }
 </style>
 
