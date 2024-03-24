@@ -58,7 +58,7 @@ const disable = computed(() => !Object.values(model.value.types).some((el: Boole
           track-by="symbol"
           placeholder="Разделитель"
           :allow-empty="false"
-          class="multiselect-custom multiselect-width"
+          class="multiselect-width"
           style="margin-bottom: 20px"
         />
         <div class="modal-button-group">
@@ -88,4 +88,8 @@ const disable = computed(() => !Object.values(model.value.types).some((el: Boole
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.bonus__title {
+  margin-bottom: 0;
+}
+</style>

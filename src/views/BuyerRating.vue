@@ -485,10 +485,6 @@ function nameColumn(this: { tab: RatingTabs }, header: string) {
   font-size: 14px !important;
 }
 
-.multiselect-custom {
-  margin-left: initial;
-}
-
 .multiselect.multiselect-custom > .multiselect__tags {
   font-size: 13px !important;
   padding: 8px 40px 0 12px !important;
@@ -503,10 +499,6 @@ function nameColumn(this: { tab: RatingTabs }, header: string) {
   border: 1px solid #e0e0e0;
   font-size: 14px;
   padding: 0 10px;
-}
-
-.main {
-  max-width: 1100px;
 }
 
 .table-fixed table {

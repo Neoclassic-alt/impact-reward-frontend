@@ -219,12 +219,6 @@
   font-size: 12px;
 }
 
-.multiselect-custom {
-  font-size: 14px !important;
-  border-radius: 4px;
-  margin-left: 1em;
-}
-
 /* override */
 .multiselect__tags {
   border: 1px var(--brand-main-color) solid !important;

@@ -296,29 +296,48 @@ function downloadStats() {
 function dataToCSV(stat: any, tab: string) {
   const csv_data = []
   const separator = downloadSettings.separator.symbol
-  if (tab == 'daily' || tab == 'weekly') {
-    const headers = Object.keys(stat[0])
-    csv_data.push(headers.join(separator))
+  let headers: string[] = []
 
-    for (let i = 0; i < stat.length; i++) {
-      const row = Object.values(stat[i])
-      csv_data.push(row.join(separator))
-    }
+  if (tab == 'daily' || tab == 'weekly') {
+    headers = Object.keys(stat[0]);
   }
 
   if (tab == 'monthly') {
-    const headers = Object.keys(stat[0]).slice(0, -1)
-    csv_data.push(headers.join(separator))
+    headers = Object.keys(stat[0]).slice(0, -1)
+  }
 
-    for (let i = 0; i < stat.length; i++) {
-      const row = Object.values(stat[i]).slice(0, -1)
-      csv_data.push(row.join(separator))
+  const temp = headers[1]
+  headers[1] = headers[0]
+  headers[0] = temp
+
+  csv_data.push(headers.join(separator))
+
+  for (let i = 0; i < stat.length; i++) {
+    let row: string[] = []
+    if (tab == 'daily' || tab == 'weekly') {
+      row = Object.values(stat[i])
     }
+    if (tab == 'monthly') {
+      row = (Object.values(stat[i]) as string[]).slice(0, -1)
+    }
+    const temp = row[1]
+    row[1] = row[0]
+    row[0] = temp
+    
+    csv_data.push(row.join(separator))
   }
 
   const csv_ready_data = csv_data.join('\n')
 
   downloadCSVFile(csv_ready_data, tab)
+}
+
+function downloadCanvas() {
+  const link = document.createElement('a')
+  link.download = 'graph.png'
+  link.href = (document.querySelector('canvas') as HTMLCanvasElement)?.toDataURL()
+  link.click()
+  link.remove()
 }
 </script>
 
@@ -395,10 +414,6 @@ function dataToCSV(stat: any, tab: string) {
             <template #singleLabel></template>
           </VueMultiselect>
         </div>
-        <div style="flex: 1"></div>
-        <a class="button bonus-add__button mini-button" href="#" @click="isDownloadModalOpen = true"
-          ><DownloadIcon style="height: 20px" fillColor="#999999"
-        /></a>
       </div>
       <Bar
         v-if="chartData"
@@ -424,7 +439,16 @@ function dataToCSV(stat: any, tab: string) {
         :rows-items="[15, 20, 50, 100, 250]"
         alternating
         border-cell
+        style="margin-bottom: 1em"
       />
+      <div class="flex-center" style="gap: 1em">
+        <a class="button mini-button" href="#" @click.prevent="downloadCanvas"
+          ><DownloadIcon style="height: 20px" fillColor="#999999"
+        /> Скачать график</a>
+        <a class="button mini-button" href="#" @click.prevent="isDownloadModalOpen = true"
+          ><DownloadIcon style="height: 20px" fillColor="#999999"
+        /> Скачать таблицы</a>
+      </div>
     </div>
   </main>
   <div class="modal" v-show="isModalOpened">
@@ -501,6 +525,10 @@ function dataToCSV(stat: any, tab: string) {
 .stats-menu {
   display: flex;
   margin-bottom: 1em;
+}
+
+.mini-button {
+  padding-right: 13px;
 }
 </style>
 

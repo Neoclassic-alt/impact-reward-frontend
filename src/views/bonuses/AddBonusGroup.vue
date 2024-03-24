@@ -10,6 +10,7 @@ import { useMutation } from '@tanstack/vue-query'
 import AlertBlock from '@/components/common/AlertBlock.vue'
 import type { typeOfBonus } from '@/types/bonuses'
 import type { request as bonusesRequest } from '@/types/api/bonuses'
+import buttonLoadingIcon from '@/assets/icons/button-loading.svg?url'
 
 const { bonusAllCosts, fetchUserAndSave } = useUserStore()
 const route = useRoute()
@@ -151,7 +152,7 @@ const onSubmit = handleSubmit((values) => {
         <span class="field-error" :class="{ 'error-show': errors.instruction }"
           >{{ errors.instruction }}&nbsp;</span
         >
-        <div class="flex-center" style="margin-bottom: 1em">
+        <div class="flex-center" style="margin-bottom: 1em; gap: 1em">
           <label class="label" style="margin-bottom: 2px">Тип</label>
           <VueMultiselect
             v-model.trim="bonusType"
@@ -191,7 +192,7 @@ const onSubmit = handleSubmit((values) => {
         >
         <button class="button main-button" :disabled="isPending || isSuccess">
           <img
-            src="./../../assets/icons/button-loading.svg"
+            :src="buttonLoadingIcon"
             style="margin-right: 5px"
             v-show="isPending"
           />
